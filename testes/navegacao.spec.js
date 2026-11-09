@@ -53,7 +53,7 @@ test('endereço inexistente mostra a página de não encontrado', async ({ page 
   await expect(page.locator('#conteudo h1')).toHaveText('Papiro');
 });
 
-for (const [rota, titulo] of [['questoes', 'Banco de questões'], ['listas', 'Listas de questões'], ['simulados', 'Simulados'], ['horas', 'Horas de estudo']]) {
+for (const [rota, titulo] of [['plano', 'Plano de estudos'], ['questoes', 'Banco de questões'], ['listas', 'Listas de questões'], ['simulados', 'Simulados'], ['horas', 'Horas de estudo']]) {
   test(`página especial #${rota} abre`, async ({ page }) => {
     await abrir(page, rota);
     await semAvisos(page);
@@ -63,7 +63,7 @@ for (const [rota, titulo] of [['questoes', 'Banco de questões'], ['listas', 'Li
 }
 
 test('todo link e botão visível tem nome para leitor de tela', async ({ page }) => {
-  for (const caminho of ['', ASSUNTO_MODELO, 'questoes', 'horas']) {
+  for (const caminho of ['', ASSUNTO_MODELO, 'questoes', 'horas', 'plano', 'nucleo/portugues/sintaxe']) {
     await abrir(page, caminho);
     const semNome = await page.evaluate(() => {
       const nome = (el) => {
@@ -85,6 +85,6 @@ test('todo link e botão visível tem nome para leitor de tela', async ({ page }
 test('fora do artefato, ranking, assistente, redação e perfil ficam escondidos', async ({ page }) => {
   await abrir(page);
   const nav = page.locator('#navegacao');
-  await expect(nav.locator('a')).toHaveText(['Início', 'Questões', 'Listas', 'Simulados', 'Horas'].map((t) => new RegExp(`${t}$`)));
+  await expect(nav.locator('a')).toHaveText(['Início', 'Plano', 'Questões', 'Listas', 'Simulados', 'Horas'].map((t) => new RegExp(`${t}$`)));
   await expect(page.locator('#perfil-mini')).toBeHidden();
 });

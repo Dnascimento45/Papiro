@@ -12,6 +12,7 @@ const PAGINAS = [
   ['assunto', 'nucleo/matematica/aritmetica/regra-de-tres'],
   ['nao-encontrado', 'nucleo/nao-existe'],
   ['questoes', 'questoes'],
+  ['plano', 'plano'],
 ];
 
 for (const [nome, caminho] of PAGINAS) {

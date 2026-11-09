@@ -169,3 +169,56 @@ test('banco de questões: a situação segue a última resposta (acertou e depoi
   await page.locator('[data-filtro="status"]').selectOption('certa');
   await expect(mesma, 'o filtro "Que acertei" não deve trazer a questão').toHaveCount(0);
 });
+
+test('pré-requisitos: aparecem no assunto, contam o que foi estudado e o assunto-base lista quem depende dele', async ({ page }) => {
+  await abrir(page, 'nucleo/portugues/sintaxe/crase');
+  const quadro = page.locator('.prereq');
+  await expect(quadro).toContainText('Falta');
+  await expect(quadro.locator('li')).toHaveCount(3);
+
+  await quadro.locator('a', { hasText: 'Regência verbal' }).click();
+  await expect(page.locator('#conteudo h1')).toHaveText('Regência verbal');
+  await expect(page.locator('.fontes', { hasText: 'Este assunto é base para' })).toContainText('Crase');
+  await page.locator('[data-acao="estudado"]').click();
+
+  await page.goBack();
+  await expect(page.locator('.prereq li.ok')).toHaveCount(1);
+  await expect(page.locator('.prereq li.ok')).toContainText('Regência verbal');
+});
+
+test('plano: adiciona matérias, avisa pré-requisito fora de ordem, reordena e lembra ao recarregar', async ({ page }) => {
+  await abrir(page, 'nucleo/portugues/sintaxe');
+  await page.locator('[data-acao="plano-add"]').click();
+  await expect(page.locator('#conteudo a.btn[href="#plano"]')).toBeFocused();
+
+  await page.locator('#navegacao a', { hasText: 'Plano' }).evaluate((a) => a.click());
+  await expect(page.locator('#conteudo h1')).toHaveText('Plano de estudos');
+  await expect(page.locator('.plano-item')).toHaveCount(1);
+  // Sintaxe pede Morfologia, que não está no plano: o aviso oferece adicionar.
+  await page.locator('.plano-avisos [data-materia="nucleo/portugues/morfologia"]').click();
+  await expect(page.locator('.plano-item')).toHaveCount(2);
+  await expect(page.locator('.plano-avisos .atraso')).toContainText('Morfologia');
+
+  await page.locator('[data-acao="plano-ordenar"]').click();
+  await expect(page.locator('.plano-info > a')).toHaveText(['Morfologia', 'Sintaxe']);
+  await expect(page.locator('.plano-avisos .atraso')).toHaveCount(0);
+  await expect(page.locator('[data-acao="plano-ordenar"]')).toHaveCount(0);
+
+  await page.locator('[data-acao="plano-subir"][data-materia="nucleo/portugues/sintaxe"]').click();
+  await expect(page.locator('.plano-info > a')).toHaveText(['Sintaxe', 'Morfologia']);
+  await expect(page.locator('[data-acao="plano-descer"][data-materia="nucleo/portugues/sintaxe"]'), 'o foco segue a matéria movida').toBeFocused();
+
+  await page.reload();
+  await expect(page.locator('.plano-info > a')).toHaveText(['Sintaxe', 'Morfologia']);
+  await expect(page.locator('.continuar')).toContainText('Frase, oração e período');
+
+  await page.locator('[data-acao="plano-remover"][data-materia="nucleo/portugues/morfologia"]').click();
+  await expect(page.locator('.plano-item')).toHaveCount(1);
+});
+
+test('início mostra o próximo assunto do plano', async ({ page }) => {
+  await abrir(page, 'nucleo/matematica/aritmetica');
+  await page.locator('[data-acao="plano-add"]').click();
+  await abrir(page);
+  await expect(page.locator('.atalhos .continuar', { hasText: 'Próximo do plano' })).toContainText('Razão e proporção');
+});
