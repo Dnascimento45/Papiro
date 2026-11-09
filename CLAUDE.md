@@ -28,11 +28,33 @@ Os dois repositórios **não se sincronizam sozinhos**. Melhorias que valerem pa
 
 ## 2. Estado atual
 
-Protótipo funcional, sem build e sem backend (HTML + CSS + JS puro).
+Protótipo funcional, sem build e sem backend (HTML + CSS + JS puro). Como usa módulos ES, precisa ser aberto por um servidor (`servir.ps1`), não clicando no arquivo.
 
 ```
-index.html                  Motor do caderno. Fragmento sem <!doctype>; o servidor o embrulha.
-servir.ps1                  Servidor estático local (PowerShell), porta 8766.
+index.html                  Só a marcação da página. Fragmento sem <!doctype>; o servidor o embrulha.
+css/                        Estilos, um arquivo por responsabilidade:
+  base.css                    tokens (cores, fontes), reset e tipografia
+  layout.css                  painel lateral, topo, folha de leitura, marca-d'água
+  arvore.css                  sumário lateral e resultados da busca
+  componentes.css             peças reutilizadas (cabeçalho, chips, barras, avisos)
+  paginas.css                 início, seção, conteúdo, matéria e assunto
+  blocos.css                  blocos de conteúdo (texto, fórmula, questão…)
+  responsivo.css              media queries
+js/                         Motor do caderno, em módulos ES (sem build):
+  main.js                     ponto de entrada; expõe window.ESTUDO e carrega conteudos/indice.js
+  registro.js                 API ESTUDO.* usada por conteudos/*.js e carregamento dos arquivos
+  modelo.js                   monta a árvore Seção→Conteúdo→Matéria→Assunto; contagens e progresso
+  estado.js                   estado compartilhado (avisos, estudados, sumário aberto, página atual)
+  texto.js                    mini-marcação (**negrito**, listas, fórmulas)
+  blocos.js                   um desenhista de HTML por tipo de bloco
+  componentes.js              peças de HTML compartilhadas pelas vistas
+  vistas.js                   uma função por tipo de página
+  sumario.js                  sumário lateral, busca e migalhas
+  eventos.js                  cliques, teclado, menu, flashcards e questões
+  app.js                      lê o endereço (#) e desenha a página
+  util.js                     funções puras e acesso ao localStorage
+servir.ps1                  Servidor estático local (PowerShell), porta 8766, sem cache.
+.editorconfig               Estilo comum de arquivos (UTF-8, LF, 2 espaços).
 .vscode/tasks.json          Tarefa do VS Code "Servir Papiro (porta 8766)".
 conteudos/
   indice.js                 Arquivos carregados, na ordem do sumário.
@@ -48,6 +70,12 @@ contexto/                   Pesquisas que originaram o material (só referência
 
 ### Modelo de conteúdo
 Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids vêm do título, sem acento, com hífens (`nucleo/matematica/aritmetica/regra-de-tres`). Tipos de bloco, marcação de texto e metadados estão em [conteudos/_MODELO.js](conteudos/_MODELO.js).
+
+### Convenções de código
+- **JavaScript:** módulos ES (`import`/`export`), `const`/`let`, funções pequenas com um papel só. Nomes em português, como no resto do projeto. Os arquivos de `conteudos/` **não** são módulos: continuam chamando o global `ESTUDO.*`.
+- **CSS:** uma declaração por linha; cada arquivo em `css/` cuida de um assunto. Cores e fontes só pelas variáveis de `css/base.css`. Evitar `style="..."` no HTML gerado, exceto para valores calculados (largura de barra, nível da árvore).
+- **Dependência entre módulos:** `util` ← `estado` ← `registro` ← `modelo` ← (`texto`, `blocos`, `componentes`, `vistas`, `sumario`) ← `eventos`, `app` ← `main`. Não criar ciclos.
+- **Testar sem framework:** abrir o servidor e navegar. Mexeu no motor? Confira início, seção, conteúdo, matéria, assunto com texto, assunto vazio e endereço inexistente; marque "estudado", vire um flashcard, responda uma questão e use a busca.
 
 ### Limitações conhecidas
 - A estrutura (sumário) está pronta, mas quase todos os assuntos ainda **não têm texto**. Só "Regra de três" está escrito.
