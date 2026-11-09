@@ -104,5 +104,6 @@ ESTUDO.textos([
   "conteudos/textos/aprofundamento/seguridade-social-2.js",
   "conteudos/textos/aprofundamento/financas-orcamento.js",
   "conteudos/textos/aprofundamento/conhecimentos-regionais.js",
-  "conteudos/textos/aprofundamento/curitiba.js"
+  "conteudos/textos/aprofundamento/curitiba.js",
+  "conteudos/textos/aprofundamento/parana.js"
 ]);
