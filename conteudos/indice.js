@@ -95,5 +95,6 @@ ESTUDO.textos([
 
   /* Aprofundamento dos Blocos A e C */
   "conteudos/textos/aprofundamento/lei-8112-1.js",
-  "conteudos/textos/aprofundamento/lei-8112-2.js"
+  "conteudos/textos/aprofundamento/lei-8112-2.js",
+  "conteudos/textos/aprofundamento/lei-9784.js"
 ]);
