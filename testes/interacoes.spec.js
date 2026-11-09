@@ -78,6 +78,18 @@ test('questão: acerto, erro e refazer', async ({ page }) => {
   await expect(questao.locator('.veredito')).toHaveText('Correta.');
 });
 
+test('bloco Python começa recolhido e abre na aba "Ver código em Python"', async ({ page }) => {
+  await abrir(page);
+  await abrir(page, await assuntoCom(page, 'python'));
+  const aba = page.locator('.codigo-aba').first();
+  await expect(aba).not.toHaveAttribute('open');
+  await expect(aba.locator('pre').first()).toBeHidden();
+  await aba.locator('summary').click();
+  await expect(aba).toHaveAttribute('open', '');
+  await expect(aba.locator('[data-acao="copiar-codigo"]')).toBeVisible();
+  await expect(aba.locator('pre').first()).toBeVisible();
+});
+
 test('busca acha assunto pelo título e Enter abre o primeiro resultado', async ({ page }) => {
   await abrir(page);
   await abrirMenuSePreciso(page);

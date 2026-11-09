@@ -102,7 +102,7 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 ### Limitações conhecidas
 - **Todos os 377 assuntos têm texto** (primeira versão, compacta), com 380 questões **autorais** no banco. Nenhuma questão de banca foi inventada: questões reais de prova só com fonte.
 - Muito do conteúdo foi escrito de memória: leis, datas e valores que mudam estão marcados `conferir`. A **legislação de Curitiba, do Paraná e da RMC** não tem os artigos locais: cada assunto traz o que a CF exige, a comparação com a Lei 8.112 e um roteiro do que ler na lei local.
-- **Python não roda no caderno**: o bloco `python` mostra código e saída (conferida rodando o código antes de publicar) e manda copiar para o Colab.
+- **Python não roda no caderno**: o bloco `python` mostra o código e a saída (conferida rodando o código antes de publicar) numa aba recolhida e manda copiar para o Colab.
 - Progresso, respostas, listas, simulados e horas ficam no `localStorage` de **cada navegador**. Para passar para outro aparelho: "Salvar agora" no perfil (cópia na nuvem) e "Restaurar" no outro.
 - Ranking, assistente, redação e perfil **só funcionam com o Papiro publicado como artefato** e a pessoa logada. No servidor local o menu os esconde.
 - As duas pessoas precisam de acesso de **colaborador** ao artefato para gravar no ranking e na cópia da nuvem.
@@ -123,12 +123,15 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 6. ~~Correção de redações~~ por texto ou foto da folha (`#redacao`).
 7. ~~Primeira versão dos textos de todos os assuntos~~, com SVG, demonstrações em Python e questões autorais; foto de perfil no ranking.
 
-**Próximos, nesta ordem:**
-8. **Conferir o conteúdo** marcado `conferir` (leis locais, valores anuais, regras de transição) e aprofundar os assuntos mais cobrados.
-9. **Planejador de estudos:** cronograma semanal sobre os conteúdos, com marcação do que foi cumprido. Plano-base em `contexto/conversa-material-de-estudo.md`.
-10. **Questões reais de prova** (com banca, ano e fonte) ao lado das autorais.
-11. **Revisão com flashcards** (blocos `flashcards` já existem no motor).
-12. **Anexo de PDF** no assistente e ranking de questões por semana.
+**Próximos, nesta ordem** (definida em 2026-11-09; o planejamento está só nesta lista, nada além do item 8 foi feito):
+8. ~~**Código Python recolhido**~~: o bloco `python` mostra só o texto; código e saída abrem na aba "Ver código em Python".
+9. **Limpeza e boas práticas** (com tempo limitado): remover o que não se usa, revisar convenções e padronizar. Aproveitar para **definir o formato JSON das provas** (item 13) e os campos novos de assunto (`prerequisitos`, `livros`). Fazer antes do conteúdo crescer, porque 10, 11 e 13 mexem em `modelo.js`, `blocos.js` e `vistas.js`.
+10. **Pré-requisitos:** campo `prerequisitos: [ids]` na estrutura e aviso na página do assunto. Os dados são preenchidos aos poucos. O planejador (11) usa esse campo.
+11. **Bloco de estudos (planejador):** a pessoa escolhe as matérias, define a ordem e marca o que cumpriu; avisa quando a ordem contraria um pré-requisito. Plano-base em `contexto/conversa-material-de-estudo.md`. Resolver antes a decisão sobre onde guardar os dados (seção 5).
+12. **Conteúdo aprofundado (trilha contínua):** mais exemplos, livros recomendados por tema, e conferência dos itens `conferir` (leis locais, valores anuais, regras de transição). Começar pelos assuntos mais cobrados do edital mais próximo.
+13. **Provas passadas** dos concursos dos Blocos A e C, com banca, ano, cargo e fonte, em **JSON estático carregado sob demanda** (opção A): `provas/indice.json` pequeno e um arquivo por prova em `provas/<banca>/<ano>-<cargo>.json`, lido por `fetch` só quando a prova é aberta. O `banco.js` passa a ler também desses arquivos. **O id de cada questão precisa ser estável**, para não perder o histórico de respostas. Se o volume ficar grande, migrar para o banco (`db`) do artefato. Antes de começar: listar os concursos e bancas do escopo (em `contexto/`) e estimar o número de provas.
+14. **Revisão com flashcards** (blocos `flashcards` já existem no motor).
+15. **Anexo de PDF** no assistente e ranking de questões por semana.
 
 ---
 
@@ -164,6 +167,7 @@ Conversa, documentação, commits e interface em **português do Brasil**, com a
 - [ ] **Como a amiga acessa?** Opções: (a) hospedar como site estático, por exemplo no GitHub Pages (grátis, sem servidor, mas o progresso continua local em cada navegador); (b) mandar a pasta e ela roda o servidor (exige Windows/PowerShell); (c) backend para sincronizar progresso (mais trabalho).
 - [x] **Publicar como Artefato do claude.ai?** Decidido: sim (publicado em 2026-11-09). Detalhes abaixo valem como registro. Dá, sem backend próprio: identidade (`user.id()`), banco compartilhado (`db`) para ranking e sincronização, e `sample` para o assistente e a redação (inclui imagens). Custo: o Papiro passa a depender da plataforma de artefatos e das regras dela, e as duas pessoas precisam de acesso à organização/compartilhamento. **Vínculo por data de nascimento:** não dá para verificar; seria só um dado autodeclarado, então a conta Claude (id do usuário) é o vínculo confiável e a data fica fora, salvo necessidade real.
 - [x] **Repositório remoto no GitHub:** decidido: público, em https://github.com/Dnascimento45/Papiro (2026-11-09). A pasta `contexto/` (conversas exportadas) foi tirada do histórico antes do primeiro envio e fica no `.gitignore`.
+- [ ] **Provas passadas e o repositório público:** o repositório é público e as provas têm direitos autorais das bancas. Opções: colocar `provas/` no `.gitignore` (como `contexto/`; mas então o artefato precisa receber os arquivos pela publicação) ou tornar o repositório privado. O uso é pessoal, sem fins monetários.
 - [ ] **Texto do conteúdo:** quem escreve e como conferimos as fontes?
 - [ ] **Tema claro** para leitura longa (hoje só existe o escuro)?
 - [ ] **Planejador:** os dados dele ficam no `localStorage` ou em arquivo exportável/importável (para o backup)?

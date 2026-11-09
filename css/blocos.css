@@ -208,7 +208,8 @@
   margin-top: 4px;
 }
 
-.exemplo summary {
+.exemplo summary,
+.codigo-aba summary {
   cursor: pointer;
   color: var(--shu-vivo);
   font-size: 14px;
@@ -218,16 +219,19 @@
   gap: 8px;
 }
 
-.exemplo summary::-webkit-details-marker {
+.exemplo summary::-webkit-details-marker,
+.codigo-aba summary::-webkit-details-marker {
   display: none;
 }
 
-.exemplo summary::before {
+.exemplo summary::before,
+.codigo-aba summary::before {
   content: "＋";
   font-size: 13px;
 }
 
-.exemplo details[open] summary::before {
+.exemplo details[open] summary::before,
+.codigo-aba[open] summary::before {
   content: "－";
 }
 
@@ -504,6 +508,14 @@ figcaption {
 }
 
 /* ---------- Demonstração em Python ---------- */
+.codigo-aba {
+  margin-top: 12px;
+}
+
+.codigo-aba[open] summary {
+  margin-bottom: 4px;
+}
+
 .codigo {
   margin-top: 12px;
   border: 1px solid var(--linha);

@@ -113,11 +113,13 @@ const BLOCOS = {
     const saida = b.saida != null
       ? `<div class="codigo saida"><div class="codigo-barra"><span>Saída</span></div><pre>${esc(String(b.saida).replace(/^\n+/, '').replace(/\s+$/, ''))}</pre></div>`
       : '';
-    return moldura('蛇', b.titulo || 'Demonstração em Python', 'python',
-      (b.texto ? prosa(b.texto) : '') +
+    // O código e a saída ficam recolhidos; só o texto e a legenda aparecem de início.
+    const aba = `<details class="codigo-aba"><summary>Ver código em Python</summary>` +
       `<div class="codigo"><div class="codigo-barra"><span>Python</span><button type="button" data-acao="copiar-codigo">Copiar código</button></div><pre><code>${realcarPython(codigo)}</code></pre></div>` +
-      saida + legenda(b.legenda) +
-      '<p class="codigo-nota">Para rodar: copie e cole no <a href="https://colab.research.google.com" target="_blank" rel="noopener">Google Colab</a> ou no Python do seu computador.</p>');
+      saida +
+      '<p class="codigo-nota">Para rodar: copie e cole no <a href="https://colab.research.google.com" target="_blank" rel="noopener">Google Colab</a> ou no Python do seu computador.</p></details>';
+    return moldura('蛇', b.titulo || 'Demonstração em Python', 'python',
+      (b.texto ? prosa(b.texto) : '') + legenda(b.legenda) + aba);
   },
 
   lei(b) {
