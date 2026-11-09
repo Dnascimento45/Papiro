@@ -38,6 +38,10 @@ export const CHAVES = {
   estudados: 'papiro.estudados',
   abertos: 'papiro.abertos',
   ultimo: 'papiro.ultimo',
+  respostas: 'papiro.respostas',
+  listas: 'papiro.listas',
+  simulados: 'papiro.simulados',
+  horas: 'papiro.horas',
 };
 
 /** localStorage que nunca lança erro (modo privado, armazenamento cheio…). */

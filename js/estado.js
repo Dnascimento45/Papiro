@@ -26,5 +26,5 @@ export function salvarExpandidos() {
   memoria.gravar(CHAVES.abertos, Array.from(expandidos));
 }
 
-/** Nó da página que está aberta agora (null = início). */
-export const pagina = { atual: null };
+/** Página aberta agora: `atual` é o nó da árvore; `rota` é o nome de uma página especial (questoes, horas…). */
+export const pagina = { atual: null, rota: null };

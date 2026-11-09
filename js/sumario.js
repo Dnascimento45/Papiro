@@ -1,7 +1,8 @@
-/* Sumário lateral (árvore), busca e migalhas de pão. */
+/* Sumário lateral: navegação das ferramentas, árvore de conteúdo e busca. */
 import { esc, fmt, norm } from './util.js';
 import { expandidos, pagina } from './estado.js';
 import { feito, href, kanjiDe, nos, raiz, real, todosAssuntos } from './modelo.js';
+import { ROTAS } from './rotas.js';
 
 const SETA = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
 const LIMITE_BUSCA = 80;
@@ -92,25 +93,12 @@ function resultadosBusca(q) {
   return `<ul class="res-busca">${itens.join('')}</ul>`;
 }
 
-/* ---------- Migalhas ---------- */
+/* ---------- Navegação das ferramentas ---------- */
 
-export function renderMigalhas(no) {
-  const el = document.getElementById('migalhas');
-  if (!no) {
-    el.innerHTML = '<span class="fim">Início</span>';
-    return;
-  }
-  const trilha = [];
-  for (let p = no; p; p = p.pai) trilha.unshift(p);
-
-  const partes = trilha.map((n, i) => {
-    const ultimo = i === trilha.length - 1;
-    const meio = i > 0 && !ultimo;
-    const sep = `<span class="sep${meio ? ' meio' : ''}" aria-hidden="true">・</span>`;
-    const item = ultimo
-      ? `<span class="fim" aria-current="page">${esc(n.titulo)}</span>`
-      : `<a class="${meio ? 'meio' : ''}" href="${href(n)}">${esc(n.titulo)}</a>`;
-    return sep + item;
-  });
-  el.innerHTML = `<a href="#">Início</a>${partes.join('')}`;
+/** Links fixos acima da árvore: Início e as páginas especiais. */
+export function renderNavegacao() {
+  const itens = [['', 'Início', '道'], ...Object.entries(ROTAS).map(([nome, r]) => [nome, r.rotulo, r.kanji])];
+  const ativa = pagina.rota || (pagina.atual ? null : '');
+  document.getElementById('navegacao').innerHTML = itens.map(([nome, rotulo, kanji]) =>
+    `<a href="#${nome}"${ativa === nome ? ' aria-current="page"' : ''}><span class="kj" aria-hidden="true">${kanji}</span>${rotulo}</a>`).join('');
 }

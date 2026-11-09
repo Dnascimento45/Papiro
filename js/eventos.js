@@ -1,6 +1,10 @@
 /* Interações do usuário: menu, busca, atalhos, marcação de estudado, flashcards e questões. */
 import { expandidos, pagina, salvarExpandidos } from './estado.js';
 import { alternarEstudado } from './modelo.js';
+import { registrarResposta } from './banco.js';
+import {
+  acoes as acoesQuestoes, aoFiltrar, formularios as formulariosQuestoes, marcarAlternativaSimulado, mudancas as mudancasQuestoes,
+} from './vistas-questoes.js';
 import { LETRAS } from './blocos.js';
 import { renderArvore } from './sumario.js';
 
@@ -29,6 +33,10 @@ function ligarSumario() {
       renderArvore();
       return;
     }
+    if (e.target.closest('a')) fecharMenu();
+  });
+
+  document.getElementById('navegacao').addEventListener('click', (e) => {
     if (e.target.closest('a')) fecharMenu();
   });
 
@@ -66,12 +74,10 @@ function ligarSumario() {
 
 /* ---------- Ações dentro da página ---------- */
 
-function aoMarcarEstudado(_alvo, render) {
+function aoMarcarEstudado(_el, { redesenhar }) {
   if (!pagina.atual) return;
   alternarEstudado(pagina.atual);
-  const y = window.scrollY;
-  render();
-  window.scrollTo(0, y);
+  redesenhar();
 }
 
 function aoCopiarCaminho(botao) {
@@ -115,6 +121,9 @@ function aoResponderQuestao(botao) {
   veredito.className = `veredito ${acertou ? 'ok' : 'nao'}`;
   veredito.textContent = acertou ? 'Correta.' : `Incorreta. A resposta é a letra ${LETRAS[certa]}.`;
   retorno.hidden = false;
+
+  const qid = alternativas.getAttribute('data-qid');
+  if (qid) registrarResposta(qid, acertou);
 }
 
 function aoRefazerQuestao(botao) {
@@ -126,24 +135,60 @@ function aoRefazerQuestao(botao) {
   questao.querySelector('.q-retorno').hidden = true;
 }
 
-/* Cada ação: seletor do elemento clicado -> o que fazer. */
-const ACOES = [
-  ['[data-acao="estudado"]', aoMarcarEstudado],
-  ['[data-acao="copiar"]', aoCopiarCaminho],
+/* Ações pelo nome: <button data-acao="nome">. */
+const ACOES_NOMEADAS = {
+  estudado: aoMarcarEstudado,
+  copiar: aoCopiarCaminho,
+  ...acoesQuestoes,
+};
+
+/* Ações pelo seletor do elemento clicado (componentes que não usam data-acao). */
+const ACOES_POR_SELETOR = [
+  ['[data-sim-alt]', marcarAlternativaSimulado],
   ['.carta', aoVirarCarta],
   ['[data-alt]', aoResponderQuestao],
   ['.q-refazer', aoRefazerQuestao],
 ];
 
 function ligarConteudo(render) {
-  document.getElementById('conteudo').addEventListener('click', (e) => {
-    for (const [seletor, acao] of ACOES) {
+  const conteudo = document.getElementById('conteudo');
+  /** Redesenha a página mantendo a posição de rolagem. */
+  const redesenhar = () => {
+    const y = window.scrollY;
+    render();
+    window.scrollTo(0, y);
+  };
+  const contexto = { render, redesenhar };
+
+  conteudo.addEventListener('click', (e) => {
+    const comAcao = e.target.closest('[data-acao]');
+    if (comAcao && ACOES_NOMEADAS[comAcao.getAttribute('data-acao')]) {
+      ACOES_NOMEADAS[comAcao.getAttribute('data-acao')](comAcao, contexto);
+      return;
+    }
+    for (const [seletor, acao] of ACOES_POR_SELETOR) {
       const alvo = e.target.closest(seletor);
       if (alvo) {
-        acao(alvo, render);
+        acao(alvo, contexto);
         return;
       }
     }
+  });
+
+  // Selects e campos de texto com data-filtro (banco) ou data-mudar (nome da ação).
+  const aoMudar = (e) => {
+    const el = e.target;
+    if (el.hasAttribute('data-filtro')) aoFiltrar(el);
+    else if (el.hasAttribute('data-mudar') && e.type === 'change') mudancasQuestoes[el.getAttribute('data-mudar')](el, contexto);
+  };
+  conteudo.addEventListener('input', aoMudar);
+  conteudo.addEventListener('change', aoMudar);
+
+  conteudo.addEventListener('submit', (e) => {
+    const tratar = formulariosQuestoes[e.target.getAttribute('data-form')];
+    if (!tratar) return;
+    e.preventDefault();
+    tratar(e.target, contexto);
   });
 }
 
