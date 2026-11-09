@@ -5,14 +5,18 @@ import { construir, kanjiDe, nos } from './modelo.js';
 import { montarBanco } from './banco.js';
 import { avisosHtml, vAssunto, vConteudo, vInicio, vMateria, vNaoEncontrado, vSecao } from './vistas.js';
 import { ROTAS } from './rotas.js';
-import { renderArvore, renderNavegacao } from './sumario.js';
+import { renderArvore, renderNavegacao, renderPerfilMini } from './sumario.js';
 import { ligarEventos } from './eventos.js';
 import { aoTique, ligarCronometro } from './horas.js';
 import { tiqueSimulado } from './vistas-questoes.js';
+import { aoPronta } from './plataforma.js';
+import { iniciarRank } from './rank.js';
 
 const VISTAS = { secao: vSecao, conteudo: vConteudo, materia: vMateria, assunto: vAssunto };
 
 let pronto = false;
+let geracao = 0;          // cresce a cada desenho; páginas assíncronas usam para saber se ainda estão abertas
+let limparPagina = null; // função de limpeza da página especial que está aberta
 
 /** "#a--b--c" -> "a/b/c". */
 function caminhoDoHash() {
@@ -36,6 +40,9 @@ function comAviso(montar) {
 }
 
 export function render() {
+  if (limparPagina) limparPagina();
+  limparPagina = null;
+  const minha = ++geracao;
   const caminho = caminhoDoHash();
   const [primeiro, ...resto] = caminho.split('/');
   const rota = ROTAS[primeiro] || null;
@@ -55,7 +62,9 @@ export function render() {
   document.getElementById('marca-dagua').textContent = rota ? rota.kanji : (no ? kanjiDe(no) : '道');
   document.title = `${rota ? `${rota.titulo} · ` : (no ? `${no.titulo} · ` : '')}Papiro`;
   renderNavegacao();
+  renderPerfilMini();
   renderArvore();
+  if (rota && rota.montar) limparPagina = rota.montar(document.getElementById('conteudo'), resto, () => minha === geracao);
 
   if (no && no.tipo === 'assunto') memoria.gravar(CHAVES.ultimo, no.caminho);
   salvarExpandidos();
@@ -74,6 +83,8 @@ export function iniciar() {
   aoProblema(render); // avisos que chegarem depois de pronto redesenham a página
   ligarEventos(render);
   ligarCronometro();
+  iniciarRank();
+  aoPronta(() => { renderNavegacao(); renderPerfilMini(); });
   aoTique(tiqueSimulado);
   render();
 }

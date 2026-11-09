@@ -1,0 +1,378 @@
+/* Recursos que dependem do artefato: ranking, perfil, assistente e redação; e o diálogo de confirmação. */
+
+/* ---------- Diálogo de confirmação ---------- */
+.dialogo-fundo {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, .6);
+}
+
+.dialogo {
+  width: min(420px, 100%);
+  padding: 22px;
+  border: 1px solid var(--linha-forte);
+  border-radius: 4px;
+  background: var(--sumi-2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .6);
+}
+
+.dialogo p {
+  margin: 0 0 20px;
+  font-size: 15.5px;
+  line-height: 1.6;
+}
+
+.dialogo-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.btn-perigo {
+  border-color: var(--shu);
+  background: var(--shu);
+  color: var(--washi);
+}
+
+.btn:disabled {
+  opacity: .5;
+  cursor: default;
+}
+
+/* ---------- Ranking ---------- */
+.rank-barra {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin: 24px 0 18px;
+}
+
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--linha-forte);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.seg-btn {
+  padding: 7px 14px;
+  border: 0;
+  background: var(--sumi-2);
+  color: var(--cinza);
+  font-size: 13.5px;
+  cursor: pointer;
+}
+
+.seg-btn + .seg-btn {
+  border-left: 1px solid var(--linha-forte);
+}
+
+.seg-btn[aria-pressed="true"] {
+  background: var(--shu-veu);
+  color: var(--washi);
+}
+
+.quadros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 22px;
+}
+
+.quadro h3 {
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+
+.quadro ol {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.quadro li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 12px 12px;
+  border: 1px solid var(--linha);
+  border-radius: 3px;
+  background: var(--sumi-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.quadro li.eu {
+  border-color: var(--shu-borda);
+}
+
+.quadro li i {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--shu);
+}
+
+.quadro .pos {
+  font-family: var(--f-titulo);
+  font-weight: 800;
+  color: var(--shu-vivo);
+}
+
+.quadro .nome {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quadro .nome small {
+  color: var(--cinza-2);
+}
+
+.quadro .valor {
+  color: var(--cinza);
+  font-size: 13.5px;
+}
+
+/* ---------- Perfil ---------- */
+.perfil-bloco {
+  max-width: 560px;
+}
+
+.perfil-conta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.perfil-conta b {
+  display: block;
+  font-size: 17px;
+}
+
+.perfil-conta small {
+  color: var(--cinza-2);
+  font-size: 13px;
+}
+
+/* ---------- Chat (assistente) e formulários grandes ---------- */
+.conversa {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0 18px;
+}
+
+.bolha {
+  max-width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  background: var(--sumi-2);
+}
+
+.bolha.eu {
+  justify-self: end;
+  border-color: var(--shu-borda);
+  background: var(--shu-veu);
+}
+
+.bolha.claude {
+  justify-self: stretch;
+}
+
+.bolha .prosa {
+  max-width: none;
+}
+
+.bolha-anexos {
+  display: block;
+  margin-top: 6px;
+  color: var(--cinza-2);
+  font-size: 12.5px;
+}
+
+.bolha-questoes {
+  display: grid;
+  gap: 18px;
+}
+
+.composer {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  background: var(--sumi-2);
+}
+
+.composer textarea,
+.composer input[type="text"],
+.composer input[type="number"],
+.composer select {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--linha-forte);
+  border-radius: 3px;
+  background: var(--sumi);
+  color: var(--washi);
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.composer textarea {
+  resize: vertical;
+  min-height: 90px;
+}
+
+.composer textarea:focus,
+.composer input:focus,
+.composer select:focus {
+  outline: none;
+  border-color: var(--shu-borda);
+}
+
+.composer label {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--cinza-2);
+}
+
+.composer label.btn {
+  display: inline-flex;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--washi);
+  cursor: pointer;
+}
+
+.composer input,
+.composer select,
+.composer textarea {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.composer-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.composer-acoes .btn-link {
+  margin-left: auto;
+}
+
+.form-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.anexos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.anexos:empty {
+  display: none;
+}
+
+.anexo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 2px 4px 2px 10px;
+  border: 1px solid var(--linha-forte);
+  border-radius: 2px;
+  font-size: 13px;
+  color: var(--cinza);
+  overflow-wrap: anywhere;
+}
+
+.anexo-chip button {
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: var(--cinza);
+  font-size: 16px;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.anexo-chip button:hover {
+  color: var(--shu-vivo);
+}
+
+/* ---------- Redação ---------- */
+.redacao-saida {
+  margin-top: 22px;
+  padding: 18px 20px;
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  background: var(--sumi-2);
+}
+
+.redacao-saida .prosa {
+  max-width: none;
+}
+
+.redacao-historico {
+  display: grid;
+  gap: 8px;
+}
+
+.redacao-item {
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  background: var(--sumi-2);
+}
+
+.redacao-item summary {
+  display: grid;
+  gap: 2px;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.redacao-item summary small {
+  color: var(--cinza-2);
+}
+
+.redacao-item .prosa {
+  max-width: none;
+  padding: 4px 18px 16px;
+}
+
+.composer .form-msg:empty,
+.perfil-bloco .form-msg:empty {
+  display: none;
+}
+
+#rank-corpo,
+#perfil-corpo,
+#assist-corpo,
+#redacao-corpo {
+  margin-top: 24px;
+}
+
+.conversa {
+  margin-top: 0;
+}

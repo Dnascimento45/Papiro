@@ -2,7 +2,7 @@
    O tempo é somado por dia e por matéria (a que estiver aberta no momento).
    Fica só neste navegador (localStorage), como o resto do progresso. */
 import { CHAVES, esc, memoria } from './util.js';
-import { pagina } from './estado.js';
+import { dadosMudaram, pagina, trava } from './estado.js';
 import { nos } from './modelo.js';
 import { cabecalhoRota, barra, numeros } from './componentes.js';
 
@@ -50,6 +50,20 @@ export function duracao(seg) {
 const somaDia = (dia) => Object.values(dados[dia] || {}).reduce((s, v) => s + v, 0);
 const hoje = () => somaDia(chaveDia());
 
+/** Totais para o ranking: tudo, e a semana atual (desde segunda-feira). */
+export function totaisHoras() {
+  const segunda = inicioDaSemana();
+  let total = 0;
+  let semana = 0;
+  Object.keys(dados).forEach((dia) => {
+    const seg = somaDia(dia);
+    const [a, m, d] = dia.split('-').map(Number);
+    total += seg;
+    if (new Date(a, m - 1, d) >= segunda) semana += seg;
+  });
+  return { total, semana, semanaDesde: chaveDia(segunda) };
+}
+
 /* ---------- Registro do tempo ---------- */
 
 /** Onde o tempo cai agora: a matéria aberta, o conteúdo aberto ou um balde geral. */
@@ -64,8 +78,10 @@ function chaveAtual() {
 }
 
 function gravar() {
+  if (trava.gravacao) return;
   memoria.gravar(CHAVES.horas, dados);
   semGravar = 0;
+  dadosMudaram();
 }
 
 function somar(segundos) {

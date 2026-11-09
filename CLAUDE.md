@@ -40,6 +40,7 @@ css/                        Estilos, um arquivo por responsabilidade:
   paginas.css                 início, seção, conteúdo, matéria e assunto
   blocos.css                  blocos de conteúdo (texto, fórmula, questão…)
   estudo.css                  banco de questões, listas, simulados e horas
+  plataforma.css              ranking, perfil, assistente, redação e diálogo de confirmação
   responsivo.css              media queries
 js/                         Motor do caderno, em módulos ES (sem build):
   main.js                     ponto de entrada; expõe window.ESTUDO e carrega conteudos/indice.js
@@ -52,10 +53,17 @@ js/                         Motor do caderno, em módulos ES (sem build):
   vistas.js                   uma função por tipo de página
   sumario.js                  navegação das ferramentas, árvore de conteúdo e busca
   eventos.js                  cliques, teclado, menu, flashcards e questões
-  rotas.js                    páginas especiais: #questoes, #listas, #simulados, #horas
+  rotas.js                    páginas especiais: #questoes, #listas, #simulados, #horas, #rank, #assistente, #redacao, #perfil
   banco.js                    banco de questões (montado dos blocos questao), respostas, listas, simulados
   vistas-questoes.js          páginas e ações do banco, das listas e dos simulados
   horas.js                    cronômetro do menu e página de horas (por dia e por matéria)
+  plataforma.js               acesso ao artefato (conta, banco compartilhado, Claude); tudo null fora dele
+  rank.js                     ranking: envia só os meus números (rank/<id>) e desenha os quadros
+  perfil.js                   perfil, apelido e cópia do progresso na nuvem
+  claude.js                   erros em português e leitura de anexos para o assistente e a redação
+  assistente.js               chat de dúvidas, com ferramenta que busca questões no banco
+  redacao.js                  correção de redação por texto ou foto
+  dialogo.js                  confirmação dentro da página (confirm() não funciona no artefato)
   app.js                      lê o endereço (#) e desenha a página
   util.js                     funções puras e acesso ao localStorage
 servir.ps1                  Servidor estático local (PowerShell), porta 8766, sem cache.
@@ -80,11 +88,15 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 - **JavaScript:** módulos ES (`import`/`export`), `const`/`let`, funções pequenas com um papel só. Nomes em português, como no resto do projeto. Os arquivos de `conteudos/` **não** são módulos: continuam chamando o global `ESTUDO.*`.
 - **CSS:** uma declaração por linha; cada arquivo em `css/` cuida de um assunto. Cores e fontes só pelas variáveis de `css/base.css`. Evitar `style="..."` no HTML gerado, exceto para valores calculados (largura de barra, nível da árvore).
 - **Dependência entre módulos:** `util` ← `estado` ← `registro` ← `modelo` ← (`texto`, `blocos`, `componentes`, `vistas`, `sumario`) ← `eventos`, `app` ← `main`. Não criar ciclos.
+- **No artefato, `confirm()`, `alert()` e `prompt()` não funcionam** (devolvem sempre "não"): use `confirmar()` de `js/dialogo.js`. Recursos do artefato sempre passam por `js/plataforma.js` e precisam se esconder quando forem `null`.
 - **Testar sem framework:** abrir o servidor e navegar. Mexeu no motor? Confira início, seção, conteúdo, matéria, assunto com texto, assunto vazio e endereço inexistente; marque "estudado", vire um flashcard, responda uma questão e use a busca.
 
 ### Limitações conhecidas
 - A estrutura (sumário) está pronta, mas quase todos os assuntos ainda **não têm texto**. Só "Regra de três" está escrito, e por isso o **banco tem só 3 questões**. Ele cresce a cada bloco `questao` escrito (com fonte; não inventar questão de banca).
-- Progresso, respostas, listas, simulados e horas ficam no `localStorage` de **cada navegador**: não passam de um aparelho para outro nem entre as duas pessoas. Por isso ainda não existe ranking.
+- Progresso, respostas, listas, simulados e horas ficam no `localStorage` de **cada navegador**. Para passar para outro aparelho: "Salvar agora" no perfil (cópia na nuvem) e "Restaurar" no outro.
+- Ranking, assistente, redação e perfil **só funcionam com o Papiro publicado como artefato** e a pessoa logada. No servidor local o menu os esconde.
+- As duas pessoas precisam de acesso de **colaborador** ao artefato para gravar no ranking e na cópia da nuvem.
+- Não existe data de nascimento no perfil: o vínculo é a própria conta do Claude, que a plataforma verifica. Uma data digitada seria só autodeclarada.
 - Visual somente escuro, herdado do Dojo.
 - Não há planejador de estudos.
 
@@ -92,18 +104,19 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 
 ## 3. Backlog (em ordem de prioridade)
 
-**Feito (local, sem backend):**
+**Feito:**
 1. ~~Banco de questões, listas e simulados~~ (`#questoes`, `#listas`, `#simulados`).
 2. ~~Contador de horas por dia e por matéria~~ (cronômetro no menu, `#horas`).
+3. ~~Publicado como Artefato~~ + perfil vinculado à conta do Claude (`#perfil`), com cópia do progresso na nuvem.
+4. ~~Ranking~~ de horas e questões (`#rank`), só para quem escolhe participar.
+5. ~~Assistente de dúvidas~~ com anexo de imagens e arquivos de texto, que busca questões no banco (`#assistente`).
+6. ~~Correção de redações~~ por texto ou foto da folha (`#redacao`).
 
 **Próximos, nesta ordem:**
-3. **Decisão de plataforma** (ver §5): publicar o Papiro como Artefato do claude.ai. É pré-requisito de tudo abaixo, porque só lá existem identidade de usuário, banco compartilhado e a chamada ao Claude. Perfil/vínculo com a conta Claude entra aqui.
-4. **Ranking** de horas estudadas e questões respondidas. Precisa do banco compartilhado (item 3). As duas fontes de dados já estão prontas (`papiro.horas`, `papiro.respostas`).
-5. **Assistente de dúvidas** com anexo de imagens (e mostrar questões do banco). Usa a capacidade `sample` do Artefato. Anexo de PDF/documento: confirmar o que é suportado antes de prometer.
-6. **Correção de redações** com foto/imagem, também via `sample`.
 7. **Planejador de estudos:** cronograma semanal sobre os conteúdos, com marcação do que foi cumprido. Plano-base em `contexto/conversa-material-de-estudo.md`.
-8. **Escrever os textos e as questões** dos assuntos, começando pelo Núcleo Comum, com fonte e conferência. É o que mais enche o banco de questões.
+8. **Escrever os textos e as questões** dos assuntos, começando pelo Núcleo Comum, com fonte e conferência. É o que mais enche o banco de questões (hoje 3) e dá o que o assistente e os simulados usam.
 9. **Revisão com flashcards** (blocos `flashcards` já existem no motor).
+10. **Anexo de PDF** no assistente (hoje só imagens e arquivos de texto) e ranking de questões por semana.
 
 ---
 
@@ -137,7 +150,7 @@ Conversa, documentação, commits e interface em **português do Brasil**, com a
 
 ## 5. Decisões em aberto
 - [ ] **Como a amiga acessa?** Opções: (a) hospedar como site estático, por exemplo no GitHub Pages (grátis, sem servidor, mas o progresso continua local em cada navegador); (b) mandar a pasta e ela roda o servidor (exige Windows/PowerShell); (c) backend para sincronizar progresso (mais trabalho).
-- [ ] **Publicar como Artefato do claude.ai? (decide o item 3 do backlog).** Dá, sem backend próprio: identidade (`user.id()`), banco compartilhado (`db`) para ranking e sincronização, e `sample` para o assistente e a redação (inclui imagens). Custo: o Papiro passa a depender da plataforma de artefatos e das regras dela, e as duas pessoas precisam de acesso à organização/compartilhamento. **Vínculo por data de nascimento:** não dá para verificar; seria só um dado autodeclarado, então a conta Claude (id do usuário) é o vínculo confiável e a data fica fora, salvo necessidade real.
+- [x] **Publicar como Artefato do claude.ai?** Decidido: sim (publicado em 2026-11-09). Detalhes abaixo valem como registro. Dá, sem backend próprio: identidade (`user.id()`), banco compartilhado (`db`) para ranking e sincronização, e `sample` para o assistente e a redação (inclui imagens). Custo: o Papiro passa a depender da plataforma de artefatos e das regras dela, e as duas pessoas precisam de acesso à organização/compartilhamento. **Vínculo por data de nascimento:** não dá para verificar; seria só um dado autodeclarado, então a conta Claude (id do usuário) é o vínculo confiável e a data fica fora, salvo necessidade real.
 - [ ] **Repositório remoto no GitHub:** público ou privado? O GitHub Pages grátis exige repositório público, ou plano pago para privado. A pasta `contexto/` tem conversas exportadas, então revisar antes de publicar.
 - [ ] **Texto do conteúdo:** quem escreve e como conferimos as fontes?
 - [ ] **Tema claro** para leitura longa (hoje só existe o escuro)?

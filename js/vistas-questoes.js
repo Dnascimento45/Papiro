@@ -10,6 +10,7 @@ import {
 } from './banco.js';
 import { cabecalhoRota, numeros } from './componentes.js';
 import { duracao, relogio } from './horas.js';
+import { confirmar } from './dialogo.js';
 
 const LIMITE_CARTOES = 40;
 const ROTULO_STATUS = { nova: 'Nova', certa: 'Acertou', errada: 'Errou' };
@@ -32,7 +33,7 @@ function filtrar() {
 }
 
 /** Cartão de uma questão: o bloco de questão + trilha e ações (adicionar à lista ou remover dela). */
-function cartaoQuestao(q, { lista = null } = {}) {
+export function cartaoQuestao(q, { lista = null } = {}) {
   const status = statusDe(q.id);
   let acao;
   if (lista) {
@@ -269,9 +270,9 @@ function vResultado(id) {
 
 /** Cliques em elementos com data-acao="nome". Cada ação recebe (elemento, { redesenhar }). */
 export const acoes = {
-  'excluir-lista': (el, { redesenhar }) => {
+  'excluir-lista': async (el, { redesenhar }) => {
     const lista = listaPorId(el.getAttribute('data-lista'));
-    if (lista && confirm(`Excluir a lista "${lista.nome}"? As questões continuam no banco.`)) {
+    if (lista && await confirmar(`Excluir a lista "${lista.nome}"? As questões continuam no banco.`, { ok: 'Excluir', perigo: true })) {
       removerLista(lista.id);
       redesenhar();
     }
@@ -287,15 +288,15 @@ export const acoes = {
     iniciarSimulado({ pool, quantidade: pool.length, limiteSeg: 0, escopo: `Lista: ${lista.nome}` });
     location.hash = '#simulados--fazer';
   },
-  'finalizar-simulado': () => {
+  'finalizar-simulado': async () => {
     const s = simuladoAtual();
     if (!s) return;
     const faltam = s.qids.filter((id) => s.respostas[id] == null).length;
-    if (faltam && !confirm(`Faltam ${faltam} questões sem resposta. Finalizar mesmo assim?`)) return;
+    if (faltam && !(await confirmar(`Faltam ${faltam} questões sem resposta. Finalizar mesmo assim?`, { ok: 'Finalizar' }))) return;
     concluirSimulado();
   },
-  'abandonar-simulado': (el, { redesenhar }) => {
-    if (!confirm('Descartar o simulado em andamento? As respostas serão perdidas.')) return;
+  'abandonar-simulado': async (el, { redesenhar }) => {
+    if (!(await confirmar('Descartar o simulado em andamento? As respostas serão perdidas.', { ok: 'Descartar', perigo: true }))) return;
     abandonarSimulado();
     if (location.hash === '#simulados') redesenhar();
     else location.hash = '#simulados';

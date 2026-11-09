@@ -42,6 +42,11 @@ export const CHAVES = {
   listas: 'papiro.listas',
   simulados: 'papiro.simulados',
   horas: 'papiro.horas',
+  perfil: 'papiro.perfil',
+  rankUltimo: 'papiro.rankUltimo',
+  backupEm: 'papiro.backupEm',
+  assistente: 'papiro.assistente',
+  redacoes: 'papiro.redacoes',
 };
 
 /** localStorage que nunca lança erro (modo privado, armazenamento cheio…). */

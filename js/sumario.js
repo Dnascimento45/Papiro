@@ -3,6 +3,7 @@ import { esc, fmt, norm } from './util.js';
 import { expandidos, pagina } from './estado.js';
 import { feito, href, kanjiDe, nos, raiz, real, todosAssuntos } from './modelo.js';
 import { ROTAS } from './rotas.js';
+import { plat, temIdentidade } from './plataforma.js';
 
 const SETA = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
 const LIMITE_BUSCA = 80;
@@ -97,8 +98,23 @@ function resultadosBusca(q) {
 
 /** Links fixos acima da árvore: Início e as páginas especiais. */
 export function renderNavegacao() {
-  const itens = [['', 'Início', '道'], ...Object.entries(ROTAS).map(([nome, r]) => [nome, r.rotulo, r.kanji])];
+  const visiveis = Object.entries(ROTAS).filter(([, r]) => !r.oculta && (!r.disponivel || r.disponivel()));
+  const itens = [['', 'Início', '道'], ...visiveis.map(([nome, r]) => [nome, r.rotulo, r.kanji])];
   const ativa = pagina.rota || (pagina.atual ? null : '');
   document.getElementById('navegacao').innerHTML = itens.map(([nome, rotulo, kanji]) =>
     `<a href="#${nome}"${ativa === nome ? ' aria-current="page"' : ''}><span class="kj" aria-hidden="true">${kanji}</span>${rotulo}</a>`).join('');
+}
+
+/** Atalho da conta no rodapé do menu (só aparece quando há uma conta vinculada). */
+export function renderPerfilMini() {
+  const el = document.getElementById('perfil-mini');
+  if (!el) return;
+  if (!temIdentidade()) {
+    el.hidden = true;
+    return;
+  }
+  const ativo = pagina.rota === 'perfil';
+  el.hidden = false;
+  if (ativo) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
+  el.innerHTML = `<img class="avatar" src="${esc(plat.eu.avatarUrl)}" alt="" width="22" height="22"><span>${esc(plat.eu.name || 'Meu perfil')}</span>`;
 }
