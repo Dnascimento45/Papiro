@@ -9,9 +9,16 @@ import {
 import { barra, cabecalhoRota, numeros } from './componentes.js';
 import { confirmar } from './dialogo.js';
 
+/** Lê o plano salvo; qualquer formato inesperado (null, texto, lista solta) vira plano vazio,
+    para nunca travar o caderno nem impedir de salvar de novo. */
+function lerPlano() {
+  const salvo = memoria.ler(CHAVES.plano, null);
+  const lista = salvo && typeof salvo === 'object' && Array.isArray(salvo.materias) ? salvo.materias : [];
+  return { materias: lista.filter((c) => typeof c === 'string') };
+}
+
 /** { materias: [caminho da matéria, ...] } na ordem escolhida. */
-const plano = memoria.ler(CHAVES.plano, { materias: [] });
-if (!Array.isArray(plano.materias)) plano.materias = [];
+const plano = lerPlano();
 const salvar = () => memoria.gravar(CHAVES.plano, plano);
 
 /** Matérias do plano que existem no caderno (uma matéria renomeada some sem quebrar nada). */
