@@ -47,6 +47,11 @@ desktop.ini
 # Pesquisas e conversas exportadas: ficam só no computador (o repositório é público)
 contexto/
 
+# Questões de provas: direitos autorais das bancas. Ficam no computador e vão para o
+# artefato só na publicação. Gerar de novo: npm run questoes (lê a pasta dos CSVs).
+questoes/
+Banco de dados de questoes/
+
 # Testes (Playwright): resultados e relatório são gerados a cada rodada
 testes/resultados/
 testes/relatorio/
