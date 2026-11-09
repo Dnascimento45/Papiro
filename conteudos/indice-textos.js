@@ -127,6 +127,9 @@ ESTUDO.indiceTextos({
   ],
   "conteudos/textos/aprofundamento/parana.js": [
     "bloco-c/parana"
+  ],
+  "conteudos/textos/aprofundamento/regiao-metropolitana.js": [
+    "bloco-c/regiao-metropolitana"
   ]
 }, {
   "bloco-a/arquivologia/arquivamento-e-preservacao/conservacao-e-preservacao-de-documentos": "Agentes de deterioração, condições ambientais e a diferença entre conservar e restaurar.",
