@@ -47,6 +47,7 @@ export const CHAVES = {
   backupEm: 'papiro.backupEm',
   assistente: 'papiro.assistente',
   redacoes: 'papiro.redacoes',
+  plano: 'papiro.plano',
 };
 
 /** localStorage que nunca lança erro (modo privado, armazenamento cheio…). */

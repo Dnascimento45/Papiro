@@ -5,6 +5,9 @@ import { api, aoTerminarCarga, carregarIndice, vigiarErros, vigiarIndice } from 
 import { iniciar } from './app.js';
 import { iniciarPlataforma } from './plataforma.js';
 
+/* Garante o idioma mesmo quando a página é embrulhada pelo artefato. */
+document.documentElement.lang = 'pt-BR';
+
 window.ESTUDO = api;
 aoTerminarCarga(iniciar);
 vigiarErros();

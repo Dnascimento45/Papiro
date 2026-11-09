@@ -1,7 +1,7 @@
 /* Componentes de HTML compartilhados pelas vistas (páginas). */
 import { esc, fmt } from './util.js';
 import { inline } from './texto.js';
-import { feito, href, kanjiDe, real, temConteudo } from './modelo.js';
+import { contagem, cumprido, feito, href, kanjiDe, real, temConteudo } from './modelo.js';
 
 export function chips(lista, classe = '') {
   if (!Array.isArray(lista) || !lista.length) return '';
@@ -52,6 +52,30 @@ export const legendaLista =
   '<span><i class="ponto cheio"></i> com conteúdo</span>' +
   '<span><i class="carimbo">済</i> estudado</span>' +
   '</div>';
+
+/** Item de uma lista de pré-requisitos: link, de onde ele é e se já foi cumprido. */
+function itemPrerequisito(no) {
+  const ok = cumprido(no);
+  let onde = real(no.pai).titulo;
+  if (no.tipo !== 'assunto') {
+    const ct = contagem(no);
+    onde += ` · ${ct.feitos}/${ct.total} assuntos`;
+  }
+  return `<li${ok ? ' class="ok"' : ''}><a href="${href(no)}">${esc(no.titulo)}</a><small>${esc(onde)}</small>` +
+    (ok ? '<span class="carimbo" aria-hidden="true">済</span><span class="sr-only">(estudado)</span>' : '') + '</li>';
+}
+
+/** Quadro "Pré-requisitos" de um assunto ou de uma matéria (vazio se não houver). */
+export function prerequisitosHtml(lista, { de = 'deste assunto' } = {}) {
+  if (!lista.length) return '';
+  const faltam = lista.filter((n) => !cumprido(n)).length;
+  const situacao = faltam
+    ? `Convém estudar antes ${de}. Falta${faltam > 1 ? 'm' : ''} ${faltam} de ${lista.length}.`
+    : `Você já estudou a base ${de}.`;
+  return `<aside class="prereq${faltam ? '' : ' ok'}" aria-label="Pré-requisitos">` +
+    `<p class="prereq-cab"><span class="kj" aria-hidden="true">前</span><b>Pré-requisitos</b><span>${situacao}</span></p>` +
+    `<ul>${lista.map(itemPrerequisito).join('')}</ul></aside>`;
+}
 
 /** Links "anterior / próximo" no fim da página. */
 export function navegar(anterior, proximo, rotuloAnterior, rotuloProximo) {

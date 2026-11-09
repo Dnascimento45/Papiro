@@ -4,11 +4,12 @@ import { inline } from './texto.js';
 import { problemas } from './estado.js';
 import { reiniciarQuestoes, renderBloco } from './blocos.js';
 import {
-  assuntosDe, contagem, feito, href, kanjiDe, nos, raiz, real, secaoDe, temConteudo, todosAssuntos,
+  assuntosDe, contagem, feito, href, kanjiDe, nos, prerequisitosDaMateria, raiz, real, secaoDe, temConteudo, todosAssuntos,
 } from './modelo.js';
 import {
-  barra, cabecalho, chips, conferirHtml, legendaLista, linhaAssunto, navegar, notaHtml, numeros,
+  barra, cabecalho, chips, conferirHtml, legendaLista, linhaAssunto, navegar, notaHtml, numeros, prerequisitosHtml,
 } from './componentes.js';
+import { botaoPlano, proximoDoPlano } from './plano.js';
 
 const ASSUNTO_MODELO = 'nucleo/matematica/aritmetica/regra-de-tres';
 const MAPA = [['Seção', 'Núcleo Comum'], ['Conteúdo', 'Matemática'], ['Matéria', 'Aritmética'], ['Assunto', 'Regra de três']];
@@ -24,13 +25,18 @@ export function vInicio() {
   const todos = todosAssuntos();
   const nConteudos = [...nos.values()].filter((n) => n.tipo === 'conteudo' && !n.ref).length;
   const ultimo = nos.get(memoria.ler(CHAVES.ultimo, ''));
+  const proximo = proximoDoPlano();
+  const atalhos = [
+    ultimo && ultimo.tipo === 'assunto' ? `<a class="continuar" href="${href(ultimo)}"><span>Continuar</span>${esc(ultimo.titulo)}</a>` : '',
+    proximo && proximo !== ultimo ? `<a class="continuar" href="${href(proximo)}"><span>Próximo do plano</span>${esc(proximo.titulo)}</a>` : '',
+  ].join('');
 
   const topo =
     '<section class="hero"><div><p class="sobre">Concursos de nível médio · Paraná e federal</p>' +
     '<h1>Papiro</h1>' +
     '<p class="lead">O edital-base dos blocos A e C num só lugar. Cada assunto tem o seu endereço: seção, conteúdo, matéria e assunto.</p>' +
     numeros([[raiz.length, 'seções'], [nConteudos, 'conteúdos'], [todos.length, 'assuntos'], [todos.filter(feito).length, 'estudados']]) +
-    (ultimo && ultimo.tipo === 'assunto' ? `<a class="continuar" href="${href(ultimo)}"><span>Continuar</span>${esc(ultimo.titulo)}</a>` : '') +
+    (atalhos ? `<div class="atalhos">${atalhos}</div>` : '') +
     '</div><div class="hero-kanji" aria-hidden="true">道<small>DŌ · CAMINHO</small></div></section>';
 
   const cartoes = raiz.map((s) => {
@@ -93,9 +99,11 @@ export function vConteudo(conteudo) {
 export function vMateria(materia) {
   const conteudo = materia.pai;
   const i = conteudo.filhos.indexOf(materia);
-  const extra = resumoNumeros(contagem(materia), []) + notaHtml(materia.def.nota) + conferirHtml(materia.def.conferir);
+  const extra = resumoNumeros(contagem(materia), []) + `<div class="ferramentas">${botaoPlano(materia)}</div>` +
+    notaHtml(materia.def.nota) + conferirHtml(materia.def.conferir);
 
   return cabecalho(materia, esc(conteudo.titulo), extra) +
+    prerequisitosHtml(prerequisitosDaMateria(materia), { de: 'desta matéria' }) +
     `<ul class="lista-assuntos">${materia.filhos.map((a, k) => linhaAssunto(a, k + 1)).join('')}</ul>` + legendaLista +
     navegar(conteudo.filhos[i - 1], conteudo.filhos[i + 1], 'Matéria anterior', 'Próxima matéria');
 }
@@ -108,6 +116,24 @@ function fontesHtml(fontes) {
     ? `<li>${inline(f)}</li>`
     : `<li><a href="${esc(f.url)}" target="_blank" rel="noopener">${esc(f.titulo || f.url)}</a></li>`)).join('');
   return `<section class="fontes"><h2>Fontes</h2><ul>${itens}</ul></section>`;
+}
+
+/** Livros para aprofundar: texto livre ou { titulo, autor, nota, url }. */
+function livrosHtml(livros) {
+  if (!Array.isArray(livros) || !livros.length) return '';
+  const itens = livros.map((l) => {
+    if (typeof l === 'string') return `<li>${inline(l)}</li>`;
+    const titulo = l.url ? `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.titulo)}</a>` : `<b>${esc(l.titulo)}</b>`;
+    return `<li>${titulo}${l.autor ? `, de ${esc(l.autor)}` : ''}${l.nota ? `. ${inline(l.nota)}` : ''}</li>`;
+  }).join('');
+  return `<section class="fontes"><h2>Para aprofundar</h2><ul>${itens}</ul></section>`;
+}
+
+/** Assuntos que usam este como base. */
+function dependentesHtml(assunto) {
+  if (!assunto.dependentes.length) return '';
+  const itens = assunto.dependentes.map((d) => `<li><a href="${href(d)}">${esc(d.titulo)}</a> <small>${esc(real(d.pai.pai).titulo)}</small></li>`).join('');
+  return `<section class="fontes"><h2>Este assunto é base para</h2><ul>${itens}</ul></section>`;
 }
 
 function assuntoVazio(caminho) {
@@ -129,7 +155,8 @@ export function vAssunto(assunto) {
     `<div class="ferramentas"><button type="button" class="btn${estudado ? ' feito' : ''}" data-acao="estudado" aria-pressed="${estudado}"><span class="kj">済</span>${estudado ? 'Estudado' : 'Marcar como estudado'}</button>` +
     (d.incidencia ? `<span class="incid">Incidência <b>${esc(d.incidencia)}</b></span>` : '') + '</div>' +
     notaHtml(d.nota) + conferirHtml(d.conferir) +
-    `</div><div class="cab-kanji" aria-hidden="true">${esc(kanjiDe(assunto))}</div></header>`;
+    `</div><div class="cab-kanji" aria-hidden="true">${esc(kanjiDe(assunto))}</div></header>` +
+    prerequisitosHtml(assunto.prerequisitos);
 
   if (temConteudo(assunto)) {
     reiniciarQuestoes();
@@ -137,7 +164,7 @@ export function vAssunto(assunto) {
   } else {
     html += assuntoVazio(assunto.caminho);
   }
-  return html + fontesHtml(d.fontes) + navegar(lista[i - 1], lista[i + 1], 'Assunto anterior', 'Próximo assunto');
+  return html + livrosHtml(d.livros) + dependentesHtml(assunto) + fontesHtml(d.fontes) + navegar(lista[i - 1], lista[i + 1], 'Assunto anterior', 'Próximo assunto');
 }
 
 /* ---------- Outras ---------- */

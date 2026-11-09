@@ -75,6 +75,20 @@
   .formula div {
     font-size: 18px;
   }
+  .plano-item {
+    grid-template-columns: 26px minmax(0,1fr);
+    padding: 12px;
+  }
+  .plano-acoes {
+    grid-column: 2;
+  }
+  .plano-btn {
+    width: 40px;
+    height: 40px;
+  }
+  .plano-opcoes li {
+    padding-left: 8px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,4 +1,4 @@
-/* Ferramentas de estudo: banco de questões, listas, simulados e horas. */
+/* Ferramentas de estudo: plano, banco de questões, listas, simulados e horas. */
 
 /* ---------- Filtros e formulários ---------- */
 .filtros,
@@ -332,4 +332,171 @@
   .sim-barra {
     top: 56px;
   }
+}
+
+/* ---------- Plano de estudos ---------- */
+.plano-lista {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plano-item {
+  display: grid;
+  grid-template-columns: 30px minmax(0,1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 14px 16px;
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  background: var(--sumi-2);
+}
+
+.plano-item.concluida {
+  border-color: var(--shu-borda);
+}
+
+.plano-item .n {
+  padding-top: 2px;
+  font-size: 13px;
+  color: var(--cinza-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.plano-info > a {
+  color: var(--washi);
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.plano-info > a:hover {
+  text-decoration: underline;
+}
+
+.plano-info > small {
+  display: block;
+  color: var(--cinza-2);
+  font-size: 12.5px;
+}
+
+.plano-progresso {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 12.5px;
+  color: var(--cinza);
+}
+
+.plano-avisos {
+  display: grid;
+  gap: 4px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13.5px;
+  color: var(--cinza);
+}
+
+.plano-avisos li::before {
+  content: "前 ";
+  color: var(--cinza-2);
+}
+
+.plano-avisos li.atraso {
+  color: var(--shu-vivo);
+}
+
+.plano-avisos li.atraso::before {
+  content: "注 ";
+  color: var(--shu-vivo);
+}
+
+.plano-avisos a {
+  color: inherit;
+}
+
+.plano-acoes {
+  display: flex;
+  gap: 6px;
+}
+
+.plano-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--linha-forte);
+  border-radius: 3px;
+  background: var(--sumi);
+  color: var(--washi);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.plano-btn:hover:not(:disabled) {
+  border-color: var(--shu-borda);
+}
+
+.plano-btn:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
+.plano-secao {
+  margin: 22px 0 8px;
+  font-size: 13px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--cinza-2);
+  font-family: var(--f-texto);
+  font-weight: 500;
+}
+
+.plano-conteudo {
+  border-bottom: 1px solid var(--linha);
+}
+
+.plano-conteudo summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+  padding: 12px 4px;
+  cursor: pointer;
+  font-size: 15.5px;
+  color: var(--washi);
+}
+
+.plano-conteudo summary small {
+  color: var(--cinza-2);
+  font-size: 12.5px;
+}
+
+.plano-opcoes {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+}
+
+.plano-opcoes li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 4px 8px 18px;
+  border-top: 1px dashed var(--linha);
+  font-size: 14.5px;
+}
+
+.plano-opcoes li small {
+  display: block;
+  color: var(--cinza-2);
+  font-size: 12px;
+}
+
+.plano-opcoes .btn {
+  padding: 6px 12px;
+  font-size: 13px;
 }

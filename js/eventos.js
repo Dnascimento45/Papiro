@@ -5,6 +5,7 @@ import { registrarResposta } from './banco.js';
 import {
   acoes as acoesQuestoes, aoFiltrar, formularios as formulariosQuestoes, marcarAlternativaSimulado, mudancas as mudancasQuestoes,
 } from './vistas-questoes.js';
+import { acoes as acoesPlano } from './plano.js';
 import { LETRAS } from './blocos.js';
 import { renderArvore } from './sumario.js';
 
@@ -145,6 +146,7 @@ const ACOES_NOMEADAS = {
   copiar: aoCopiarCaminho,
   'copiar-codigo': aoCopiarCodigo,
   ...acoesQuestoes,
+  ...acoesPlano,
 };
 
 /* Ações pelo seletor do elemento clicado (componentes que não usam data-acao). */

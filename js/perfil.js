@@ -10,7 +10,7 @@ import { cabecalhoRota } from './componentes.js';
 
 /* O que entra na cópia. Cada item é guardado como texto JSON, para não depender
    dos nomes das chaves (que têm "/" e "#"). */
-const ITENS_BACKUP = ['estudados', 'respostas', 'listas', 'simulados', 'horas', 'perfil'];
+const ITENS_BACKUP = ['estudados', 'respostas', 'listas', 'simulados', 'horas', 'plano', 'perfil'];
 const LIMITE_BYTES = 230 * 1024;
 const HISTORICO_MAXIMO = 30;
 
@@ -148,7 +148,7 @@ function blocoRanking() {
 function blocoNuvem(backup) {
   const quando = backup === undefined ? 'não consegui consultar agora' : (backup ? formatarData(backup.salvoEm) : 'nenhuma cópia ainda');
   return '<section class="perfil-bloco"><h2 class="titulo-sec">Progresso na nuvem</h2>' +
-    '<p class="nota">Salve uma cópia do que está neste navegador (estudados, respostas, listas, simulados e horas) e restaure em outro aparelho. A cópia é só sua.</p>' +
+    '<p class="nota">Salve uma cópia do que está neste navegador (estudados, respostas, listas, simulados, horas e plano de estudos) e restaure em outro aparelho. A cópia é só sua.</p>' +
     `<p class="nota">Última cópia: <b id="perfil-quando">${esc(quando)}</b></p>` +
     '<div class="ferramentas"><button type="button" class="btn" data-perfil="salvar"><span class="kj">時</span>Salvar agora</button>' +
     `<button type="button" class="btn" data-perfil="restaurar"${backup ? '' : ' disabled'}>Restaurar neste navegador</button></div>` +

@@ -514,3 +514,90 @@
 .legenda-lista .carimbo {
   font-style: normal;
 }
+
+/* ---------- Atalhos do início (continuar, próximo do plano) ---------- */
+.atalhos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 26px;
+}
+
+.atalhos .continuar {
+  margin-top: 0;
+}
+
+/* ---------- Pré-requisitos (assunto e matéria) ---------- */
+.prereq {
+  margin: 0 0 28px;
+  padding: 14px 16px;
+  border: 1px solid var(--shu-borda);
+  border-left-width: 3px;
+  border-radius: 3px;
+  background: var(--shu-veu);
+}
+
+.prereq.ok {
+  border-color: var(--linha-forte);
+  background: var(--sumi-2);
+}
+
+.prereq-cab {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--cinza);
+}
+
+.prereq-cab .kj {
+  color: var(--shu-vivo);
+}
+
+.prereq-cab b {
+  color: var(--washi);
+  font-size: 12px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.prereq ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.prereq li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 10px;
+  font-size: 14.5px;
+}
+
+.prereq li a {
+  color: var(--washi);
+}
+
+.prereq li small {
+  color: var(--cinza-2);
+  font-size: 12.5px;
+}
+
+.prereq li.ok a {
+  color: var(--cinza);
+}
+
+.prereq .carimbo {
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+}
+
+.fontes small {
+  color: var(--cinza-2);
+}

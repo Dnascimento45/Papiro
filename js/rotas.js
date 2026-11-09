@@ -7,6 +7,7 @@
                                  uma função de limpeza; `vivo()` diz se a página ainda está aberta
      disponivel()           opcional: se false, o link some do menu (recurso que só existe no artefato)
      oculta                 opcional: não aparece no menu (o acesso é por outro lugar) */
+import { vPlano } from './plano.js';
 import { vQuestoes, vListas, vSimulados } from './vistas-questoes.js';
 import { vHoras } from './horas.js';
 import { vRank, montarRank } from './rank.js';
@@ -16,6 +17,7 @@ import { vRedacao, montarRedacao } from './redacao.js';
 import { plat, podeRank } from './plataforma.js';
 
 export const ROTAS = {
+  plano: { rotulo: 'Plano', titulo: 'Plano de estudos', kanji: '計', vista: vPlano },
   questoes: { rotulo: 'Questões', titulo: 'Banco de questões', kanji: '問', vista: vQuestoes },
   listas: { rotulo: 'Listas', titulo: 'Listas de questões', kanji: '札', vista: vListas },
   simulados: { rotulo: 'Simulados', titulo: 'Simulados', kanji: '試', vista: vSimulados },
