@@ -77,7 +77,7 @@
   <text class="tx-m" x="20" y="30">U (universo)</text>
   <circle class="fd" cx="175" cy="120" r="85"></circle>
   <circle class="fd" cx="285" cy="120" r="85"></circle>
-  <path class="fd-d" d="M230,47 A85,85 0 0 1 230,193 A85,85 0 0 1 230,47 Z"></path>
+  <path class="fd-d" d="M230,55 A85,85 0 0 1 230,185 A85,85 0 0 1 230,55 Z"></path>
   <text class="tx tx-t" x="110" y="58">A</text>
   <text class="tx tx-t" x="340" y="58">B</text>
   <text class="tx" x="135" y="125" text-anchor="middle">só A</text>

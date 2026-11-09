@@ -59,5 +59,8 @@ ESTUDO.carregar([
   "conteudos/textos/etica-federal-gestao.js",
   "conteudos/textos/administracao.js",
   "conteudos/textos/arquivologia.js",
-  "conteudos/textos/seguridade-social.js"
+  "conteudos/textos/seguridade-social.js",
+  "conteudos/textos/legislacao-local.js",
+  "conteudos/textos/financas-orcamento.js",
+  "conteudos/textos/conhecimentos-regionais.js"
 ]);
