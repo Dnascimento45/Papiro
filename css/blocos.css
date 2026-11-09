@@ -4,8 +4,15 @@
   gap: 26px;
 }
 
+/* Item de grid não encolhe abaixo da maior palavra (min-width: auto). Sem isto, um
+   caminho longo como C:\Usuários\Ana\Documentos\relatorio.docx alarga a página no celular. */
+.blocos > * {
+  min-width: 0;
+}
+
 .prosa {
   max-width: 68ch;
+  overflow-wrap: break-word;
 }
 
 .prosa h2 {
