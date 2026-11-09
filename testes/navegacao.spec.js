@@ -62,6 +62,26 @@ for (const [rota, titulo] of [['questoes', 'Banco de questões'], ['listas', 'Li
   });
 }
 
+test('todo link e botão visível tem nome para leitor de tela', async ({ page }) => {
+  for (const caminho of ['', ASSUNTO_MODELO, 'questoes', 'horas']) {
+    await abrir(page, caminho);
+    const semNome = await page.evaluate(() => {
+      const nome = (el) => {
+        const rotulo = el.getAttribute('aria-label') || el.getAttribute('title');
+        if (rotulo && rotulo.trim()) return rotulo.trim();
+        const copia = el.cloneNode(true);
+        copia.querySelectorAll('[aria-hidden="true"]').forEach((x) => x.remove());
+        return copia.textContent.trim();
+      };
+      return [...document.querySelectorAll('a[href], button')]
+        .filter((el) => el.getClientRects().length && !el.closest('[aria-hidden="true"]'))
+        .filter((el) => !nome(el))
+        .map((el) => el.outerHTML.slice(0, 120));
+    });
+    expect(semNome, `página "${caminho || 'início'}"`).toEqual([]);
+  }
+});
+
 test('fora do artefato, ranking, assistente, redação e perfil ficam escondidos', async ({ page }) => {
   await abrir(page);
   const nav = page.locator('#navegacao');

@@ -20,7 +20,7 @@
 
 .painel-topo {
   padding: 22px 18px 14px;
-  display: grid;
+  display: flex;
   gap: 16px;
   border-bottom: 1px solid var(--linha);
 }
@@ -52,23 +52,6 @@
   background: var(--shu);
   color: var(--sumi);
   border-color: var(--shu);
-}
-
-.marca b {
-  display: block;
-  font-family: var(--f-titulo);
-  font-size: 18px;
-  font-weight: 800;
-  letter-spacing: .01em;
-  line-height: 1.2;
-}
-
-.marca small {
-  display: block;
-  font-size: 11.5px;
-  color: var(--cinza);
-  letter-spacing: .08em;
-  text-transform: uppercase;
 }
 
 .busca {
