@@ -81,6 +81,7 @@ conteudos/
   secoes.js                 Seções: nucleo, bloco-a, bloco-c.
   estrutura/*.js            Conteúdo → matérias → lista de assuntos.
   textos/*.js               Blocos de todos os 377 assuntos, um arquivo por conteúdo (ou por grupo de matérias).
+  textos/aprofundamento/    "Aprofundando", exemplos, questões e livros, carregados DEPOIS dos textos (os ids das questões antigas não mudam).
   prerequisitos.js          O que estudar antes de cada assunto (ESTUDO.prerequisitos); alimenta o aviso no assunto e o plano.
   _MODELO.js                Guia de todos os tipos de bloco (referência, não é carregado).
 contexto/                   Pesquisas que originaram o material (só neste computador: fora do git, porque o repositório é público).
@@ -102,7 +103,7 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 - **Teste à mão (complementa):** abrir pelo Live Server e navegar. Mexeu no motor? Confira início, seção, conteúdo, matéria, assunto com texto, assunto vazio e endereço inexistente; marque "estudado", vire um flashcard, responda uma questão e use a busca. A suíte cobre esse roteiro, menos o assunto vazio (hoje todos os 377 têm texto).
 
 ### Limitações conhecidas
-- **Todos os 377 assuntos têm texto** (primeira versão, compacta), com 380 questões **autorais** no banco. Nenhuma questão de banca foi inventada: questões reais de prova só com fonte.
+- **Todos os 377 assuntos têm texto**, com 799 questões **autorais** no banco. Matemática, Raciocínio Lógico, Português e Direito Administrativo já têm a camada de aprofundamento (2026-11-09); os demais conteúdos ainda estão na primeira versão, compacta. Nenhuma questão de banca foi inventada: questões reais de prova só com fonte.
 - Muito do conteúdo foi escrito de memória: leis, datas e valores que mudam estão marcados `conferir`. A **legislação de Curitiba, do Paraná e da RMC** não tem os artigos locais: cada assunto traz o que a CF exige, a comparação com a Lei 8.112 e um roteiro do que ler na lei local.
 - **Python não roda no caderno**: o bloco `python` mostra o código e a saída (conferida rodando o código antes de publicar) numa aba recolhida e manda copiar para o Colab.
 - Progresso, respostas, listas, simulados e horas ficam no `localStorage` de **cada navegador**. Para passar para outro aparelho: "Salvar agora" no perfil (cópia na nuvem) e "Restaurar" no outro.
@@ -131,7 +132,7 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 9. ~~**Limpeza e boas práticas**~~: código repetido juntado, exportações sem uso fechadas, CSS redundante removido; campo `livros` ("Para aprofundar") criado. O formato JSON das provas ficou para depois, por decisão do Daniel.
 10. ~~**Pré-requisitos**~~: `conteudos/prerequisitos.js` (304 assuntos, 355 ligações); quadro no assunto e na matéria, lista "Este assunto é base para".
 11. ~~**Bloco de estudos (planejador)**~~ (`#plano`): escolhe matérias, define a ordem (setas ou "Ordenar pelos pré-requisitos"), progresso pelos assuntos estudados, avisos de base fora de ordem e "Próximo do plano" no início. Próximo passo possível: calendário semanal (plano-base em `contexto/conversa-material-de-estudo.md`).
-12. **Conteúdo aprofundado (trilha contínua):** mais exemplos, livros recomendados por tema, e conferência dos itens `conferir` (leis locais, valores anuais, regras de transição). Começar pelos assuntos mais cobrados do edital mais próximo.
+12. **Conteúdo aprofundado (trilha contínua)**, feito para Matemática, Raciocínio Lógico, Português e Direito Administrativo (419 questões novas). Falta: Direito Constitucional, Informática, Ética e os Blocos A e C. Regra: questão nova sempre **depois** das existentes (o id é `caminho#ordem`). Itens: mais exemplos, livros recomendados por tema, e conferência dos itens `conferir` (leis locais, valores anuais, regras de transição). Começar pelos assuntos mais cobrados do edital mais próximo.
 13. **Provas passadas** dos concursos dos Blocos A e C, com banca, ano, cargo e fonte, em **JSON estático carregado sob demanda** (opção A): `provas/indice.json` pequeno e um arquivo por prova em `provas/<banca>/<ano>-<cargo>.json`, lido por `fetch` só quando a prova é aberta. O `banco.js` passa a ler também desses arquivos. **O id de cada questão precisa ser estável**, para não perder o histórico de respostas. Se o volume ficar grande, migrar para o banco (`db`) do artefato. Antes de começar: listar os concursos e bancas do escopo (em `contexto/`) e estimar o número de provas.
 14. **Revisão com flashcards** (blocos `flashcards` já existem no motor).
 15. **Anexo de PDF** no assistente e ranking de questões por semana.
