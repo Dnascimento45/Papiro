@@ -4,6 +4,7 @@
 import { api, aoTerminarCarga, carregarIndice, vigiarErros, vigiarIndice } from './nucleo/registro.js';
 import { iniciar } from './app/app.js';
 import { iniciarPlataforma } from './plataforma/plataforma.js';
+import { iniciarSincronia } from './plataforma/sincronia.js';
 
 /* Garante o idioma mesmo quando a página é embrulhada pelo artefato. */
 document.documentElement.lang = 'pt-BR';
@@ -13,4 +14,5 @@ aoTerminarCarga(iniciar);
 vigiarErros();
 vigiarIndice();
 carregarIndice('conteudos/indice.js');
+iniciarSincronia();    // grava o progresso na conta sozinho (só no artefato, com conta)
 iniciarPlataforma();   // conecta com o artefato (conta, banco compartilhado, Claude), sem bloquear a página

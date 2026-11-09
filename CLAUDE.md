@@ -65,7 +65,8 @@ js/                         Motor do caderno, em módulos ES (sem build), em cam
   plataforma/                 recursos do artefato; tudo null fora dele
     plataforma.js               acesso único ao artefato (conta, banco compartilhado, Claude)
     claude.js                   erros em português e leitura de anexos
-    rank.js, perfil.js          ranking (#rank) e perfil com cópia do progresso (#perfil)
+    rank.js, perfil.js          ranking (#rank) e perfil (#perfil)
+    sincronia.js                progresso gravado sozinho na conta (db); conflito entre aparelhos pergunta
     assistente.js, redacao.js   chat de dúvidas (#assistente) e correção de redação (#redacao)
   app/                        aplicação
     app.js                      lê o endereço (#), desenha e redesenha quando a carga termina
@@ -91,6 +92,7 @@ testes/
   conteudo.spec.js            varre todas as páginas: título, avisos, blocos com erro, texto e largura em 360px
   visual.spec.js              compara capturas das páginas principais com testes/prints/
   arquitetura.spec.js         regra de camadas de js/ e ausência de ciclos de importação
+  sincronia.spec.js           sincronia com a conta (conta e banco simulados): envia, recebe, conflito
   carga.spec.js               carga sob demanda: abertura sem textos, um conteúdo por vez, busca, provas, listas e simulados; índice em dia
   dados/questoes/             três questões FICTÍCIAS no formato de questoes/, servidas no lugar da pasta real
 conteudos/
@@ -128,7 +130,8 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 - **Legislação local sem os artigos:** em Curitiba, Paraná e Região Metropolitana (33 assuntos) o aprofundamento cobre o **modelo constitucional** (CF arts. 29 a 31, 37 a 41, DL 201/1967, súmulas do STF, comparação com a Lei 8.112) e cada assunto traz um bloco "confira" com o que ler na lei local. O texto integral dessas leis não pôde ser lido em fonte oficial legível. Confirmado: LOM de Curitiba de 5/4/1990 (com revisão em 2024); Estatuto de Curitiba é a **Lei 1.656/1958** (capítulo da estabilidade revogado pela Lei 16.037/2022); CE-PR de 5/10/1989; Estatuto do Paraná é a **Lei 6.174/1970**. Araucária e São José dos Pinhais só têm roteiro.
 - Muito do conteúdo foi escrito de memória: leis, datas e valores que mudam estão marcados `conferir`. A **legislação de Curitiba, do Paraná e da RMC** não tem os artigos locais: cada assunto traz o que a CF exige, a comparação com a Lei 8.112 e um roteiro do que ler na lei local.
 - **Python não roda no caderno**: o bloco `python` mostra o código e a saída (conferida rodando o código antes de publicar) numa aba recolhida e manda copiar para o Colab.
-- Progresso, respostas, listas, simulados e horas ficam no `localStorage` de **cada navegador**. Para passar para outro aparelho: "Salvar agora" no perfil (cópia na nuvem) e "Restaurar" no outro.
+- Progresso, respostas, listas, simulados, horas e plano ficam no `localStorage` e **são copiados sozinhos para a conta** (`js/plataforma/sincronia.js`): envio ~10 s depois de cada mudança, conferência ao abrir e ao voltar para o app. Conta mais nova e nada pendente aqui: aplica e recarrega; os dois lados mudaram: pergunta qual manter (sem mesclar). Fora do artefato não sincroniza. "Salvar agora"/"Restaurar" no perfil continuam como botões manuais. O assistente e as redações não entram na cópia.
+- **Atalho na tela de início do iPhone:** o artefato não deixa trocar o ícone (o iOS mostra o livrinho do claude.ai). Solução: página estática `docs/atalho/` no GitHub Pages (https://dnascimento45.github.io/Papiro/atalho/), com o selo vermelho como `apple-touch-icon` e um botão que abre o artefato. Adicionar à Tela de Início a partir dessa página, não do artefato.
 - Ranking, assistente, redação e perfil **só funcionam com o Papiro publicado como artefato** e a pessoa logada. No servidor local o menu os esconde.
 - As duas pessoas precisam de acesso de **colaborador** ao artefato para gravar no ranking e na cópia da nuvem.
 - Não existe data de nascimento no perfil: o vínculo é a própria conta do Claude, que a plataforma verifica. Uma data digitada seria só autodeclarada.

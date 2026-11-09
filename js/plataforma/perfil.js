@@ -1,85 +1,15 @@
 /* Perfil: a conta do Claude vinculada ao Papiro, apelido, participação no ranking e
    cópia do progresso na nuvem (para passar de um aparelho para outro).
    O vínculo é a própria conta que abriu o artefato; nenhum dado pessoal é pedido. */
-import { CHAVES, esc, fotoSegura, memoria } from '../nucleo/util.js';
+import { esc, fotoSegura } from '../nucleo/util.js';
 import { perfil, salvarPerfil, trava } from '../nucleo/estado.js';
 import { AVISO_SO_NO_ARTEFATO, aoPronta, plat, podeRank, temIdentidade } from './plataforma.js';
 import { sincronizarRank } from './rank.js';
+import { aplicarPacote, estadoSincronia, lerDaNuvem, salvarNaNuvem } from './sincronia.js';
 import { confirmar } from '../interface/dialogo.js';
 import { cabecalhoRota } from '../interface/componentes.js';
 
-/* O que entra na cópia. Cada item é guardado como texto JSON, para não depender
-   dos nomes das chaves (que têm "/" e "#"). */
-const ITENS_BACKUP = ['estudados', 'respostas', 'listas', 'simulados', 'horas', 'plano', 'perfil'];
-const LIMITE_BYTES = 230 * 1024;
-const HISTORICO_MAXIMO = 30;
-
-const caminhoBackup = () => `data/users/${plat.eu.id}/progresso`;
 const formatarData = (ms) => (ms ? new Date(ms).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : 'nunca');
-
-function montarPacote() {
-  const pacote = {};
-  ITENS_BACKUP.forEach((item) => {
-    let texto = '';
-    try { texto = localStorage.getItem(CHAVES[item]) || ''; } catch (e) { /* sem acesso */ }
-    if (item === 'simulados' && texto) {
-      try {
-        const s = JSON.parse(texto);
-        s.historico = (s.historico || []).slice(0, HISTORICO_MAXIMO);
-        texto = JSON.stringify(s);
-      } catch (e) { /* mantém o texto original */ }
-    }
-    pacote[item] = texto;
-  });
-  return pacote;
-}
-
-async function salvarNaNuvem() {
-  const pacote = montarPacote();
-  const tamanho = new Blob([JSON.stringify(pacote)]).size;
-  if (tamanho > LIMITE_BYTES) return { erro: 'Seus dados passaram do limite de uma cópia. Apague simulados antigos ou listas que não usa mais.' };
-  const agora = Date.now();
-  try {
-    await plat.db.doc(caminhoBackup()).set({ versao: 1, salvoEm: agora, ...pacote });
-    memoria.gravar(CHAVES.backupEm, agora);
-    return { salvoEm: agora };
-  } catch (e) {
-    return { erro: e && e.code === 'invalid_argument' ? 'Sua conta não pode gravar neste artefato. Peça acesso de colaborador ao dono.' : 'Não consegui salvar agora. Tente de novo.' };
-  }
-}
-
-async function lerDaNuvem() {
-  try {
-    const snap = await plat.db.doc(caminhoBackup()).get();
-    return snap.exists ? snap.data() : null;
-  } catch (e) {
-    return undefined;
-  }
-}
-
-/** Valida o texto de cada item e só então grava no navegador. Devolve true se gravou. */
-function aplicarPacote(dados) {
-  const novos = {};
-  for (const item of ITENS_BACKUP) {
-    const texto = dados[item];
-    if (texto === undefined) continue; // cópias antigas não tinham todos os itens
-    if (typeof texto !== 'string') return false;
-    if (texto) {
-      try { JSON.parse(texto); } catch (e) { return false; }
-    }
-    novos[item] = texto;
-  }
-  try {
-    ITENS_BACKUP.forEach((item) => {
-      if (!(item in novos)) return;
-      if (novos[item]) localStorage.setItem(CHAVES[item], novos[item]);
-      else localStorage.removeItem(CHAVES[item]);
-    });
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
 
 /* ---------- Página ---------- */
 
@@ -147,9 +77,13 @@ function blocoRanking() {
 
 function blocoNuvem(backup) {
   const quando = backup === undefined ? 'não consegui consultar agora' : (backup ? formatarData(backup.salvoEm) : 'nenhuma cópia ainda');
+  const s = estadoSincronia();
+  const situacao = s.erro ? s.erro : (s.pendente ? 'Há mudanças a enviar; elas vão para a conta em alguns segundos.' : 'Tudo o que você fez está na sua conta.');
   return '<section class="perfil-bloco"><h2 class="titulo-sec">Progresso na nuvem</h2>' +
-    '<p class="nota">Salve uma cópia do que está neste navegador (estudados, respostas, listas, simulados, horas e plano de estudos) e restaure em outro aparelho. A cópia é só sua.</p>' +
+    '<p class="nota">O progresso (estudados, respostas, listas, simulados, horas e plano de estudos) é <b>gravado sozinho na sua conta</b> e aparece em qualquer aparelho em que você abrir o Papiro. A cópia é só sua.</p>' +
+    `<p class="nota" id="perfil-situacao">${esc(situacao)}</p>` +
     `<p class="nota">Última cópia: <b id="perfil-quando">${esc(quando)}</b></p>` +
+    '<p class="nota">Os botões abaixo são para quando você quiser forçar: "Salvar agora" envia já; "Restaurar" troca os dados deste navegador pelos da conta.</p>' +
     '<div class="ferramentas"><button type="button" class="btn" data-perfil="salvar"><span class="kj">時</span>Salvar agora</button>' +
     `<button type="button" class="btn" data-perfil="restaurar"${backup ? '' : ' disabled'}>Restaurar neste navegador</button></div>` +
     '<p class="form-msg" id="perfil-msg-nuvem" role="status"></p></section>';

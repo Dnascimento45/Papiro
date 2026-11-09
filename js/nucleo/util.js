@@ -48,10 +48,17 @@ export const CHAVES = {
   assistente: 'papiro.assistente',
   redacoes: 'papiro.redacoes',
   plano: 'papiro.plano',
+  pendente: 'papiro.pendente',   // true: há mudança ainda não enviada para a conta
 };
+
+const ouvintesGravar = [];
 
 /** localStorage que nunca lança erro (modo privado, armazenamento cheio…). */
 export const memoria = {
+  /** Registra `fn(chave)`, chamada depois de cada gravação (usada pela sincronia com a conta). */
+  aoGravar(fn) {
+    ouvintesGravar.push(fn);
+  },
   ler(chave, padrao) {
     try {
       const v = localStorage.getItem(chave);
@@ -64,6 +71,7 @@ export const memoria = {
     try {
       localStorage.setItem(chave, JSON.stringify(valor));
     } catch (e) { /* sem armazenamento: o caderno segue funcionando sem lembrar */ }
+    ouvintesGravar.forEach((fn) => fn(chave));
   },
 };
 
