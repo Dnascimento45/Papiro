@@ -63,6 +63,11 @@ ESTUDO.assunto("nucleo/meu-conteudo/minha-materia/assunto-so-com-titulo", {
   incidencia: "alta",                       // opcional: alta, média, baixa
   conferir: "opcional",
   fontes: [{ titulo: "Planalto · Lei 8.112", url: "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm" }],
+  livros: [                                  // opcional: seção "Para aprofundar" no fim do assunto
+    { titulo: "Nome do livro", autor: "Autor", nota: "Capítulo ou por que vale a leitura.", url: "opcional" },
+    "Ou só um texto livre"
+  ],
+  // Pré-requisitos ficam em conteudos/prerequisitos.js (seção 5 deste guia).
   blocos: [
     { tipo: "texto", titulo: "Subtítulo opcional", texto: "Parágrafo com **negrito**." },
     { tipo: "resumo", texto: "- ponto 1\n- ponto 2" },
@@ -111,6 +116,20 @@ ESTUDO.assunto("nucleo/meu-conteudo/minha-materia/assunto-so-com-titulo", {
      pt    ponto/marcador (também serve de preenchimento das pontas de seta)
    Ex.: <rect class="fd-d" …></rect>  <text class="tx tx-t" …>Título</text>
    Use viewBox, role="img" e aria-label descrevendo a figura. */
+
+/* ---------------------------------------------------------------------
+   5) PRÉ-REQUISITOS  (conteudos/prerequisitos.js)
+   ---------------------------------------------------------------------
+   O que convém estudar antes de cada assunto. O primeiro argumento é o conteúdo;
+   até duas partes ("materia/assunto" ou "materia") ficam dentro dele, três ou mais
+   são caminho completo (para ligar conteúdos diferentes). O pré-requisito pode ser
+   um assunto, uma matéria inteira ou um conteúdo. O plano de estudos usa isto para
+   avisar quando uma matéria vem antes da base dela. */
+ESTUDO.prerequisitos("nucleo/matematica", {
+  "aritmetica/porcentagem": ["aritmetica/razao-e-proporcao"],
+  "algebra/equacoes-do-1-grau": ["conjuntos-e-numeros"],                       // matéria inteira
+  "estatistica-basica/media-moda-e-mediana": ["nucleo/raciocinio-logico/raciocinio-sequencial-e-problemas/sequencias-numericas"]  // caminho completo
+});
 
 /* Imagens: coloque os arquivos numa pasta (ex.: imagens/) ao lado do index.html
    e use o caminho relativo em "src". Também funciona com links https.

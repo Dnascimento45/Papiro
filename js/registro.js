@@ -45,6 +45,20 @@ export const api = {
     reg.assuntos.push({ caminho, def, arquivo });
   },
 
+  /** Pré-requisitos dos assuntos de um conteúdo: ESTUDO.prerequisitos("nucleo/matematica", { "aritmetica/porcentagem": ["aritmetica/razao-e-proporcao"] }).
+      Até duas partes ("materia/assunto" ou "materia") = dentro do conteúdo-base; três ou mais = caminho completo. */
+  prerequisitos(base, mapa) {
+    const arquivo = arquivoAtual();
+    if (typeof base !== 'string' || !mapa || typeof mapa !== 'object') {
+      return problema(arquivo, 'ESTUDO.prerequisitos() precisa do caminho do conteúdo e de um objeto { "materia/assunto": ["..."] }.');
+    }
+    const completo = (c) => (String(c).split('/').filter(Boolean).length <= 2 ? `${base}/${c}` : String(c));
+    Object.entries(mapa).forEach(([assunto, antes]) => {
+      const lista = Array.isArray(antes) ? antes : [antes];
+      reg.assuntos.push({ caminho: completo(assunto), def: { prerequisitos: lista.map(completo) }, arquivo });
+    });
+  },
+
   /** Carrega os arquivos de conteúdo, em ordem, e avisa quando todos terminarem. */
   carregar(lista) {
     if (carregou) return;

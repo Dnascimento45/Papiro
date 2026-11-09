@@ -21,7 +21,8 @@ function novoId(titulo, id, irmaos, arquivo) {
 }
 
 function criar(tipo, def, pai, arquivo) {
-  const no = { tipo, def: { ...def }, arquivo, pai, filhos: [], titulo: String(def.titulo) };
+  // prerequisitos: o que convém estudar antes (só assuntos declaram); dependentes: o caminho inverso.
+  const no = { tipo, def: { ...def }, arquivo, pai, filhos: [], titulo: String(def.titulo), prerequisitos: [], dependentes: [] };
   const irmaos = pai ? pai.filhos : raiz;
   no.id = novoId(no.titulo, def.id, irmaos, arquivo);
   no.caminho = pai ? `${pai.caminho}/${no.id}` : no.id;
@@ -79,9 +80,29 @@ function aplicarTextos() {
     }
     if (Array.isArray(r.def.blocos)) no.blocos = no.blocos.concat(r.def.blocos);
     else if (r.def.blocos) problema(r.arquivo, `"blocos" de "${r.caminho}" precisa ser uma lista [ ].`);
-    ['resumo', 'conferir', 'fontes', 'nota', 'incidencia'].forEach((k) => {
+    ['resumo', 'conferir', 'fontes', 'livros', 'nota', 'incidencia'].forEach((k) => {
       if (r.def[k] != null) no.def[k] = r.def[k];
     });
+    if (r.def.prerequisitos != null) ligarPrerequisitos(no, r.def.prerequisitos, r.arquivo);
+  });
+}
+
+/** Liga os pré-requisitos (caminhos de assunto, matéria ou conteúdo) aos nós; caminho errado vira aviso. */
+function ligarPrerequisitos(assunto, lista, arquivo) {
+  if (!Array.isArray(lista)) {
+    problema(arquivo, `"prerequisitos" de "${assunto.caminho}" precisa ser uma lista [ ].`);
+    return;
+  }
+  lista.forEach((caminho) => {
+    const alvo = real(nos.get(normCaminho(caminho)));
+    if (!alvo || alvo.tipo === 'secao') {
+      problema(arquivo, `o pré-requisito "${caminho}" de "${assunto.titulo}" não existe. Use o caminho de um assunto, de uma matéria ou de um conteúdo.`);
+    } else if (alvo === assunto) {
+      problema(arquivo, `"${assunto.titulo}" aparece como pré-requisito de si mesmo.`);
+    } else if (!assunto.prerequisitos.includes(alvo)) {
+      assunto.prerequisitos.push(alvo);
+      alvo.dependentes.push(assunto);
+    }
   });
 }
 
@@ -176,4 +197,30 @@ export function contagem(no) {
     feitos: lista.filter(feito).length,
     comConteudo: lista.filter(temConteudo).length,
   };
+}
+
+/** Assunto estudado, ou matéria/conteúdo com todos os assuntos estudados. */
+export function cumprido(no) {
+  if (no.tipo === 'assunto') return feito(no);
+  const ct = contagem(no);
+  return ct.total > 0 && ct.feitos === ct.total;
+}
+
+/* ---------- Pré-requisitos ---------- */
+
+/** Matérias que um nó representa: a do assunto, a própria matéria ou as de um conteúdo. */
+export function materiasDe(no) {
+  if (no.tipo === 'assunto') return [no.pai];
+  if (no.tipo === 'materia') return [no];
+  if (no.tipo === 'conteudo') return filhosDe(no);
+  return [];
+}
+
+/** Outras matérias que convém estudar antes desta, tiradas dos pré-requisitos dos seus assuntos. */
+export function prerequisitosDaMateria(materia) {
+  const lista = [];
+  materia.filhos.forEach((a) => a.prerequisitos.flatMap(materiasDe).forEach((m) => {
+    if (m !== materia && !lista.includes(m)) lista.push(m);
+  }));
+  return lista;
 }

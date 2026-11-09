@@ -62,5 +62,8 @@ ESTUDO.carregar([
   "conteudos/textos/seguridade-social.js",
   "conteudos/textos/legislacao-local.js",
   "conteudos/textos/financas-orcamento.js",
-  "conteudos/textos/conhecimentos-regionais.js"
+  "conteudos/textos/conhecimentos-regionais.js",
+
+  /* O que estudar antes de cada assunto (depois da estrutura) */
+  "conteudos/prerequisitos.js"
 ]);
