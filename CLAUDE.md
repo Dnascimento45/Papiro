@@ -28,10 +28,10 @@ Os dois repositórios **não se sincronizam sozinhos**. Melhorias que valerem pa
 
 ## 2. Estado atual
 
-Protótipo funcional, sem build e sem backend (HTML + CSS + JS puro). Como usa módulos ES, precisa ser aberto por um servidor (`servir.ps1`), não clicando no arquivo.
+Protótipo funcional, sem build e sem backend (HTML + CSS + JS puro). Como usa módulos ES, precisa ser aberto por HTTP (Live Server ou o artefato), não clicando no arquivo: em `file://` o Chrome bloqueia os módulos e a página fica em "Carregando o caderno…".
 
 ```
-index.html                  Só a marcação da página. Fragmento sem <!doctype>; o servidor o embrulha.
+index.html                  Só a marcação da página. Fragmento sem <!doctype>; o artefato o embrulha numa página completa.
 css/                        Estilos, um arquivo por responsabilidade:
   base.css                    tokens (cores, fontes), reset e tipografia
   layout.css                  painel lateral (único menu), folha de leitura, marca-d'água
@@ -66,9 +66,7 @@ js/                         Motor do caderno, em módulos ES (sem build):
   dialogo.js                  confirmação dentro da página (confirm() não funciona no artefato)
   app.js                      lê o endereço (#) e desenha a página
   util.js                     funções puras e acesso ao localStorage
-servir.ps1                  Servidor estático local (PowerShell), porta 8766, sem cache.
 .editorconfig               Estilo comum de arquivos (UTF-8, LF, 2 espaços).
-.vscode/tasks.json          Tarefa do VS Code "Servir Papiro (porta 8766)".
 conteudos/
   indice.js                 Arquivos carregados, na ordem do sumário.
   secoes.js                 Seções: nucleo, bloco-a, bloco-c.
@@ -78,8 +76,8 @@ conteudos/
 contexto/                   Pesquisas que originaram o material (só referência).
 ```
 
-**Rodar:** `powershell -ExecutionPolicy Bypass -File servir.ps1` e abrir http://localhost:8766 (ou a tarefa do VS Code).
-**Porta 8766 e chaves `papiro.*` no `localStorage`:** diferentes do Dojo (8765, `dojo.*`) de propósito. O navegador isola o armazenamento por endereço, e assim o progresso dos dois projetos não se mistura.
+**Rodar localmente:** no VS Code, com a extensão **Live Server**, abrir o `index.html` com "Open with Live Server" (abre no Chrome, em geral em http://127.0.0.1:5500). **Uso no dia a dia:** o link do artefato.
+**Chaves `papiro.*` no `localStorage`:** diferentes das do Dojo (`dojo.*`) de propósito, porque o Live Server pode usar o mesmo endereço para os dois projetos. O progresso local (Live Server) e o do artefato ficam separados: são endereços diferentes.
 
 ### Modelo de conteúdo
 Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids vêm do título, sem acento, com hífens (`nucleo/matematica/aritmetica/regra-de-tres`). Tipos de bloco, marcação de texto e metadados estão em [conteudos/_MODELO.js](conteudos/_MODELO.js).
@@ -90,7 +88,7 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 - **Dependência entre módulos:** `util` ← `estado` ← `registro` ← `modelo` ← (`texto`, `blocos`, `componentes`, `vistas`, `sumario`) ← `eventos`, `app` ← `main`. Não criar ciclos.
 - **No artefato, `confirm()`, `alert()` e `prompt()` não funcionam** (devolvem sempre "não"): use `confirmar()` de `js/dialogo.js`. Recursos do artefato sempre passam por `js/plataforma.js` e precisam se esconder quando forem `null`.
 - **Conteúdo novo:** escreva em `conteudos/textos/`, registre o arquivo em `conteudos/indice.js` e confira que o caderno não mostra aviso (título errado de assunto gera aviso no topo). A saída dos blocos `python` deve ser a de uma execução real.
-- **Testar sem framework:** abrir o servidor e navegar. Mexeu no motor? Confira início, seção, conteúdo, matéria, assunto com texto, assunto vazio e endereço inexistente; marque "estudado", vire um flashcard, responda uma questão e use a busca.
+- **Testar sem framework:** abrir pelo Live Server e navegar. Mexeu no motor? Confira início, seção, conteúdo, matéria, assunto com texto, assunto vazio e endereço inexistente; marque "estudado", vire um flashcard, responda uma questão e use a busca.
 
 ### Limitações conhecidas
 - **Todos os 377 assuntos têm texto** (primeira versão, compacta), com 380 questões **autorais** no banco. Nenhuma questão de banca foi inventada: questões reais de prova só com fonte.
