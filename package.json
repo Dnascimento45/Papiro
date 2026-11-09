@@ -1,0 +1,16 @@
+{
+  "name": "papiro",
+  "private": true,
+  "description": "Caderno de estudos para os concursos dos Blocos A e C. O site não usa Node: este arquivo existe só para os testes.",
+  "scripts": {
+    "servir": "http-server . -p 5510 -c-1 --silent",
+    "testar": "playwright test",
+    "testar:visual": "playwright test visual",
+    "testar:atualizar-prints": "playwright test visual --update-snapshots",
+    "relatorio": "playwright show-report testes/relatorio"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.0",
+    "http-server": "^14.1.1"
+  }
+}

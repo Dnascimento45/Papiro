@@ -46,3 +46,7 @@ desktop.ini
 
 # Pesquisas e conversas exportadas: ficam só no computador (o repositório é público)
 contexto/
+
+# Testes (Playwright): resultados e relatório são gerados a cada rodada
+testes/resultados/
+testes/relatorio/
