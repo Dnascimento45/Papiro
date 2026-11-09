@@ -49,5 +49,6 @@ ESTUDO.carregar([
   "conteudos/textos/matematica-geometria-estatistica.js",
   "conteudos/textos/raciocinio-logico.js",
   "conteudos/textos/portugues-texto-ortografia-morfologia.js",
-  "conteudos/textos/portugues-sintaxe-pontuacao-semantica-redacao.js"
+  "conteudos/textos/portugues-sintaxe-pontuacao-semantica-redacao.js",
+  "conteudos/textos/informatica.js"
 ]);
