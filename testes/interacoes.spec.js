@@ -145,3 +145,27 @@ test('celular: menu abre, fecha no véu e fecha ao escolher um item', async ({ p
   await expect(corpo).not.toHaveClass(/menu-aberto/);
   await expect(page).toHaveURL(/#questoes$/);
 });
+
+test('banco de questões: a situação segue a última resposta (acertou e depois errou = "Errou")', async ({ page }) => {
+  await abrir(page);
+  await page.goto('/index.html#questoes');
+  const card = page.locator('.q-card').first();
+  const alts = card.locator('.q-alts');
+  const qid = await alts.getAttribute('data-qid');
+  const certa = Number(await alts.getAttribute('data-correta'));
+  const errada = certa === 0 ? 1 : 0;
+  await expect(card.locator('.chip')).toHaveText('Nova');
+
+  await alts.locator(`[data-alt="${certa}"]`).click();
+  await card.locator('.q-refazer').click();
+  await alts.locator(`[data-alt="${errada}"]`).click();
+
+  await page.reload();
+  const mesma = page.locator('.q-card', { has: page.locator(`.q-alts[data-qid="${qid}"]`) });
+  await expect(mesma.locator('.chip'), 'a última resposta foi errada').toHaveText('Errou');
+
+  await page.locator('[data-filtro="status"]').selectOption('errada');
+  await expect(mesma, 'o filtro "Que errei" deve trazer a questão').toHaveCount(1);
+  await page.locator('[data-filtro="status"]').selectOption('certa');
+  await expect(mesma, 'o filtro "Que acertei" não deve trazer a questão').toHaveCount(0);
+});
