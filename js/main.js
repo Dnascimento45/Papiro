@@ -1,0 +1,11 @@
+/* Ponto de entrada do Papiro.
+   Expõe a API window.ESTUDO (usada por conteudos/*.js) e carrega o índice de conteúdo.
+   Para adicionar conteúdo não é preciso mexer em js/: veja conteudos/indice.js e conteudos/_MODELO.js. */
+import { api, aoTerminarCarga, carregarIndice, vigiarErros, vigiarIndice } from './registro.js';
+import { iniciar } from './app.js';
+
+window.ESTUDO = api;
+aoTerminarCarga(iniciar);
+vigiarErros();
+vigiarIndice();
+carregarIndice('conteudos/indice.js');

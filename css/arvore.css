@@ -1,0 +1,162 @@
+/* Sumário lateral (árvore) e resultados da busca. */
+.arv,.arv ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.arv > li + li {
+  margin-top: 14px;
+}
+
+.arv-linha {
+  display: flex;
+  align-items: flex-start;
+  padding-left: calc(var(--nivel,0) * 13px);
+}
+
+.arv-seta {
+  flex: none;
+  width: 22px;
+  height: 30px;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  color: var(--cinza-2);
+  border-radius: 3px;
+}
+
+.arv-seta svg {
+  width: 9px;
+  height: 9px;
+  transition: transform .15s;
+}
+
+.arv-seta[aria-expanded="true"] svg {
+  transform: rotate(90deg);
+}
+
+.arv-seta[aria-expanded="true"] {
+  color: var(--shu-vivo);
+}
+
+.arv-seta:hover {
+  color: var(--washi);
+}
+
+.arv-seta.vazio {
+  cursor: default;
+}
+
+.arv-linha a {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 3px;
+  color: var(--cinza);
+  text-decoration: none;
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.arv-linha a:hover {
+  background: var(--sumi-3);
+  color: var(--washi);
+}
+
+.arv-linha a .kj {
+  color: var(--shu-vivo);
+  font-size: 14px;
+  flex: none;
+}
+
+.arv-linha a .t {
+  min-width: 0;
+}
+
+.arv-linha a .x {
+  margin-left: auto;
+  flex: none;
+  font-size: 11px;
+  color: var(--cinza-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.n-secao > .arv-linha a {
+  font-family: var(--f-titulo);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--washi);
+}
+
+.n-conteudo > .arv-linha a {
+  color: var(--washi);
+}
+
+.n-assunto > .arv-linha a {
+  font-size: 13px;
+}
+
+.ativo > .arv-linha a {
+  background: var(--shu-veu);
+  color: var(--washi);
+  box-shadow: inset 2px 0 0 var(--shu);
+}
+
+.feito-mini {
+  flex: none;
+  font-family: var(--f-titulo);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--shu-vivo);
+  border: 1px solid var(--shu-borda);
+  border-radius: 2px;
+  padding: 0 2px;
+  line-height: 1.4;
+  align-self: center;
+}
+
+.res-busca {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.res-busca a {
+  display: block;
+  padding: 7px 10px;
+  border-radius: 3px;
+  text-decoration: none;
+  color: var(--washi);
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.res-busca a:hover {
+  background: var(--sumi-3);
+}
+
+.res-busca small {
+  display: block;
+  color: var(--cinza-2);
+  font-size: 11.5px;
+  margin-top: 2px;
+}
+
+.res-busca mark {
+  background: none;
+  color: var(--shu-vivo);
+}
+
+.res-vazio {
+  padding: 10px;
+  color: var(--cinza);
+  font-size: 13px;
+}
