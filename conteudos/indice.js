@@ -53,5 +53,11 @@ ESTUDO.carregar([
   "conteudos/textos/informatica.js",
   "conteudos/textos/direito-constitucional.js",
   "conteudos/textos/direito-administrativo.js",
-  "conteudos/textos/etica.js"
+  "conteudos/textos/etica.js",
+  "conteudos/textos/lei-8112.js",
+  "conteudos/textos/lei-9784.js",
+  "conteudos/textos/etica-federal-gestao.js",
+  "conteudos/textos/administracao.js",
+  "conteudos/textos/arquivologia.js",
+  "conteudos/textos/seguridade-social.js"
 ]);
