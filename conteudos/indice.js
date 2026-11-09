@@ -67,6 +67,10 @@ ESTUDO.carregar([
   /* Aprofundamento: mais texto, exemplos e questões, depois do que já existe */
   "conteudos/textos/aprofundamento/matematica-1.js",
   "conteudos/textos/aprofundamento/matematica-2.js",
+  "conteudos/textos/aprofundamento/raciocinio-logico.js",
+  "conteudos/textos/aprofundamento/portugues-1.js",
+  "conteudos/textos/aprofundamento/portugues-2.js",
+  "conteudos/textos/aprofundamento/direito-administrativo.js",
 
   /* O que estudar antes de cada assunto (depois da estrutura) */
   "conteudos/prerequisitos.js"
