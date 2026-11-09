@@ -83,9 +83,34 @@ ESTUDO.assunto("nucleo/meu-conteudo/minha-materia/assunto-so-com-titulo", {
       id: "fafipa-2026-agente-01",         // opcional: fixa o id no banco de questões (guarda o histórico se reordenar)
       comentario: "Por que a C está certa." },
     { tipo: "questao", banca: "Cebraspe", enunciado: "Item para julgar.", alternativas: ["Certo", "Errado"], correta: "Errado" },
-    { tipo: "link", rotulo: "Para consultar", itens: [{ titulo: "Edital", url: "https://...", nota: "opcional" }] }
+    { tipo: "link", rotulo: "Para consultar", itens: [{ titulo: "Edital", url: "https://...", nota: "opcional" }] },
+    { tipo: "python", titulo: "opcional", texto: "Explicação antes do código (opcional).",
+      codigo: `print(2 + 3)`,
+      saida: `5`,                               // cole a saída REAL (rode o código antes); o caderno não executa Python
+      legenda: "opcional" }
   ]
 });
+
+/* ---------------------------------------------------------------------
+   3) VÁRIOS ASSUNTOS NUM SÓ ARQUIVO (forma usada em conteudos/textos/)
+   ---------------------------------------------------------------------
+   ESTUDO.caminho(...) monta o caminho a partir dos TÍTULOS, como aparecem na estrutura,
+   inclusive títulos com barra ("Lei 8.112/1990"). Envolva o arquivo em (() => { ... })();
+   para que as constantes de um arquivo não colidam com as de outro. */
+(() => {
+  const A = (materia, assunto, def) => ESTUDO.assunto(ESTUDO.caminho("nucleo", "matematica", materia, assunto), def);
+  A("Aritmética", "Porcentagem", { resumo: "…", blocos: [ /* … */ ] });
+})();
+
+/* ---------------------------------------------------------------------
+   4) CLASSES PARA ILUSTRAÇÕES SVG (seguem as cores do tema; veja css/blocos.css)
+   ---------------------------------------------------------------------
+     tx    texto              tx-m  texto miúdo/secundário   tx-d  texto em destaque
+     tx-t  fonte de título    ln    linha neutra             ln-d  linha em destaque
+     ln-f  linha fraca        fd    área neutra              fd-d  área em destaque
+     pt    ponto/marcador (também serve de preenchimento das pontas de seta)
+   Ex.: <rect class="fd-d" …></rect>  <text class="tx tx-t" …>Título</text>
+   Use viewBox, role="img" e aria-label descrevendo a figura. */
 
 /* Imagens: coloque os arquivos numa pasta (ex.: imagens/) ao lado do index.html
    e use o caminho relativo em "src". Também funciona com links https.

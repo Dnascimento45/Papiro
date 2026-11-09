@@ -1,7 +1,7 @@
 /* Ranking de horas estudadas e questões respondidas entre quem usa o artefato.
    Cada pessoa grava só o próprio documento (rank/<id>) no banco compartilhado e só quem
    aceitou participar aparece. O banco guarda apenas ids e números; os nomes vêm da conta. */
-import { CHAVES, esc, memoria } from './util.js';
+import { CHAVES, esc, fotoSegura, memoria } from './util.js';
 import { aoDadosMudarem, perfil, salvarPerfil } from './estado.js';
 import { estatisticas } from './banco.js';
 import { duracao, totaisHoras } from './horas.js';
@@ -25,6 +25,7 @@ function meusNumeros() {
   const q = estatisticas();
   return {
     apelido: perfil.apelido.trim().slice(0, 30),
+    foto: fotoSegura(perfil.foto),
     horasTotal: h.total,
     horasSemana: h.semana,
     semana: h.semanaDesde,
@@ -100,10 +101,11 @@ export function vRank() {
   });
 }
 
-function quadro(titulo, linhas, nomes, meuId) {
+function quadro(titulo, linhas, nomes, fotos, meuId) {
   if (!linhas.length) return `<section class="quadro"><h3>${titulo}</h3><p class="nota">Ninguém por aqui ainda.</p></section>`;
   const maior = Math.max(...linhas.map((l) => l.valor), 1);
   const itens = linhas.map((l, i) => `<li class="${l.id === meuId ? 'eu' : ''}"><span class="pos">${i + 1}</span>` +
+    `<img class="avatar" src="${esc(fotos[l.id])}" alt="" width="26" height="26">` +
     `<span class="nome">${esc(nomes[l.id])}${l.id === meuId ? ' <small>(você)</small>' : ''}</span>` +
     `<span class="valor">${esc(l.texto)}</span><i style="width:${Math.round((l.valor / maior) * 100)}%"></i></li>`).join('');
   return `<section class="quadro"><h3>${titulo}</h3><ol>${itens}</ol></section>`;
@@ -117,7 +119,9 @@ async function desenhar(corpo, docs, vivo) {
   try { perfis = await plat.user.profiles(pessoas.map((p) => p.id)); } catch (e) { /* nomes ficam genéricos */ }
   if (!vivo()) return;
   const nomes = {};
+  const fotos = {};
   pessoas.forEach((p) => { nomes[p.id] = String(p.apelido || (perfis[p.id] && perfis[p.id].name) || 'Alguém').slice(0, 40); });
+  pessoas.forEach((p) => { fotos[p.id] = fotoSegura(p.foto) || (perfis[p.id] && perfis[p.id].avatarUrl) || ''; });
 
   const horas = pessoas.map((p) => {
     const seg = periodo === 'semana' ? (p.semana === segunda ? numero(p.horasSemana) : 0) : numero(p.horasTotal);
@@ -132,7 +136,7 @@ async function desenhar(corpo, docs, vivo) {
   const botao = (id, rotulo) => `<button type="button" class="seg-btn" data-periodo="${id}" aria-pressed="${periodo === id}">${rotulo}</button>`;
   corpo.innerHTML = '<div class="rank-barra"><div class="seg" role="group" aria-label="Período das horas">' + botao('semana', 'Esta semana') + botao('total', 'Total') + '</div>' +
     '<button type="button" class="btn-link" data-rank="sair">Sair do ranking</button></div>' +
-    '<div class="quadros">' + quadro('Horas estudadas', horas, nomes, meuId) + quadro('Questões respondidas', questoes, nomes, meuId) + '</div>' +
+    '<div class="quadros">' + quadro('Horas estudadas', horas, nomes, fotos, meuId) + quadro('Questões respondidas', questoes, nomes, fotos, meuId) + '</div>' +
     '<p class="aviso-edital">Os números se atualizam sozinhos enquanto você estuda (no máximo uma vez por minuto).</p>';
 }
 

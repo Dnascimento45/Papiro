@@ -73,7 +73,7 @@ conteudos/
   indice.js                 Arquivos carregados, na ordem do sumário.
   secoes.js                 Seções: nucleo, bloco-a, bloco-c.
   estrutura/*.js            Conteúdo → matérias → lista de assuntos.
-  textos/*.js               Blocos de cada assunto (hoje só matematica-regra-de-tres.js).
+  textos/*.js               Blocos de todos os 377 assuntos, um arquivo por conteúdo (ou por grupo de matérias).
   _MODELO.js                Guia de todos os tipos de bloco (referência, não é carregado).
 contexto/                   Pesquisas que originaram o material (só referência).
 ```
@@ -89,10 +89,13 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 - **CSS:** uma declaração por linha; cada arquivo em `css/` cuida de um assunto. Cores e fontes só pelas variáveis de `css/base.css`. Evitar `style="..."` no HTML gerado, exceto para valores calculados (largura de barra, nível da árvore).
 - **Dependência entre módulos:** `util` ← `estado` ← `registro` ← `modelo` ← (`texto`, `blocos`, `componentes`, `vistas`, `sumario`) ← `eventos`, `app` ← `main`. Não criar ciclos.
 - **No artefato, `confirm()`, `alert()` e `prompt()` não funcionam** (devolvem sempre "não"): use `confirmar()` de `js/dialogo.js`. Recursos do artefato sempre passam por `js/plataforma.js` e precisam se esconder quando forem `null`.
+- **Conteúdo novo:** escreva em `conteudos/textos/`, registre o arquivo em `conteudos/indice.js` e confira que o caderno não mostra aviso (título errado de assunto gera aviso no topo). A saída dos blocos `python` deve ser a de uma execução real.
 - **Testar sem framework:** abrir o servidor e navegar. Mexeu no motor? Confira início, seção, conteúdo, matéria, assunto com texto, assunto vazio e endereço inexistente; marque "estudado", vire um flashcard, responda uma questão e use a busca.
 
 ### Limitações conhecidas
-- A estrutura (sumário) está pronta, mas quase todos os assuntos ainda **não têm texto**. Só "Regra de três" está escrito, e por isso o **banco tem só 3 questões**. Ele cresce a cada bloco `questao` escrito (com fonte; não inventar questão de banca).
+- **Todos os 377 assuntos têm texto** (primeira versão, compacta), com 380 questões **autorais** no banco. Nenhuma questão de banca foi inventada: questões reais de prova só com fonte.
+- Muito do conteúdo foi escrito de memória: leis, datas e valores que mudam estão marcados `conferir`. A **legislação de Curitiba, do Paraná e da RMC** não tem os artigos locais: cada assunto traz o que a CF exige, a comparação com a Lei 8.112 e um roteiro do que ler na lei local.
+- **Python não roda no caderno**: o bloco `python` mostra código e saída (conferida rodando o código antes de publicar) e manda copiar para o Colab.
 - Progresso, respostas, listas, simulados e horas ficam no `localStorage` de **cada navegador**. Para passar para outro aparelho: "Salvar agora" no perfil (cópia na nuvem) e "Restaurar" no outro.
 - Ranking, assistente, redação e perfil **só funcionam com o Papiro publicado como artefato** e a pessoa logada. No servidor local o menu os esconde.
 - As duas pessoas precisam de acesso de **colaborador** ao artefato para gravar no ranking e na cópia da nuvem.
@@ -111,12 +114,14 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 4. ~~Ranking~~ de horas e questões (`#rank`), só para quem escolhe participar.
 5. ~~Assistente de dúvidas~~ com anexo de imagens e arquivos de texto, que busca questões no banco (`#assistente`).
 6. ~~Correção de redações~~ por texto ou foto da folha (`#redacao`).
+7. ~~Primeira versão dos textos de todos os assuntos~~, com SVG, demonstrações em Python e questões autorais; foto de perfil no ranking.
 
 **Próximos, nesta ordem:**
-7. **Planejador de estudos:** cronograma semanal sobre os conteúdos, com marcação do que foi cumprido. Plano-base em `contexto/conversa-material-de-estudo.md`.
-8. **Escrever os textos e as questões** dos assuntos, começando pelo Núcleo Comum, com fonte e conferência. É o que mais enche o banco de questões (hoje 3) e dá o que o assistente e os simulados usam.
-9. **Revisão com flashcards** (blocos `flashcards` já existem no motor).
-10. **Anexo de PDF** no assistente (hoje só imagens e arquivos de texto) e ranking de questões por semana.
+8. **Conferir o conteúdo** marcado `conferir` (leis locais, valores anuais, regras de transição) e aprofundar os assuntos mais cobrados.
+9. **Planejador de estudos:** cronograma semanal sobre os conteúdos, com marcação do que foi cumprido. Plano-base em `contexto/conversa-material-de-estudo.md`.
+10. **Questões reais de prova** (com banca, ano e fonte) ao lado das autorais.
+11. **Revisão com flashcards** (blocos `flashcards` já existem no motor).
+12. **Anexo de PDF** no assistente e ranking de questões por semana.
 
 ---
 
@@ -159,4 +164,4 @@ Conversa, documentação, commits e interface em **português do Brasil**, com a
 ## 6. Próximos passos
 1. Revisar este documento e responder às decisões em aberto.
 2. Desenhar o planejador de estudos (quais telas, quais dados) antes de codar.
-3. Escolher o primeiro conteúdo do Núcleo Comum para escrever.
+3. Conferir os assuntos marcados `conferir`, começando pela legislação do edital mais próximo.

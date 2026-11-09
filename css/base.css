@@ -21,6 +21,8 @@
   --shu-vivo: #e8514f;      /* vermelho para texto sobre preto */
   --shu-veu: rgba(201, 42, 47, .13);
   --shu-borda: rgba(201, 42, 47, .5);
+  --ouro: #d4b483;          /* textos (strings) no código */
+  --jade: #8fb59a;          /* números no código */
 
   /* Fontes */
   --f-titulo: "Shippori Mincho", "Yu Mincho", "Hiragino Mincho ProN", Georgia, "Times New Roman", serif;

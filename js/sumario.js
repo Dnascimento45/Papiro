@@ -1,6 +1,6 @@
 /* Sumário lateral: navegação das ferramentas, árvore de conteúdo e busca. */
-import { esc, fmt, norm } from './util.js';
-import { expandidos, pagina } from './estado.js';
+import { esc, fmt, fotoSegura, norm } from './util.js';
+import { expandidos, pagina, perfil } from './estado.js';
 import { feito, href, kanjiDe, nos, raiz, real, todosAssuntos } from './modelo.js';
 import { ROTAS } from './rotas.js';
 import { plat, temIdentidade } from './plataforma.js';
@@ -116,5 +116,5 @@ export function renderPerfilMini() {
   const ativo = pagina.rota === 'perfil';
   el.hidden = false;
   if (ativo) el.setAttribute('aria-current', 'page'); else el.removeAttribute('aria-current');
-  el.innerHTML = `<img class="avatar" src="${esc(plat.eu.avatarUrl)}" alt="" width="22" height="22"><span>${esc(plat.eu.name || 'Meu perfil')}</span>`;
+  el.innerHTML = `<img class="avatar" src="${esc(fotoSegura(perfil.foto) || plat.eu.avatarUrl)}" alt="" width="22" height="22"><span>${esc(plat.eu.name || 'Meu perfil')}</span>`;
 }

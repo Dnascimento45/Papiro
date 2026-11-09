@@ -85,6 +85,7 @@ export function iniciar() {
   ligarCronometro();
   iniciarRank();
   aoPronta(() => { renderNavegacao(); renderPerfilMini(); });
+  window.addEventListener('papiro:perfil', renderPerfilMini);
   aoTique(tiqueSimulado);
   render();
 }

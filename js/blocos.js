@@ -38,6 +38,31 @@ function tabelaHtml(cabecalho, linhas) {
   return `<div class="tabela-wrap"><table>${thead}<tbody>${tbody}</tbody></table></div>`;
 }
 
+const PALAVRAS_PYTHON = new Set(['def', 'return', 'for', 'in', 'if', 'elif', 'else', 'while', 'import', 'from', 'as',
+  'and', 'or', 'not', 'is', 'lambda', 'class', 'with', 'break', 'continue', 'try', 'except', 'True', 'False', 'None']);
+const FUNCOES_PYTHON = new Set(['print', 'range', 'len', 'round', 'sum', 'min', 'max', 'abs', 'int', 'float', 'str',
+  'list', 'dict', 'set', 'sorted', 'enumerate', 'zip', 'map', 'filter', 'any', 'all', 'pow', 'divmod', 'tuple', 'format']);
+
+/** Realce simples de sintaxe: comentários, textos, palavras-chave, funções embutidas e números. */
+function realcarPython(codigo) {
+  const padrao = /(#[^\n]*)|("""[\s\S]*?"""|'''[\s\S]*?'''|[fr]?"(?:\\.|[^"\\\n])*"|[fr]?'(?:\\.|[^'\\\n])*')|([A-Za-z_][A-Za-z0-9_]*)|(\d+(?:\.\d+)?)/g;
+  let html = '';
+  let ultimo = 0;
+  codigo.replace(padrao, (trecho, comentario, texto, nome, numero, pos) => {
+    html += esc(codigo.slice(ultimo, pos));
+    ultimo = pos + trecho.length;
+    let classe = '';
+    if (comentario) classe = 'py-com';
+    else if (texto) classe = 'py-str';
+    else if (nome && PALAVRAS_PYTHON.has(nome)) classe = 'py-kw';
+    else if (nome && FUNCOES_PYTHON.has(nome)) classe = 'py-fn';
+    else if (numero) classe = 'py-num';
+    html += classe ? `<span class="${classe}">${esc(trecho)}</span>` : esc(trecho);
+    return trecho;
+  });
+  return html + esc(codigo.slice(ultimo));
+}
+
 export function indiceDaCorreta(b) {
   let correta = b.correta;
   if (typeof correta === 'string') {
@@ -81,6 +106,19 @@ const BLOCOS = {
   },
 
   tabela: (b) => moldura('表', b.titulo || 'Tabela', '', tabelaHtml(b.cabecalho, b.linhas) + legenda(b.legenda)),
+
+  python(b) {
+    if (!b.codigo) throw new Error('falta o "codigo" da demonstração.');
+    const codigo = String(b.codigo).replace(/^\n+/, '').replace(/\s+$/, '');
+    const saida = b.saida != null
+      ? `<div class="codigo saida"><div class="codigo-barra"><span>Saída</span></div><pre>${esc(String(b.saida).replace(/^\n+/, '').replace(/\s+$/, ''))}</pre></div>`
+      : '';
+    return moldura('蛇', b.titulo || 'Demonstração em Python', 'python',
+      (b.texto ? prosa(b.texto) : '') +
+      `<div class="codigo"><div class="codigo-barra"><span>Python</span><button type="button" data-acao="copiar-codigo">Copiar código</button></div><pre><code>${realcarPython(codigo)}</code></pre></div>` +
+      saida + legenda(b.legenda) +
+      '<p class="codigo-nota">Para rodar: copie e cole no <a href="https://colab.research.google.com" target="_blank" rel="noopener">Google Colab</a> ou no Python do seu computador.</p>');
+  },
 
   lei(b) {
     let ref = '';

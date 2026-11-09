@@ -43,5 +43,24 @@ ESTUDO.carregar([
   "conteudos/estrutura/c-compartilhados.js",
 
   /* Textos dos assuntos */
-  "conteudos/textos/matematica-regra-de-tres.js"
+  "conteudos/textos/matematica-regra-de-tres.js",
+  "conteudos/textos/matematica-numeros-aritmetica.js",
+  "conteudos/textos/matematica-financeira-algebra.js",
+  "conteudos/textos/matematica-geometria-estatistica.js",
+  "conteudos/textos/raciocinio-logico.js",
+  "conteudos/textos/portugues-texto-ortografia-morfologia.js",
+  "conteudos/textos/portugues-sintaxe-pontuacao-semantica-redacao.js",
+  "conteudos/textos/informatica.js",
+  "conteudos/textos/direito-constitucional.js",
+  "conteudos/textos/direito-administrativo.js",
+  "conteudos/textos/etica.js",
+  "conteudos/textos/lei-8112.js",
+  "conteudos/textos/lei-9784.js",
+  "conteudos/textos/etica-federal-gestao.js",
+  "conteudos/textos/administracao.js",
+  "conteudos/textos/arquivologia.js",
+  "conteudos/textos/seguridade-social.js",
+  "conteudos/textos/legislacao-local.js",
+  "conteudos/textos/financas-orcamento.js",
+  "conteudos/textos/conhecimentos-regionais.js"
 ]);
