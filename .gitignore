@@ -43,3 +43,6 @@ desktop.ini
 
 # Claude Code: configurações locais de cada pessoa
 .claude/settings.local.json
+
+# Pesquisas e conversas exportadas: ficam só no computador (o repositório é público)
+contexto/

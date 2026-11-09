@@ -73,7 +73,7 @@ conteudos/
   estrutura/*.js            Conteúdo → matérias → lista de assuntos.
   textos/*.js               Blocos de todos os 377 assuntos, um arquivo por conteúdo (ou por grupo de matérias).
   _MODELO.js                Guia de todos os tipos de bloco (referência, não é carregado).
-contexto/                   Pesquisas que originaram o material (só referência).
+contexto/                   Pesquisas que originaram o material (só neste computador: fora do git, porque o repositório é público).
 ```
 
 **Rodar localmente:** no VS Code, com a extensão **Live Server**, abrir o `index.html` com "Open with Live Server" (abre no Chrome, em geral em http://127.0.0.1:5500). **Uso no dia a dia:** o link do artefato.
@@ -154,7 +154,7 @@ Conversa, documentação, commits e interface em **português do Brasil**, com a
 ## 5. Decisões em aberto
 - [ ] **Como a amiga acessa?** Opções: (a) hospedar como site estático, por exemplo no GitHub Pages (grátis, sem servidor, mas o progresso continua local em cada navegador); (b) mandar a pasta e ela roda o servidor (exige Windows/PowerShell); (c) backend para sincronizar progresso (mais trabalho).
 - [x] **Publicar como Artefato do claude.ai?** Decidido: sim (publicado em 2026-11-09). Detalhes abaixo valem como registro. Dá, sem backend próprio: identidade (`user.id()`), banco compartilhado (`db`) para ranking e sincronização, e `sample` para o assistente e a redação (inclui imagens). Custo: o Papiro passa a depender da plataforma de artefatos e das regras dela, e as duas pessoas precisam de acesso à organização/compartilhamento. **Vínculo por data de nascimento:** não dá para verificar; seria só um dado autodeclarado, então a conta Claude (id do usuário) é o vínculo confiável e a data fica fora, salvo necessidade real.
-- [ ] **Repositório remoto no GitHub:** público ou privado? O GitHub Pages grátis exige repositório público, ou plano pago para privado. A pasta `contexto/` tem conversas exportadas, então revisar antes de publicar.
+- [x] **Repositório remoto no GitHub:** decidido: público, em https://github.com/Dnascimento45/Papiro (2026-11-09). A pasta `contexto/` (conversas exportadas) foi tirada do histórico antes do primeiro envio e fica no `.gitignore`.
 - [ ] **Texto do conteúdo:** quem escreve e como conferimos as fontes?
 - [ ] **Tema claro** para leitura longa (hoje só existe o escuro)?
 - [ ] **Planejador:** os dados dele ficam no `localStorage` ou em arquivo exportável/importável (para o backup)?
