@@ -106,6 +106,9 @@ ESTUDO.indiceTextos({
   ],
   "conteudos/textos/aprofundamento/administracao.js": [
     "bloco-a/nocoes-de-administracao"
+  ],
+  "conteudos/textos/aprofundamento/arquivologia.js": [
+    "bloco-a/arquivologia"
   ]
 }, {
   "bloco-a/arquivologia/arquivamento-e-preservacao/conservacao-e-preservacao-de-documentos": "Agentes de deterioração, condições ambientais e a diferença entre conservar e restaurar.",
