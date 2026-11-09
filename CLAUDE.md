@@ -42,33 +42,36 @@ css/                        Estilos, um arquivo por responsabilidade:
   estudo.css                  plano de estudos, banco de questões, listas, simulados e horas
   plataforma.css              ranking, perfil, assistente, redação e diálogo de confirmação
   responsivo.css              media queries
-js/                         Motor do caderno, em módulos ES (sem build):
+js/                         Motor do caderno, em módulos ES (sem build), em camadas (docs/arquitetura.md):
   main.js                     ponto de entrada; expõe window.ESTUDO e carrega conteudos/indice.js
-  registro.js                 API ESTUDO.* usada por conteudos/*.js e carregamento dos arquivos
-  modelo.js                   monta a árvore Seção→Conteúdo→Matéria→Assunto; contagens, progresso e pré-requisitos
-  estado.js                   estado compartilhado (avisos, estudados, sumário aberto, página atual)
-  texto.js                    mini-marcação (**negrito**, listas, fórmulas)
-  blocos.js                   um desenhista de HTML por tipo de bloco
-  componentes.js              peças de HTML compartilhadas pelas vistas
-  vistas.js                   uma função por tipo de página
-  sumario.js                  navegação das ferramentas, árvore de conteúdo e busca
-  eventos.js                  cliques, teclado, menu, flashcards e questões
-  plano.js                    plano de estudos (#plano): matérias escolhidas, ordem, avisos de pré-requisito
-  rotas.js                    páginas especiais: #plano, #questoes, #listas, #simulados, #horas, #rank, #assistente, #redacao, #perfil
-  carga.js                    carga sob demanda dos textos (por conteúdo, só quando a tela precisa) e garantirQuestoes(ids)
-  provas.js                   questões de provas em JSON (questoes/), lidas com fetch só quando a tela precisa
-  banco.js                    banco de questões (blocos questao dos textos já baixados + questões de provas), respostas, listas, simulados
-  vistas-questoes.js          páginas e ações do banco (filtros por conteúdo, assunto, banca e situação; #questoes--<assunto> já filtra), das listas e dos simulados
-  horas.js                    cronômetro do menu e página de horas (por dia e por matéria)
-  plataforma.js               acesso ao artefato (conta, banco compartilhado, Claude); tudo null fora dele
-  rank.js                     ranking: envia só os meus números (rank/<id>) e desenha os quadros
-  perfil.js                   perfil, apelido e cópia do progresso na nuvem
-  claude.js                   erros em português e leitura de anexos para o assistente e a redação
-  assistente.js               chat de dúvidas, com ferramenta que busca questões no banco
-  redacao.js                  correção de redação por texto ou foto
-  dialogo.js                  confirmação dentro da página (confirm() não funciona no artefato)
-  app.js                      lê o endereço (#) e desenha a página
-  util.js                     funções puras e acesso ao localStorage
+  nucleo/                     dados e regras, sem desenhar páginas
+    util.js                     funções puras, chaves e acesso ao localStorage, LETRAS e indiceDaCorreta
+    estado.js                   estado compartilhado (avisos, estudados, sumário, página atual, aguardar())
+    registro.js                 API ESTUDO.* usada por conteudos/*.js e injeção de scripts
+    modelo.js                   árvore Seção→Conteúdo→Matéria→Assunto; contagens, progresso e pré-requisitos
+    carga.js                    carga sob demanda dos textos (por conteúdo) e garantirQuestoes(ids)
+    provas.js                   questões de provas em JSON (questoes/), lidas com fetch sob demanda
+    banco.js                    banco de questões (autorais + provas), respostas, listas, simulados
+  interface/                  peças de tela reutilizadas
+    texto.js                    mini-marcação (**negrito**, listas, fórmulas)
+    blocos.js                   um desenhista de HTML por tipo de bloco
+    componentes.js              cabeçalhos, chips, barras, números, "Carregando…"
+    dialogo.js                  confirmação dentro da página (confirm() não funciona no artefato)
+  paginas/                    telas
+    vistas.js                   início, seção, conteúdo, matéria e assunto
+    vistas-questoes.js          banco de questões, listas e simulados, com suas ações
+    plano.js                    plano de estudos (#plano)
+    horas.js                    cronômetro do menu e página de horas (#horas)
+  plataforma/                 recursos do artefato; tudo null fora dele
+    plataforma.js               acesso único ao artefato (conta, banco compartilhado, Claude)
+    claude.js                   erros em português e leitura de anexos
+    rank.js, perfil.js          ranking (#rank) e perfil com cópia do progresso (#perfil)
+    assistente.js, redacao.js   chat de dúvidas (#assistente) e correção de redação (#redacao)
+  app/                        aplicação
+    app.js                      lê o endereço (#), desenha e redesenha quando a carga termina
+    rotas.js                    páginas especiais: #plano, #questoes, #listas, #simulados, #horas, #rank, #assistente, #redacao, #perfil
+    sumario.js                  menu lateral: navegação, árvore e busca
+    eventos.js                  cliques, teclado, formulários, flashcards e questões
 .editorconfig               Estilo comum de arquivos (UTF-8, LF, 2 espaços).
 package.json                Testes (Playwright Test, http-server) e as ferramentas abaixo. O site não usa Node.
 ferramentas/
@@ -77,7 +80,9 @@ ferramentas/
   conferir-aprofundamento.js  node ferramentas/conferir-aprofundamento.js <arquivos>: caminhos existentes, gabaritos válidos, comentário em toda questão
 questoes/                   Questões de provas em JSON (fora do git: direitos autorais das bancas). indice.json + <conteudo>/<banca>-<balde>.json.
                             pendentes/ guarda as que não entram no caderno (Português sem o texto-base).
-docs/decisoes/              Registros de decisão (0001: carga sob demanda).
+README.md                   Apresentação do projeto para o GitHub (o que é, como rodar, estrutura, comandos).
+docs/                       Documentação: arquitetura.md, conteudo.md, questoes-de-provas.md, testes.md, publicacao.md.
+  decisoes/                   Registros de decisão (0001 carga sob demanda; 0002 arquitetura em camadas).
 playwright.config.js        Configuração dos testes: computador (1280px) e celular (360px), servidor na porta 5510.
 testes/
   apoio.js                    serve o index.html com o embrulho do artefato, bloqueia fontes, falha em erro de console
@@ -85,6 +90,7 @@ testes/
   interacoes.spec.js          estudado, flashcard, questão, busca, sumário e menu do celular
   conteudo.spec.js            varre todas as páginas: título, avisos, blocos com erro, texto e largura em 360px
   visual.spec.js              compara capturas das páginas principais com testes/prints/
+  arquitetura.spec.js         regra de camadas de js/ e ausência de ciclos de importação
   carga.spec.js               carga sob demanda: abertura sem textos, um conteúdo por vez, busca, provas, listas e simulados; índice em dia
   dados/questoes/             três questões FICTÍCIAS no formato de questoes/, servidas no lugar da pasta real
 conteudos/
@@ -108,7 +114,7 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 ### Convenções de código
 - **JavaScript:** módulos ES (`import`/`export`), `const`/`let`, funções pequenas com um papel só. Nomes em português, como no resto do projeto. Os arquivos de `conteudos/` **não** são módulos: continuam chamando o global `ESTUDO.*`.
 - **CSS:** uma declaração por linha; cada arquivo em `css/` cuida de um assunto. Cores e fontes só pelas variáveis de `css/base.css`. Evitar `style="..."` no HTML gerado, exceto para valores calculados (largura de barra, nível da árvore).
-- **Dependência entre módulos:** `util` ← `estado` ← `registro` ← `modelo` ← (`texto`, `blocos`, `componentes`, `plano`, `vistas`, `sumario`) ← `eventos`, `app` ← `main`. O `plano` usa `componentes` e é usado por `vistas`, `rotas` e `eventos`. O `banco` é usado por `vistas` (botão "Praticar" do assunto), `vistas-questoes` e `eventos`. `provas` usa `modelo` e `banco`; `carga` usa `registro`, `modelo`, `banco` e `provas`, e é usada por `vistas`, `sumario`, `vistas-questoes` e `assistente`. Não criar ciclos.
+- **Dependência entre módulos (camadas):** `nucleo` ← `interface` ← `paginas` ← `plataforma` ← `app` ← `main.js`. Cada camada só importa da própria ou das de baixo; `testes/arquitetura.spec.js` confere a regra e a ausência de ciclos. Módulo novo vai para a camada certa; se precisar de algo de cima, a peça está no lugar errado. Detalhes em `docs/arquitetura.md`.
 - **Carga sob demanda:** uma vista que precisa de dados ainda não baixados chama `aguardar(promessa)` (de `estado.js`) e desenha `carregandoHtml(...)`; o `app.js` redesenha quando a promessa termina. Quem carrega guarda o resultado (inclusive falha), para nunca pedir de novo em laço. Detalhes em `docs/decisoes/0001-carga-sob-demanda.md`.
 - **No artefato, `confirm()`, `alert()` e `prompt()` não funcionam** (devolvem sempre "não"): use `confirmar()` de `js/dialogo.js`. Recursos do artefato sempre passam por `js/plataforma.js` e precisam se esconder quando forem `null`.
 - **Conteúdo novo:** escreva em `conteudos/textos/`, registre o arquivo em `ESTUDO.textos([...])` de `conteudos/indice.js`, rode `npm run indice` e confira que o caderno não mostra aviso (título errado de assunto gera aviso no topo, quando o texto é aberto). Mudou um `resumo`? `npm run indice` também. A saída dos blocos `python` deve ser a de uma execução real.
