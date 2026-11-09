@@ -222,3 +222,18 @@ test('início mostra o próximo assunto do plano', async ({ page }) => {
   await abrir(page);
   await expect(page.locator('.atalhos .continuar', { hasText: 'Próximo do plano' })).toContainText('Razão e proporção');
 });
+
+test('plano gravado com formato inválido não trava o caderno e volta a salvar', async ({ page }) => {
+  for (const valor of ['null', '"texto"', '[]', '42']) {
+    await abrir(page);
+    await page.evaluate((v) => localStorage.setItem('papiro.plano', v), valor);
+    await page.reload();
+    await expect(page.locator('#conteudo h1'), `com papiro.plano = ${valor} o início deve abrir`).toHaveText('Papiro');
+
+    await page.goto('/index.html#nucleo--matematica--algebra');
+    await page.locator('[data-acao="plano-add"]').click();
+    await page.reload();
+    await expect(page.locator('#conteudo a.btn[href="#plano"]'), `com papiro.plano = ${valor} o plano deve voltar a salvar`).toContainText('No meu plano');
+    await page.evaluate(() => localStorage.clear());
+  }
+});
