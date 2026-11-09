@@ -74,6 +74,7 @@ package.json                Testes (Playwright Test, http-server) e as ferrament
 ferramentas/
   gerar-indice-textos.js      npm run indice: gera conteudos/indice-textos.js (arquivo -> conteúdos; assunto com texto -> resumo)
   converter-questoes.js       npm run questoes: CSVs de "Banco de dados de questoes/" -> JSON em questoes/
+  conferir-aprofundamento.js  node ferramentas/conferir-aprofundamento.js <arquivos>: caminhos existentes, gabaritos válidos, comentário em toda questão
 questoes/                   Questões de provas em JSON (fora do git: direitos autorais das bancas). indice.json + <conteudo>/<banca>-<balde>.json.
                             pendentes/ guarda as que não entram no caderno (Português sem o texto-base).
 docs/decisoes/              Registros de decisão (0001: carga sob demanda).
@@ -92,7 +93,7 @@ conteudos/
   secoes.js                 Seções: nucleo, bloco-a, bloco-c.
   estrutura/*.js            Conteúdo → matérias → lista de assuntos.
   textos/*.js               Blocos de todos os 377 assuntos, um arquivo por conteúdo (ou por grupo de matérias).
-  textos/aprofundamento/    "Aprofundando", exemplos, questões e livros, carregados DEPOIS dos textos (os ids das questões antigas não mudam).
+  textos/aprofundamento/    "Aprofundando", exemplos, questões e livros, carregados DEPOIS dos textos (os ids das questões antigas não mudam). Cada arquivo embaralha as alternativas de forma fixa (função misturar) para o gabarito não ficar sempre na mesma letra.
   prerequisitos.js          O que estudar antes de cada assunto (ESTUDO.prerequisitos); alimenta o aviso no assunto e o plano.
   _MODELO.js                Guia de todos os tipos de bloco (referência, não é carregado).
 contexto/                   Pesquisas que originaram o material (só neste computador: fora do git, porque o repositório é público).
@@ -117,7 +118,8 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 
 ### Limitações conhecidas
 - **Questões de provas:** 19.477 (Cebraspe e FCC, até 2018) em Direito Administrativo, Direito Constitucional e Português, vindas de um CSV sem órgão, cargo nem assunto: filtram por conteúdo e banca, não por assunto. Cerca de 700 citam a Lei 8.666 (revogada) e trazem aviso. **Português:** 8.576 questões dependem de um texto-base que não veio no CSV e estão em `questoes/pendentes/`, fora do caderno, até o texto ser pesquisado. Não gerar texto substituto: o gabarito vale só para o texto original.
-- **Todos os 377 assuntos têm texto**, com 992 questões **autorais** no banco. Todo o **Núcleo Comum** já tem a camada de aprofundamento (2026-11-09); os Blocos A e C ainda estão na primeira versão, compacta. Nenhuma questão de banca foi inventada: questões reais de prova só com fonte.
+- **Todos os 377 assuntos têm texto**, com 1.630 questões **autorais** no banco. **Todos os 377 assuntos** já têm a camada de aprofundamento: Núcleo Comum (2026-11-09) e Blocos A e C (2026-11-10, 178 assuntos, 638 questões). Nenhuma questão de banca foi inventada: questões reais de prova só com fonte.
+- **Legislação local sem os artigos:** em Curitiba, Paraná e Região Metropolitana (33 assuntos) o aprofundamento cobre o **modelo constitucional** (CF arts. 29 a 31, 37 a 41, DL 201/1967, súmulas do STF, comparação com a Lei 8.112) e cada assunto traz um bloco "confira" com o que ler na lei local. O texto integral dessas leis não pôde ser lido em fonte oficial legível. Confirmado: LOM de Curitiba de 5/4/1990 (com revisão em 2024); Estatuto de Curitiba é a **Lei 1.656/1958** (capítulo da estabilidade revogado pela Lei 16.037/2022); CE-PR de 5/10/1989; Estatuto do Paraná é a **Lei 6.174/1970**. Araucária e São José dos Pinhais só têm roteiro.
 - Muito do conteúdo foi escrito de memória: leis, datas e valores que mudam estão marcados `conferir`. A **legislação de Curitiba, do Paraná e da RMC** não tem os artigos locais: cada assunto traz o que a CF exige, a comparação com a Lei 8.112 e um roteiro do que ler na lei local.
 - **Python não roda no caderno**: o bloco `python` mostra o código e a saída (conferida rodando o código antes de publicar) numa aba recolhida e manda copiar para o Colab.
 - Progresso, respostas, listas, simulados e horas ficam no `localStorage` de **cada navegador**. Para passar para outro aparelho: "Salvar agora" no perfil (cópia na nuvem) e "Restaurar" no outro.
@@ -146,7 +148,7 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 9. ~~**Limpeza e boas práticas**~~: código repetido juntado, exportações sem uso fechadas, CSS redundante removido; campo `livros` ("Para aprofundar") criado. O formato JSON das provas ficou para depois, por decisão do Daniel.
 10. ~~**Pré-requisitos**~~: `conteudos/prerequisitos.js` (304 assuntos, 355 ligações); quadro no assunto e na matéria, lista "Este assunto é base para".
 11. ~~**Bloco de estudos (planejador)**~~ (`#plano`): escolhe matérias, define a ordem (setas ou "Ordenar pelos pré-requisitos"), progresso pelos assuntos estudados, avisos de base fora de ordem e "Próximo do plano" no início. Próximo passo possível: calendário semanal (plano-base em `contexto/conversa-material-de-estudo.md`).
-12. **Conteúdo aprofundado (trilha contínua)**, feito para todo o Núcleo Comum (612 questões novas). Falta: os Blocos A e C. Regra: questão nova sempre **depois** das existentes (o id é `caminho#ordem`). Itens: mais exemplos, livros recomendados por tema, e conferência dos itens `conferir` (leis locais, valores anuais, regras de transição). Começar pelos assuntos mais cobrados do edital mais próximo.
+12. **Conteúdo aprofundado (trilha contínua)**, feito para o Núcleo Comum (612 questões) e para os Blocos A e C (638 questões). Regra: questão nova sempre **depois** das existentes (o id é `caminho#ordem`). Falta: (a) **artigos das leis locais** (LOM e estatutos de Curitiba, Araucária e São José dos Pinhais; Constituição e Estatuto do Paraná), colando o texto consolidado no chat ou numa pasta fora do git; (b) mais exemplos e livros por tema; (c) conferência dos itens `conferir` (valores em reais, alíquotas, teto e salário mínimo do ano, regras de transição, atualidades). Números de prazos e percentuais das leis federais foram conferidos no Planalto (Lei 8.112, 9.784, 8.213, 8.159, LRF, EC 103, Decreto 1.171 e 6.029, Lei 12.813).
 13. **Provas passadas**: a base está feita (2026-11-09): carga sob demanda de textos e questões, `questoes/` em JSON com id estável, 19.477 questões Cebraspe/FCC importadas. Falta: (a) pesquisar os textos-base das 8.576 de Português pendentes (começar por uma amostra para medir quantos se acham); (b) ligar questões de provas a assuntos (hoje só ao conteúdo); (c) provas inteiras dos concursos dos Blocos A e C, com banca, ano, cargo e fonte, no mesmo formato.
 14. **Revisão com flashcards** (blocos `flashcards` já existem no motor).
 15. **Anexo de PDF** no assistente e ranking de questões por semana.
