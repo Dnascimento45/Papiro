@@ -5,7 +5,7 @@ import { LETRAS, moldura, prosa, renderBloco, reiniciarQuestoes } from './blocos
 import { href } from './modelo.js';
 import {
   abandonarSimulado, adicionarNaLista, banco, criarLista, estatisticas, finalizarSimulado, historicoSimulados,
-  iniciarSimulado, listaPorId, questaoPorId, removerDaLista, removerLista, responderSimulado, resultadoPorId,
+  iniciarSimulado, listaPorId, questaoPorId, questoesDoAssunto, removerDaLista, removerLista, responderSimulado, resultadoPorId,
   simuladoAtual, statusDe, tempoDoSimulado, todasListas,
 } from './banco.js';
 import { cabecalhoRota, numeros } from './componentes.js';
@@ -32,11 +32,12 @@ const naoEncontrado = (titulo, texto) => cabecalhoRota({ sobre: 'Não encontrado
    Banco de questões
    ==================================================================== */
 
-const filtro = { conteudo: '', busca: '', banca: '', status: '' };
+const filtro = { conteudo: '', assunto: '', busca: '', banca: '', status: '' };
 
 function filtrar() {
   const termos = norm(filtro.busca).split(/\s+/).filter(Boolean);
   return banco.filter((q) => (!filtro.conteudo || q.conteudo.caminho === filtro.conteudo) &&
+    (!filtro.assunto || q.assunto.caminho === filtro.assunto) &&
     (!filtro.banca || q.banca === filtro.banca) &&
     (!filtro.status || statusDe(q.id) === filtro.status) &&
     termos.every((t) => q.texto.includes(t)));
@@ -72,17 +73,43 @@ function opcao(valor, rotulo, atual) {
   return `<option value="${esc(valor)}"${valor === atual ? ' selected' : ''}>${esc(rotulo)}</option>`;
 }
 
+/** Seletor de assunto: só assuntos com questões (do conteúdo escolhido, se houver), agrupados por matéria. */
+function assuntosHtml() {
+  const grupos = new Map(); // matéria -> Map(assunto -> nº de questões)
+  banco.forEach((q) => {
+    if (filtro.conteudo && q.conteudo.caminho !== filtro.conteudo) return;
+    if (!grupos.has(q.materia)) grupos.set(q.materia, new Map());
+    const assuntos = grupos.get(q.materia);
+    assuntos.set(q.assunto, (assuntos.get(q.assunto) || 0) + 1);
+  });
+  const blocos = [...grupos].map(([m, assuntos]) => {
+    const rotulo = filtro.conteudo ? m.titulo : `${m.pai.titulo} · ${m.titulo}`;
+    const opcoes = [...assuntos].map(([a, n]) => opcao(a.caminho, `${a.titulo} (${n})`, filtro.assunto)).join('');
+    return `<optgroup label="${esc(rotulo)}">${opcoes}</optgroup>`;
+  }).join('');
+  return `<label class="filtro-assunto"><span>Assunto</span><select data-filtro="assunto">${opcao('', 'Todos', filtro.assunto)}${blocos}</select></label>`;
+}
+
 function filtrosHtml() {
   const bancas = [...new Set(banco.map((q) => q.banca).filter(Boolean))].sort();
   return '<div class="filtros">' +
     `<label><span>Conteúdo</span><select data-filtro="conteudo">${opcao('', 'Todos', filtro.conteudo)}${conteudosDoBanco().map(([c, t]) => opcao(c, t, filtro.conteudo)).join('')}</select></label>` +
+    assuntosHtml() +
     `<label><span>Banca</span><select data-filtro="banca">${opcao('', 'Todas', filtro.banca)}${bancas.map((b) => opcao(b, b, filtro.banca)).join('')}</select></label>` +
     `<label><span>Situação</span><select data-filtro="status">${opcao('', 'Todas', filtro.status)}${opcao('nova', 'Ainda não respondidas', filtro.status)}${opcao('errada', 'Que errei', filtro.status)}${opcao('certa', 'Que acertei', filtro.status)}</select></label>` +
     `<label class="filtro-busca"><span>Buscar no enunciado</span><input type="search" data-filtro="busca" value="${esc(filtro.busca)}" placeholder="palavra ou trecho" autocomplete="off"></label>` +
     '</div>';
 }
 
-export function vQuestoes() {
+/** "#questoes--<caminho do assunto>" abre o banco já filtrado por aquele assunto. */
+function filtrarPeloEndereco(partes) {
+  const q = partes.length && questoesDoAssunto(partes.join('/'))[0];
+  if (!q) return;
+  Object.assign(filtro, { conteudo: q.conteudo.caminho, assunto: q.assunto.caminho, busca: '' });
+}
+
+export function vQuestoes(partes = []) {
+  filtrarPeloEndereco(partes);
   const est = estatisticas();
   const taxa = est.tentativas ? `${Math.round((est.acertos / est.tentativas) * 100)}%` : '—';
   const cab = cabecalhoRota({
@@ -320,9 +347,15 @@ export const mudancas = {
   },
 };
 
-/** Atualiza só a lista de cartões, sem recriar os filtros (para não perder o foco ao digitar). */
+/** Atualiza só a lista de cartões, sem recriar os filtros (para não perder o foco ao digitar).
+    Trocar o conteúdo refaz só o seletor de assunto, que depende dele. */
 export function aoFiltrar(el) {
-  filtro[el.getAttribute('data-filtro')] = el.value;
+  const campo = el.getAttribute('data-filtro');
+  filtro[campo] = el.value;
+  if (campo === 'conteudo') {
+    if (filtro.assunto && !questoesDoAssunto(filtro.assunto).some((q) => !el.value || q.conteudo.caminho === el.value)) filtro.assunto = '';
+    document.querySelector('.filtro-assunto').outerHTML = assuntosHtml();
+  }
   document.getElementById('lista-questoes').innerHTML = listaQuestoesHtml();
 }
 

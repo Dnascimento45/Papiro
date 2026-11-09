@@ -11,11 +11,13 @@ import { indiceDaCorreta } from './blocos.js';
 /** Cada item: { id, bloco, assunto, materia, conteudo, secao, banca, ano, cargo, correta, texto }. */
 export const banco = [];
 const porId = new Map();
+const porAssunto = new Map(); // caminho do assunto -> [questões]
 
 /** Varre os assuntos e cadastra cada bloco `questao` válido. Chamar depois de construir a árvore. */
 export function montarBanco() {
   banco.length = 0;
   porId.clear();
+  porAssunto.clear();
   nos.forEach((assunto) => {
     if (assunto.tipo !== 'assunto') return;
     let n = 0;
@@ -44,6 +46,8 @@ export function montarBanco() {
         };
         banco.push(q);
         porId.set(q.id, q);
+        if (!porAssunto.has(assunto.caminho)) porAssunto.set(assunto.caminho, []);
+        porAssunto.get(assunto.caminho).push(q);
       } catch (e) { /* bloco inválido: o aviso aparece na página do próprio assunto */ }
     });
   });
@@ -51,6 +55,11 @@ export function montarBanco() {
 
 export function questaoPorId(id) {
   return porId.get(id);
+}
+
+/** Questões de um assunto (lista vazia se não houver). */
+export function questoesDoAssunto(caminho) {
+  return porAssunto.get(caminho) || [];
 }
 
 /* ---------- Respostas ---------- */

@@ -10,6 +10,7 @@ import {
   barra, cabecalho, chips, conferirHtml, legendaLista, linhaAssunto, navegar, notaHtml, numeros, prerequisitosHtml,
 } from './componentes.js';
 import { botaoPlano, proximoDoPlano } from './plano.js';
+import { questoesDoAssunto } from './banco.js';
 
 const ASSUNTO_MODELO = 'nucleo/matematica/aritmetica/regra-de-tres';
 const MAPA = [['Seção', 'Núcleo Comum'], ['Conteúdo', 'Matemática'], ['Matéria', 'Aritmética'], ['Assunto', 'Regra de três']];
@@ -142,6 +143,13 @@ function assuntoVazio(caminho) {
     `<div class="caminho"><code id="caminho-assunto">ESTUDO.assunto("${esc(caminho)}", { blocos: [ ] });</code><button type="button" data-acao="copiar">Copiar</button></div></div>`;
 }
 
+/** Atalho para o banco já filtrado pelas questões deste assunto. */
+function botaoPraticar(assunto) {
+  const n = questoesDoAssunto(assunto.caminho).length;
+  if (!n) return '';
+  return `<a class="btn" href="#questoes--${assunto.caminho.split('/').join('--')}"><span class="kj">問</span>Praticar ${n === 1 ? 'a questão' : `as ${n} questões`} deste assunto</a>`;
+}
+
 export function vAssunto(assunto) {
   const materia = assunto.pai;
   const conteudo = materia.pai;
@@ -153,6 +161,7 @@ export function vAssunto(assunto) {
   let html = `<header class="cab"><div><p class="sobre">${esc(conteudo.titulo)} · ${esc(materia.titulo)}</p><h1>${esc(assunto.titulo)}</h1>` +
     (d.resumo ? `<p class="lead">${inline(d.resumo)}</p>` : '') +
     `<div class="ferramentas"><button type="button" class="btn${estudado ? ' feito' : ''}" data-acao="estudado" aria-pressed="${estudado}"><span class="kj">済</span>${estudado ? 'Estudado' : 'Marcar como estudado'}</button>` +
+    botaoPraticar(assunto) +
     (d.incidencia ? `<span class="incid">Incidência <b>${esc(d.incidencia)}</b></span>` : '') + '</div>' +
     notaHtml(d.nota) + conferirHtml(d.conferir) +
     `</div><div class="cab-kanji" aria-hidden="true">${esc(kanjiDe(assunto))}</div></header>` +

@@ -237,3 +237,38 @@ test('plano gravado com formato inválido não trava o caderno e volta a salvar'
     await page.evaluate(() => localStorage.clear());
   }
 });
+
+test('banco de questões: filtra por assunto e o seletor acompanha o conteúdo escolhido', async ({ page }) => {
+  await abrir(page);
+  await page.goto('/index.html#questoes');
+  const assunto = page.locator('[data-filtro="assunto"]');
+  await page.locator('[data-filtro="conteudo"]').selectOption('nucleo/matematica');
+  // Só assuntos de Matemática no seletor; nada de Português.
+  await expect(assunto.locator('option', { hasText: 'Regra de três' })).toHaveCount(1);
+  await expect(assunto.locator('option', { hasText: 'Crase' })).toHaveCount(0);
+
+  await assunto.selectOption('nucleo/matematica/aritmetica/regra-de-tres');
+  const trilhas = page.locator('#lista-questoes .q-trilha a');
+  await expect(trilhas.first()).toBeVisible();
+  const textos = await trilhas.allTextContents();
+  expect(textos.every((t) => t.endsWith('Regra de três')), 'todas as questões devem ser de regra de três').toBe(true);
+  const numero = Number((await assunto.locator('option:checked').textContent()).match(/\((\d+)\)/)[1]);
+  expect(textos.length).toBe(numero);
+
+  // Trocar para outro conteúdo limpa o assunto que não pertence a ele.
+  await page.locator('[data-filtro="conteudo"]').selectOption('nucleo/portugues');
+  await expect(page.locator('[data-filtro="assunto"]')).toHaveValue('');
+  await expect(page.locator('[data-filtro="assunto"] option', { hasText: 'Crase' })).toHaveCount(1);
+});
+
+test('assunto: "Praticar as questões" abre o banco filtrado por ele', async ({ page }) => {
+  await abrir(page, 'nucleo/portugues/sintaxe/crase');
+  const botao = page.locator('#conteudo a.btn', { hasText: 'Praticar' });
+  await expect(botao).toContainText('questões deste assunto');
+  await botao.click();
+  await expect(page.locator('#conteudo h1')).toHaveText('Banco de questões');
+  await expect(page.locator('[data-filtro="assunto"]')).toHaveValue('nucleo/portugues/sintaxe/crase');
+  const textos = await page.locator('#lista-questoes .q-trilha a').allTextContents();
+  expect(textos.length).toBeGreaterThan(1);
+  expect(textos.every((t) => t.endsWith('Crase'))).toBe(true);
+});
