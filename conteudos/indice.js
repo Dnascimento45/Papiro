@@ -99,5 +99,7 @@ ESTUDO.textos([
   "conteudos/textos/aprofundamento/lei-9784.js",
   "conteudos/textos/aprofundamento/etica-federal-gestao.js",
   "conteudos/textos/aprofundamento/administracao.js",
-  "conteudos/textos/aprofundamento/arquivologia.js"
+  "conteudos/textos/aprofundamento/arquivologia.js",
+  "conteudos/textos/aprofundamento/seguridade-social-1.js",
+  "conteudos/textos/aprofundamento/seguridade-social-2.js"
 ]);
