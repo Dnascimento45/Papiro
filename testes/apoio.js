@@ -2,11 +2,29 @@
 // - Todo teste falha se a página tiver erro de JavaScript ou console.error.
 // - As fontes do Google são trocadas por um CSS vazio: os testes não dependem
 //   da internet e as capturas de tela ficam estáveis.
-// - O index.html do projeto é um fragmento (o artefato o embrulha). O navegador
-//   o abre do mesmo jeito que o Live Server, então os testes usam o arquivo como está.
+// - O index.html do projeto é um fragmento: o artefato o embrulha numa página completa,
+//   com <meta name="viewport">. Sem essa meta o celular desenha a página como se tivesse
+//   980px e o layout de celular nunca aparece. Por isso os testes servem o index.html
+//   com o mesmo embrulho do artefato (copiado da versão publicada em 2026-11-09).
+const fs = require('fs');
+const path = require('path');
 const base = require('@playwright/test');
 
+const EMBRULHO_INICIO = '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>\n';
+const EMBRULHO_FIM = '\n</body></html>';
+const INDEX = path.join(__dirname, '..', 'index.html');
+
 const test = base.test.extend({
+  // Serve o index.html embrulhado como no artefato (lido a cada teste: mudou o arquivo, vale na hora).
+  embrulho: [async ({ page }, use) => {
+    await page.route(/\/index\.html$/, (rota) => rota.fulfill({
+      status: 200,
+      contentType: 'text/html; charset=utf-8',
+      body: EMBRULHO_INICIO + fs.readFileSync(INDEX, 'utf8') + EMBRULHO_FIM,
+    }));
+    await use();
+  }, { auto: true }],
+
   erros: [async ({ page }, use) => {
     const erros = [];
     page.on('pageerror', (e) => erros.push(`erro de JavaScript: ${e.message}`));
