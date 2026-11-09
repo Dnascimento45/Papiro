@@ -97,6 +97,23 @@ function aoCopiarCaminho(botao) {
   }
 }
 
+function aoCopiarCodigo(botao) {
+  const codigo = botao.closest('.codigo').querySelector('code');
+  const selecionar = () => {
+    const faixa = document.createRange();
+    faixa.selectNodeContents(codigo);
+    const selecao = getSelection();
+    selecao.removeAllRanges();
+    selecao.addRange(faixa);
+    botao.textContent = 'Selecionado: use Ctrl+C';
+  };
+  try {
+    navigator.clipboard.writeText(codigo.textContent).then(() => { botao.textContent = 'Copiado'; }, selecionar);
+  } catch (e) {
+    selecionar();
+  }
+}
+
 function aoVirarCarta(carta) {
   const virada = carta.classList.toggle('virada');
   carta.setAttribute('aria-pressed', virada);
@@ -139,6 +156,7 @@ function aoRefazerQuestao(botao) {
 const ACOES_NOMEADAS = {
   estudado: aoMarcarEstudado,
   copiar: aoCopiarCaminho,
+  'copiar-codigo': aoCopiarCodigo,
   ...acoesQuestoes,
 };
 

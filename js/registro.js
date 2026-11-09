@@ -1,6 +1,7 @@
 /* Registro: recebe o que os arquivos de conteúdo declaram e carrega esses arquivos.
    A API pública (window.ESTUDO) é a única parte usada por conteudos/*.js. */
 import { problema } from './estado.js';
+import { slug } from './util.js';
 
 /** Tudo o que foi declarado pelos arquivos de conteúdo, ainda sem virar árvore. */
 export const reg = { secoes: [], conteudos: [], assuntos: [] };
@@ -67,6 +68,12 @@ export const api = {
       };
       document.head.appendChild(s);
     });
+  },
+
+  /** Monta um caminho a partir dos títulos: ESTUDO.caminho("nucleo", "matematica", "Aritmética", "Porcentagem").
+      Cada parte vira id (sem acento, com hífens), inclusive títulos com barra, como "Lei 8.112/1990". */
+  caminho(...partes) {
+    return partes.map((p) => slug(p)).filter(Boolean).join('/');
   },
 
   falhou(src) {

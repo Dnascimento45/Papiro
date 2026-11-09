@@ -101,8 +101,8 @@
 .quadro li {
   position: relative;
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) auto;
-  align-items: baseline;
+  grid-template-columns: 24px 26px minmax(0, 1fr) auto;
+  align-items: center;
   gap: 10px;
   padding: 10px 12px 12px;
   border: 1px solid var(--linha);
@@ -375,4 +375,16 @@
 
 .conversa {
   margin-top: 0;
+}
+
+.perfil-foto-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 10px;
+}
+
+.perfil-conta {
+  align-items: flex-start;
 }

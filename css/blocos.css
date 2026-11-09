@@ -502,3 +502,146 @@ figcaption {
 .credito {
   color: var(--cinza-2);
 }
+
+/* ---------- Demonstração em Python ---------- */
+.codigo {
+  margin-top: 12px;
+  border: 1px solid var(--linha);
+  border-radius: 3px;
+  background: var(--sumi);
+  overflow: hidden;
+}
+
+.codigo-barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--linha);
+  font-size: 11.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--cinza-2);
+}
+
+.codigo-barra button {
+  padding: 2px 8px;
+  border: 1px solid var(--linha-forte);
+  border-radius: 3px;
+  background: none;
+  color: var(--cinza);
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  cursor: pointer;
+}
+
+.codigo-barra button:hover {
+  color: var(--washi);
+  border-color: var(--shu-borda);
+}
+
+.codigo pre {
+  margin: 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+  font-family: var(--f-mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--washi);
+  tab-size: 4;
+}
+
+.codigo.saida pre {
+  color: var(--cinza);
+}
+
+.py-kw {
+  color: var(--shu-vivo);
+}
+
+.py-fn {
+  color: var(--washi);
+  font-weight: 700;
+}
+
+.py-str {
+  color: var(--ouro);
+}
+
+.py-num {
+  color: var(--jade);
+}
+
+.py-com {
+  color: var(--cinza-2);
+  font-style: italic;
+}
+
+.codigo-nota {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--cinza-2);
+}
+
+/* ---------- Vocabulário de classes para as ilustrações SVG ----------
+   tx: texto  · tx-m: texto miúdo/secundário · tx-d: texto em destaque · tx-t: fonte de título
+   ln: linha neutra · ln-d: linha em destaque · ln-f: linha fraca
+   fd: área neutra · fd-d: área em destaque · pt: ponto/marcador */
+.svg-wrap svg {
+  font-family: var(--f-texto);
+}
+
+.svg-wrap .tx {
+  fill: var(--washi);
+  font-size: 14px;
+}
+
+.svg-wrap .tx-m {
+  fill: var(--cinza);
+  font-size: 12px;
+}
+
+.svg-wrap .tx-d {
+  fill: var(--shu-vivo);
+}
+
+.svg-wrap .tx-t {
+  font-family: var(--f-titulo);
+  font-weight: 700;
+}
+
+.svg-wrap .ln {
+  fill: none;
+  stroke: var(--cinza);
+  stroke-width: 1.5;
+}
+
+.svg-wrap .ln-d {
+  fill: none;
+  stroke: var(--shu);
+  stroke-width: 2;
+}
+
+.svg-wrap .ln-f {
+  fill: none;
+  stroke: var(--linha-forte);
+  stroke-width: 1;
+}
+
+.svg-wrap .fd {
+  fill: var(--sumi-3);
+  stroke: var(--linha-forte);
+  stroke-width: 1;
+}
+
+.svg-wrap .fd-d {
+  fill: var(--shu-veu);
+  stroke: var(--shu);
+  stroke-width: 1.5;
+}
+
+.svg-wrap .pt {
+  fill: var(--shu);
+}

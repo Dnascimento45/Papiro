@@ -65,3 +65,9 @@ export const memoria = {
     } catch (e) { /* sem armazenamento: o caderno segue funcionando sem lembrar */ }
   },
 };
+
+/** Aceita só foto em data URL de imagem (jpeg/png/webp) e pequena; qualquer outra coisa vira ''.
+    Usada para fotos de perfil que vêm do banco compartilhado (dado de outras pessoas). */
+export function fotoSegura(valor) {
+  return typeof valor === 'string' && valor.length < 60000 && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(valor) ? valor : '';
+}
