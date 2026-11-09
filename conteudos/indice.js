@@ -91,5 +91,9 @@ ESTUDO.textos([
   "conteudos/textos/aprofundamento/direito-administrativo.js",
   "conteudos/textos/aprofundamento/informatica.js",
   "conteudos/textos/aprofundamento/direito-constitucional.js",
-  "conteudos/textos/aprofundamento/etica.js"
+  "conteudos/textos/aprofundamento/etica.js",
+
+  /* Aprofundamento dos Blocos A e C */
+  "conteudos/textos/aprofundamento/lei-8112-1.js",
+  "conteudos/textos/aprofundamento/lei-8112-2.js"
 ]);

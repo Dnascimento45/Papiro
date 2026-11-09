@@ -90,6 +90,12 @@ ESTUDO.indiceTextos({
   ],
   "conteudos/textos/aprofundamento/etica.js": [
     "nucleo/etica"
+  ],
+  "conteudos/textos/aprofundamento/lei-8112-1.js": [
+    "bloco-a/lei-8112"
+  ],
+  "conteudos/textos/aprofundamento/lei-8112-2.js": [
+    "bloco-a/lei-8112"
   ]
 }, {
   "bloco-a/arquivologia/arquivamento-e-preservacao/conservacao-e-preservacao-de-documentos": "Agentes de deterioração, condições ambientais e a diferença entre conservar e restaurar.",
