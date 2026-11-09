@@ -64,6 +64,10 @@ ESTUDO.carregar([
   "conteudos/textos/financas-orcamento.js",
   "conteudos/textos/conhecimentos-regionais.js",
 
+  /* Aprofundamento: mais texto, exemplos e questões, depois do que já existe */
+  "conteudos/textos/aprofundamento/matematica-1.js",
+  "conteudos/textos/aprofundamento/matematica-2.js",
+
   /* O que estudar antes de cada assunto (depois da estrutura) */
   "conteudos/prerequisitos.js"
 ]);
