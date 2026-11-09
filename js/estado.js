@@ -28,3 +28,25 @@ export function salvarExpandidos() {
 
 /** Página aberta agora: `atual` é o nó da árvore; `rota` é o nome de uma página especial (questoes, horas…). */
 export const pagina = { atual: null, rota: null };
+
+/* ---------- Perfil (só neste navegador; o ranking usa o que está aqui) ---------- */
+/** participa: entra no ranking; apelido: nome opcional exibido no lugar do nome da conta. */
+export const perfil = memoria.ler(CHAVES.perfil, { participa: false, apelido: '' });
+
+export function salvarPerfil() {
+  memoria.gravar(CHAVES.perfil, perfil);
+}
+
+/* ---------- Aviso de que os dados de estudo mudaram (horas, respostas) ---------- */
+const ouvintesDados = new Set();
+
+export function aoDadosMudarem(fn) {
+  ouvintesDados.add(fn);
+}
+
+export function dadosMudaram() {
+  ouvintesDados.forEach((fn) => fn());
+}
+
+/** Quando true, nada deve regravar o localStorage (usado ao restaurar uma cópia e recarregar). */
+export const trava = { gravacao: false };

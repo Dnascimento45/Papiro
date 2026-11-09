@@ -3,6 +3,7 @@
    Nada aqui mexe na tela; as páginas ficam em vistas-questoes.js. */
 import { CHAVES, memoria, norm } from './util.js';
 import { nos } from './modelo.js';
+import { dadosMudaram } from './estado.js';
 import { indiceDaCorreta } from './blocos.js';
 
 /* ---------- Banco (montado a partir do conteúdo) ---------- */
@@ -62,6 +63,7 @@ export function registrarResposta(id, acertou) {
   r.ok = acertou;
   r.t = Date.now();
   memoria.gravar(CHAVES.respostas, respostas);
+  dadosMudaram();
 }
 
 /** 'nova' (nunca respondida), 'certa' ou 'errada' (conforme a última resposta). */

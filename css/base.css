@@ -103,3 +103,8 @@ h1,h2,h3,h4 {
   white-space: nowrap;
   border: 0;
 }
+
+/* Atributo hidden sempre esconde (igual ao reset da plataforma de artefatos). */
+[hidden] {
+  display: none !important;
+}
