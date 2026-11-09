@@ -88,7 +88,7 @@ ESTUDO.assunto("nucleo/meu-conteudo/minha-materia/assunto-so-com-titulo", {
       id: "fafipa-2026-agente-01",         // opcional: fixa o id no banco de questões (guarda o histórico se reordenar)
       comentario: "Por que a C está certa.",
       conferir: "opcional: aviso acima do enunciado (ex.: a questão cita lei revogada)" },
-    // Questões de PROVAS não ficam aqui: vêm em JSON de questoes/ (npm run questoes; veja js/provas.js).
+    // Questões de PROVAS não ficam aqui: vêm em JSON de questoes/ (npm run questoes; veja js/nucleo/provas.js).
     { tipo: "questao", banca: "Cebraspe", enunciado: "Item para julgar.", alternativas: ["Certo", "Errado"], correta: "Errado" },
     { tipo: "link", rotulo: "Para consultar", itens: [{ titulo: "Edital", url: "https://...", nota: "opcional" }] },
     { tipo: "python", titulo: "opcional", texto: "Explicação antes do código (opcional).",

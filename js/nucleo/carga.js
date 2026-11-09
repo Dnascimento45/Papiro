@@ -3,7 +3,7 @@
    Na abertura o caderno tem só a estrutura (e o índice gerado com quais assuntos têm texto).
    Os arquivos de conteudos/textos/ chegam aqui, por conteúdo, quando alguém abre um assunto,
    busca no texto, abre o banco de questões ou o assistente. As questões de provas (JSON em
-   questoes/) ficam com js/provas.js; garantirQuestoes() junta as duas fontes.
+   questoes/) ficam com js/nucleo/provas.js; garantirQuestoes() junta as duas fontes.
 
    Regra de ordem: os blocos de um assunto podem vir de mais de um arquivo (texto e
    aprofundamento), e o id das questões autorais ("caminho#ordem") depende da ordem dos

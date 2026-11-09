@@ -1,7 +1,7 @@
 /* Componentes de HTML compartilhados pelas vistas (páginas). */
-import { esc, fmt } from './util.js';
+import { esc, fmt } from '../nucleo/util.js';
 import { inline } from './texto.js';
-import { contagem, cumprido, feito, href, kanjiDe, real, temConteudo } from './modelo.js';
+import { contagem, cumprido, feito, href, kanjiDe, real, temConteudo } from '../nucleo/modelo.js';
 
 export function chips(lista, classe = '') {
   if (!Array.isArray(lista) || !lista.length) return '';

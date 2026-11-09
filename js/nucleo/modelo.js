@@ -74,7 +74,7 @@ function ligarReferencias(refs) {
 let aplicados = 0; // quantos registros de reg.assuntos já foram aplicados à árvore
 
 /** Aplica os textos (blocos e metadados) declarados em conteudos/textos/*.js que chegaram
-    desde a última chamada. Os textos chegam sob demanda (js/carga.js), por isso é incremental. */
+    desde a última chamada. Os textos chegam sob demanda (js/nucleo/carga.js), por isso é incremental. */
 export function aplicarNovosTextos() {
   reg.assuntos.slice(aplicados).forEach((r) => {
     const no = nos.get(normCaminho(r.caminho));

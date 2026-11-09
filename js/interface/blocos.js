@@ -1,10 +1,8 @@
 /* Blocos de conteúdo: cada tipo vira um pedaço de HTML.
    Tipos desconhecidos ou blocos com erro mostram um aviso no lugar, sem quebrar a página.
    Referência de cada tipo: conteudos/_MODELO.js. */
-import { esc, norm } from './util.js';
+import { LETRAS, esc, indiceDaCorreta } from '../nucleo/util.js';
 import { formula, inline, md } from './texto.js';
-
-export const LETRAS = 'ABCDEFGH';
 
 let contadorQuestoes = 0;
 
@@ -66,18 +64,6 @@ function realcarPython(codigo) {
 /** Aviso "Conferir" de uma questão (ex.: cita lei revogada). Mesmo visual do conferirHtml das páginas. */
 export function conferirDaQuestao(b) {
   return b.conferir ? `<div class="conferir"><b>Conferir</b><span>${inline(b.conferir)}</span></div>` : '';
-}
-
-export function indiceDaCorreta(b) {
-  let correta = b.correta;
-  if (typeof correta === 'string') {
-    const ix = b.alternativas.map(norm).indexOf(norm(correta));
-    correta = ix >= 0 ? ix : LETRAS.indexOf(correta.trim().toUpperCase());
-  }
-  if (!(correta >= 0 && correta < b.alternativas.length)) {
-    throw new Error('"correta" deve ser o número da alternativa (0 = A) ou a letra.');
-  }
-  return correta;
 }
 
 /* ---------- Tipos de bloco ---------- */

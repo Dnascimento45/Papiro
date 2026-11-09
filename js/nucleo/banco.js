@@ -1,16 +1,15 @@
 /* Banco de questões: reúne os blocos `questao` de todos os assuntos e guarda,
    no navegador, as respostas, as listas e os simulados.
    Nada aqui mexe na tela; as páginas ficam em vistas-questoes.js. */
-import { CHAVES, memoria, norm } from './util.js';
+import { CHAVES, indiceDaCorreta, memoria, norm } from './util.js';
 import { nos } from './modelo.js';
 import { dadosMudaram } from './estado.js';
-import { indiceDaCorreta } from './blocos.js';
 
 /* ---------- Banco (montado a partir do conteúdo) ---------- */
 
 /** Cada item: { id, bloco, assunto, materia, conteudo, secao, banca, ano, cargo, correta, texto, prova }.
-    Questões autorais vêm dos blocos `questao` dos textos (só dos textos já baixados: js/carga.js).
-    Questões de provas vêm dos JSON de questoes/ (js/provas.js) e não têm assunto nem matéria
+    Questões autorais vêm dos blocos `questao` dos textos (só dos textos já baixados: js/nucleo/carga.js).
+    Questões de provas vêm dos JSON de questoes/ (js/nucleo/provas.js) e não têm assunto nem matéria
     (assunto e materia = null): o arquivo de origem só diz a matéria do edital. */
 export const banco = [];
 const porId = new Map();

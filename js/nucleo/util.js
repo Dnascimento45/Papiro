@@ -72,3 +72,22 @@ export const memoria = {
 export function fotoSegura(valor) {
   return typeof valor === 'string' && valor.length < 60000 && /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(valor) ? valor : '';
 }
+
+/* ---------- Questões ---------- */
+
+/** Letras das alternativas (A = 0). */
+export const LETRAS = 'ABCDEFGH';
+
+/** Índice da alternativa correta de um bloco questão: aceita número (0 = A), letra ou o texto da alternativa.
+    Fica no núcleo porque o banco de questões (nucleo/banco.js) e a interface (interface/blocos.js) usam. */
+export function indiceDaCorreta(b) {
+  let correta = b.correta;
+  if (typeof correta === 'string') {
+    const ix = b.alternativas.map(norm).indexOf(norm(correta));
+    correta = ix >= 0 ? ix : LETRAS.indexOf(correta.trim().toUpperCase());
+  }
+  if (!(correta >= 0 && correta < b.alternativas.length)) {
+    throw new Error('"correta" deve ser o número da alternativa (0 = A) ou a letra.');
+  }
+  return correta;
+}

@@ -1,12 +1,12 @@
 /* Interações do usuário: menu, busca, atalhos, marcação de estudado, flashcards e questões. */
-import { expandidos, pagina, salvarExpandidos } from './estado.js';
-import { alternarEstudado } from './modelo.js';
-import { registrarResposta } from './banco.js';
+import { expandidos, pagina, salvarExpandidos } from '../nucleo/estado.js';
+import { alternarEstudado } from '../nucleo/modelo.js';
+import { registrarResposta } from '../nucleo/banco.js';
 import {
   acoes as acoesQuestoes, aoFiltrar, formularios as formulariosQuestoes, marcarAlternativaSimulado, mudancas as mudancasQuestoes,
-} from './vistas-questoes.js';
-import { acoes as acoesPlano } from './plano.js';
-import { LETRAS } from './blocos.js';
+} from '../paginas/vistas-questoes.js';
+import { acoes as acoesPlano } from '../paginas/plano.js';
+import { LETRAS } from '../nucleo/util.js';
 import { renderArvore } from './sumario.js';
 
 const corpo = document.body;

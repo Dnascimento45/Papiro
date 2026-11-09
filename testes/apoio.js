@@ -53,7 +53,7 @@ const test = base.test.extend({
 
 const { expect } = base;
 
-/** "nucleo/matematica" -> "#nucleo--matematica" (mesma regra de href() em js/modelo.js). */
+/** "nucleo/matematica" -> "#nucleo--matematica" (mesma regra de href() em js/nucleo/modelo.js). */
 function hashDe(caminho) {
   return caminho ? `#${caminho.split('/').join('--')}` : '';
 }
@@ -77,14 +77,14 @@ async function semAvisos(page) {
 }
 
 /**
- * Lê a árvore do caderno pelo próprio módulo js/modelo.js. O navegador devolve a mesma
+ * Lê a árvore do caderno pelo próprio módulo js/nucleo/modelo.js. O navegador devolve a mesma
  * instância que a página já usa, então não é preciso expor nada a mais no motor.
  * Os textos chegam sob demanda: antes de ler, baixa todos (para ver os blocos de cada assunto).
  */
 async function arvore(page) {
   return page.evaluate(async () => {
-    await (await import('/js/carga.js')).carregarTodosTextos();
-    const m = await import('/js/modelo.js');
+    await (await import('/js/nucleo/carga.js')).carregarTodosTextos();
+    const m = await import('/js/nucleo/modelo.js');
     const resumo = (n) => ({ caminho: n.caminho, titulo: n.titulo, tipo: n.tipo });
     const todos = [...m.nos.values()].filter((n) => !n.ref);
     const assuntos = m.todosAssuntos();

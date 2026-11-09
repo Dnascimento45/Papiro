@@ -1,9 +1,9 @@
 /* Correção de redações: o Claude lê o texto digitado ou fotos da folha manuscrita
    e devolve nota estimada, problemas com a correção e um trecho reescrito.
    A nota é uma estimativa por critérios gerais, não o espelho oficial de uma banca. */
-import { CHAVES, esc, memoria } from './util.js';
-import { md } from './texto.js';
-import { cabecalhoRota } from './componentes.js';
+import { CHAVES, esc, memoria } from '../nucleo/util.js';
+import { md } from '../interface/texto.js';
+import { cabecalhoRota } from '../interface/componentes.js';
 import { AVISO_SO_NO_ARTEFATO, aoPronta, plat } from './plataforma.js';
 import { copiaErro, lerAnexos, ligarAnexos, temClaude, tiposAceitos } from './claude.js';
 

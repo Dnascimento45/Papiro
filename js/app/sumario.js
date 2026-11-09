@@ -1,10 +1,10 @@
 /* Sumário lateral: navegação das ferramentas, árvore de conteúdo e busca. */
-import { esc, fmt, fotoSegura, norm } from './util.js';
-import { expandidos, pagina, perfil } from './estado.js';
-import { feito, href, kanjiDe, nos, raiz, real, todosAssuntos } from './modelo.js';
+import { esc, fmt, fotoSegura, norm } from '../nucleo/util.js';
+import { expandidos, pagina, perfil } from '../nucleo/estado.js';
+import { feito, href, kanjiDe, nos, raiz, real, todosAssuntos } from '../nucleo/modelo.js';
 import { ROTAS } from './rotas.js';
-import { plat, temIdentidade } from './plataforma.js';
-import { carregarTodosTextos, todosTextosProntos } from './carga.js';
+import { plat, temIdentidade } from '../plataforma/plataforma.js';
+import { carregarTodosTextos, todosTextosProntos } from '../nucleo/carga.js';
 
 const SETA = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
 const LIMITE_BUSCA = 80;

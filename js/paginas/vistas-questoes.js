@@ -1,23 +1,23 @@
 /* Páginas do banco de questões, das listas e dos simulados, e as ações delas.
-   As questões chegam sob demanda (js/carga.js e js/provas.js): cada página pede o que
+   As questões chegam sob demanda (js/nucleo/carga.js e js/nucleo/provas.js): cada página pede o que
    precisa com aguardar() e mostra "Carregando…" até chegar. */
-import { esc, fmt, norm } from './util.js';
-import { inline } from './texto.js';
-import { aguardar } from './estado.js';
-import { LETRAS, conferirDaQuestao, moldura, prosa, renderBloco, reiniciarQuestoes } from './blocos.js';
-import { href, nos } from './modelo.js';
+import { LETRAS, esc, fmt, norm } from '../nucleo/util.js';
+import { inline } from '../interface/texto.js';
+import { aguardar } from '../nucleo/estado.js';
+import { conferirDaQuestao, moldura, prosa, renderBloco, reiniciarQuestoes } from '../interface/blocos.js';
+import { href, nos } from '../nucleo/modelo.js';
 import {
   abandonarSimulado, adicionarNaLista, banco, criarLista, estatisticas, finalizarSimulado, historicoSimulados,
   iniciarSimulado, listaPorId, questaoPorId, questoesDoAssunto, removerDaLista, removerLista, responderSimulado, resultadoPorId,
   simuladoAtual, statusDe, tempoDoSimulado, todasListas,
-} from './banco.js';
-import { carregarTodosTextos, garantirQuestoes, questoesProntas, todosTextosProntos } from './carga.js';
+} from '../nucleo/banco.js';
+import { carregarTodosTextos, garantirQuestoes, questoesProntas, todosTextosProntos } from '../nucleo/carga.js';
 import {
   bancasDe, carregarIndiceProvas, carregarProvasDe, conteudosComProvas, falhasDeProvas, indiceProvas, provasProntas, totalDeProvas,
-} from './provas.js';
-import { cabecalhoRota, carregandoHtml, numeros } from './componentes.js';
+} from '../nucleo/provas.js';
+import { cabecalhoRota, carregandoHtml, numeros } from '../interface/componentes.js';
 import { duracao, relogio } from './horas.js';
-import { confirmar } from './dialogo.js';
+import { confirmar } from '../interface/dialogo.js';
 
 const LIMITE_CARTOES = 40;
 const ROTULO_STATUS = { nova: 'Nova', certa: 'Acertou', errada: 'Errou' };

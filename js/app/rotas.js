@@ -7,14 +7,14 @@
                                  uma função de limpeza; `vivo()` diz se a página ainda está aberta
      disponivel()           opcional: se false, o link some do menu (recurso que só existe no artefato)
      oculta                 opcional: não aparece no menu (o acesso é por outro lugar) */
-import { vPlano } from './plano.js';
-import { vQuestoes, vListas, vSimulados } from './vistas-questoes.js';
-import { vHoras } from './horas.js';
-import { vRank, montarRank } from './rank.js';
-import { vPerfil, montarPerfil } from './perfil.js';
-import { vAssistente, montarAssistente } from './assistente.js';
-import { vRedacao, montarRedacao } from './redacao.js';
-import { plat, podeRank } from './plataforma.js';
+import { vPlano } from '../paginas/plano.js';
+import { vQuestoes, vListas, vSimulados } from '../paginas/vistas-questoes.js';
+import { vHoras } from '../paginas/horas.js';
+import { vRank, montarRank } from '../plataforma/rank.js';
+import { vPerfil, montarPerfil } from '../plataforma/perfil.js';
+import { vAssistente, montarAssistente } from '../plataforma/assistente.js';
+import { vRedacao, montarRedacao } from '../plataforma/redacao.js';
+import { plat, podeRank } from '../plataforma/plataforma.js';
 
 export const ROTAS = {
   plano: { rotulo: 'Plano', titulo: 'Plano de estudos', kanji: '計', vista: vPlano },

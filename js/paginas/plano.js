@@ -2,12 +2,12 @@
    O que já foi cumprido sai dos assuntos marcados como estudados (não há marcação dupla).
    O plano avisa quando uma matéria vem antes de outra que ela usa como base (pré-requisitos).
    Fica no navegador (localStorage) e entra na cópia da nuvem do perfil. */
-import { CHAVES, esc, memoria } from './util.js';
+import { CHAVES, esc, memoria } from '../nucleo/util.js';
 import {
   contagem, cumprido, feito, href, nos, prerequisitosDaMateria, raiz, real,
-} from './modelo.js';
-import { barra, cabecalhoRota, numeros } from './componentes.js';
-import { confirmar } from './dialogo.js';
+} from '../nucleo/modelo.js';
+import { barra, cabecalhoRota, numeros } from '../interface/componentes.js';
+import { confirmar } from '../interface/dialogo.js';
 
 /** Lê o plano salvo; qualquer formato inesperado (null, texto, lista solta) vira plano vazio,
     para nunca travar o caderno nem impedir de salvar de novo. */

@@ -1,6 +1,6 @@
 /* Confirmação dentro da página. O confirm() do navegador não funciona dentro de um artefato
    (devolve sempre "não"), então perguntas como "excluir esta lista?" usam este diálogo. */
-import { esc } from './util.js';
+import { esc } from '../nucleo/util.js';
 
 /**
  * Pergunta e espera a resposta.

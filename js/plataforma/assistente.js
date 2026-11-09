@@ -1,16 +1,16 @@
 /* Assistente de estudos: conversa com o Claude sobre dúvidas, com envio de fotos e
    arquivos de texto, e que sabe buscar questões do banco do Papiro para praticar. */
-import { CHAVES, esc, memoria, norm } from './util.js';
-import { md } from './texto.js';
-import { banco, questaoPorId } from './banco.js';
-import { nos } from './modelo.js';
-import { cabecalhoRota } from './componentes.js';
+import { CHAVES, esc, memoria, norm } from '../nucleo/util.js';
+import { md } from '../interface/texto.js';
+import { banco, questaoPorId } from '../nucleo/banco.js';
+import { nos } from '../nucleo/modelo.js';
+import { cabecalhoRota } from '../interface/componentes.js';
 import { AVISO_SO_NO_ARTEFATO, aoPronta, plat } from './plataforma.js';
 import { copiaErro, lerAnexos, ligarAnexos, temClaude, tiposAceitos } from './claude.js';
-import { cartaoQuestao } from './vistas-questoes.js';
-import { aguardar } from './estado.js';
-import { carregarTodosTextos, garantirQuestoes, questoesProntas, todosTextosProntos } from './carga.js';
-import { reiniciarQuestoes } from './blocos.js';
+import { cartaoQuestao } from '../paginas/vistas-questoes.js';
+import { aguardar } from '../nucleo/estado.js';
+import { carregarTodosTextos, garantirQuestoes, questoesProntas, todosTextosProntos } from '../nucleo/carga.js';
+import { reiniciarQuestoes } from '../interface/blocos.js';
 
 const MAX_TURNOS = 16;          // quantas mensagens o assistente "lembra" (a página é quem guarda)
 const MAX_QUESTOES_POR_BUSCA = 5;

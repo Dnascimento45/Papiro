@@ -1,17 +1,17 @@
 /* Vistas: uma função por tipo de página. Cada uma recebe um nó e devolve HTML. */
-import { CHAVES, esc, memoria } from './util.js';
-import { inline } from './texto.js';
-import { aguardar, problemas } from './estado.js';
-import { reiniciarQuestoes, renderBloco } from './blocos.js';
+import { CHAVES, esc, memoria } from '../nucleo/util.js';
+import { inline } from '../interface/texto.js';
+import { aguardar, problemas } from '../nucleo/estado.js';
+import { reiniciarQuestoes, renderBloco } from '../interface/blocos.js';
 import {
   assuntosDe, contagem, feito, href, kanjiDe, nos, prerequisitosDaMateria, raiz, real, secaoDe, todosAssuntos,
-} from './modelo.js';
+} from '../nucleo/modelo.js';
 import {
   barra, cabecalho, carregandoHtml, chips, conferirHtml, legendaLista, linhaAssunto, navegar, notaHtml, numeros, prerequisitosHtml,
-} from './componentes.js';
+} from '../interface/componentes.js';
 import { botaoPlano, proximoDoPlano } from './plano.js';
-import { questoesDoAssunto } from './banco.js';
-import { carregarTextos, textosProntos } from './carga.js';
+import { questoesDoAssunto } from '../nucleo/banco.js';
+import { carregarTextos, textosProntos } from '../nucleo/carga.js';
 
 const ASSUNTO_MODELO = 'nucleo/matematica/aritmetica/regra-de-tres';
 const MAPA = [['Seção', 'Núcleo Comum'], ['Conteúdo', 'Matemática'], ['Matéria', 'Aritmética'], ['Assunto', 'Regra de três']];

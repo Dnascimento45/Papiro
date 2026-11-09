@@ -1,16 +1,16 @@
 /* Aplicação: decide qual página mostrar a partir do endereço (#) e a desenha. */
-import { CHAVES, esc, memoria } from './util.js';
-import { aoProblema, expandidos, pagina, problema, salvarExpandidos, tirarPendentes } from './estado.js';
-import { construir, kanjiDe, nos } from './modelo.js';
-import { montarBanco } from './banco.js';
-import { avisosHtml, vAssunto, vConteudo, vInicio, vMateria, vNaoEncontrado, vSecao } from './vistas.js';
+import { CHAVES, esc, memoria } from '../nucleo/util.js';
+import { aoProblema, expandidos, pagina, problema, salvarExpandidos, tirarPendentes } from '../nucleo/estado.js';
+import { construir, kanjiDe, nos } from '../nucleo/modelo.js';
+import { montarBanco } from '../nucleo/banco.js';
+import { avisosHtml, vAssunto, vConteudo, vInicio, vMateria, vNaoEncontrado, vSecao } from '../paginas/vistas.js';
 import { ROTAS } from './rotas.js';
 import { renderArvore, renderNavegacao, renderPerfilMini } from './sumario.js';
 import { ligarEventos } from './eventos.js';
-import { aoTique, ligarCronometro } from './horas.js';
-import { tiqueSimulado } from './vistas-questoes.js';
-import { aoPronta } from './plataforma.js';
-import { iniciarRank } from './rank.js';
+import { aoTique, ligarCronometro } from '../paginas/horas.js';
+import { tiqueSimulado } from '../paginas/vistas-questoes.js';
+import { aoPronta } from '../plataforma/plataforma.js';
+import { iniciarRank } from '../plataforma/rank.js';
 
 const VISTAS = { secao: vSecao, conteudo: vConteudo, materia: vMateria, assunto: vAssunto };
 

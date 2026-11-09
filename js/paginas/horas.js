@@ -1,10 +1,10 @@
 /* Horas de estudo: cronômetro no rodapé do sumário e a página de resumo.
    O tempo é somado por dia e por matéria (a que estiver aberta no momento).
    Fica só neste navegador (localStorage), como o resto do progresso. */
-import { CHAVES, esc, memoria } from './util.js';
-import { dadosMudaram, pagina, trava } from './estado.js';
-import { nos } from './modelo.js';
-import { cabecalhoRota, barra, numeros } from './componentes.js';
+import { CHAVES, esc, memoria } from '../nucleo/util.js';
+import { dadosMudaram, pagina, trava } from '../nucleo/estado.js';
+import { nos } from '../nucleo/modelo.js';
+import { cabecalhoRota, barra, numeros } from '../interface/componentes.js';
 
 const INATIVIDADE_MS = 10 * 60 * 1000;   // pausa sozinho depois de 10 min sem mexer
 const SALTO_MAXIMO_MS = 120 * 1000;      // um intervalo maior que isso (aba dormindo) não conta inteiro

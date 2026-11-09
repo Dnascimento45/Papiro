@@ -1,6 +1,6 @@
 /* Apoio para as páginas que conversam com o Claude (assistente e redação):
    mensagens de erro em português e leitura dos arquivos anexados. */
-import { esc } from './util.js';
+import { esc } from '../nucleo/util.js';
 import { plat } from './plataforma.js';
 
 const COPIA = {

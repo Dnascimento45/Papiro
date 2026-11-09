@@ -71,7 +71,7 @@ export const api = {
     carregarScripts(lista).then(() => aoCarregar());
   },
 
-  /** Ordem dos arquivos de texto, que só são baixados sob demanda (veja js/carga.js). */
+  /** Ordem dos arquivos de texto, que só são baixados sob demanda (veja js/nucleo/carga.js). */
   textos(lista) {
     if (!Array.isArray(lista)) return problema('conteudos/indice.js', 'ESTUDO.textos() espera uma lista de arquivos entre colchetes [ ].');
     reg.textos = lista.slice();

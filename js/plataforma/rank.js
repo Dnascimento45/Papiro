@@ -1,12 +1,12 @@
 /* Ranking de horas estudadas e questões respondidas entre quem usa o artefato.
    Cada pessoa grava só o próprio documento (rank/<id>) no banco compartilhado e só quem
    aceitou participar aparece. O banco guarda apenas ids e números; os nomes vêm da conta. */
-import { CHAVES, esc, fotoSegura, memoria } from './util.js';
-import { aoDadosMudarem, perfil, salvarPerfil } from './estado.js';
-import { estatisticas } from './banco.js';
-import { duracao, totaisHoras } from './horas.js';
+import { CHAVES, esc, fotoSegura, memoria } from '../nucleo/util.js';
+import { aoDadosMudarem, perfil, salvarPerfil } from '../nucleo/estado.js';
+import { estatisticas } from '../nucleo/banco.js';
+import { duracao, totaisHoras } from '../paginas/horas.js';
 import { AVISO_SO_NO_ARTEFATO, aoPronta, plat, podeRank } from './plataforma.js';
-import { cabecalhoRota } from './componentes.js';
+import { cabecalhoRota } from '../interface/componentes.js';
 
 const INTERVALO_MS = 60 * 1000;   // no máximo uma gravação por minuto
 const TEMPO_CARGA_MS = 10 * 1000;

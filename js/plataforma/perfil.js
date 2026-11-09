@@ -1,12 +1,12 @@
 /* Perfil: a conta do Claude vinculada ao Papiro, apelido, participação no ranking e
    cópia do progresso na nuvem (para passar de um aparelho para outro).
    O vínculo é a própria conta que abriu o artefato; nenhum dado pessoal é pedido. */
-import { CHAVES, esc, fotoSegura, memoria } from './util.js';
-import { perfil, salvarPerfil, trava } from './estado.js';
+import { CHAVES, esc, fotoSegura, memoria } from '../nucleo/util.js';
+import { perfil, salvarPerfil, trava } from '../nucleo/estado.js';
 import { AVISO_SO_NO_ARTEFATO, aoPronta, plat, podeRank, temIdentidade } from './plataforma.js';
 import { sincronizarRank } from './rank.js';
-import { confirmar } from './dialogo.js';
-import { cabecalhoRota } from './componentes.js';
+import { confirmar } from '../interface/dialogo.js';
+import { cabecalhoRota } from '../interface/componentes.js';
 
 /* O que entra na cópia. Cada item é guardado como texto JSON, para não depender
    dos nomes das chaves (que têm "/" e "#"). */

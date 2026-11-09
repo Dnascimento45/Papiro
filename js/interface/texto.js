@@ -2,7 +2,7 @@
      **negrito**  *itálico*  `código`  ==destaque==  {{fórmula}}
    Linhas com "- " viram lista, "1. " lista numerada, "### " subtítulo;
    linha vazia separa parágrafos. Guia completo em conteudos/_MODELO.js. */
-import { esc } from './util.js';
+import { esc } from '../nucleo/util.js';
 
 /** Frações [[a||b]], expoentes ^{x} e índices _{x}. */
 export function formula(s) {
