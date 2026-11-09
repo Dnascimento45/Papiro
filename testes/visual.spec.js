@@ -25,5 +25,7 @@ test('visual: menu aberto no celular', async ({ page }) => {
   test.skip(page.viewportSize().width > 920, 'só no celular');
   await abrir(page);
   await page.locator('#btn-menu').click();
+  // O painel entra deslizando (transition de .25s): espera chegar ao lugar antes da captura.
+  await page.waitForFunction(() => getComputedStyle(document.getElementById('painel')).transform === 'none');
   await expect(page).toHaveScreenshot('menu-aberto.png');
 });

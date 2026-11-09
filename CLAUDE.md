@@ -67,6 +67,14 @@ js/                         Motor do caderno, em módulos ES (sem build):
   app.js                      lê o endereço (#) e desenha a página
   util.js                     funções puras e acesso ao localStorage
 .editorconfig               Estilo comum de arquivos (UTF-8, LF, 2 espaços).
+package.json                Só para os testes (o site não usa Node): Playwright Test e http-server.
+playwright.config.js        Configuração dos testes: computador (1280px) e celular (360px), servidor na porta 5510.
+testes/
+  apoio.js                    serve o index.html com o embrulho do artefato, bloqueia fontes, falha em erro de console
+  navegacao.spec.js           cada tipo de página abre; recursos do artefato escondidos fora dele
+  interacoes.spec.js          estudado, flashcard, questão, busca, sumário e menu do celular
+  conteudo.spec.js            varre todas as páginas: título, avisos, blocos com erro, texto e largura em 360px
+  visual.spec.js              compara capturas das páginas principais com testes/prints/
 conteudos/
   indice.js                 Arquivos carregados, na ordem do sumário.
   secoes.js                 Seções: nucleo, bloco-a, bloco-c.
@@ -88,7 +96,8 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 - **Dependência entre módulos:** `util` ← `estado` ← `registro` ← `modelo` ← (`texto`, `blocos`, `componentes`, `vistas`, `sumario`) ← `eventos`, `app` ← `main`. Não criar ciclos.
 - **No artefato, `confirm()`, `alert()` e `prompt()` não funcionam** (devolvem sempre "não"): use `confirmar()` de `js/dialogo.js`. Recursos do artefato sempre passam por `js/plataforma.js` e precisam se esconder quando forem `null`.
 - **Conteúdo novo:** escreva em `conteudos/textos/`, registre o arquivo em `conteudos/indice.js` e confira que o caderno não mostra aviso (título errado de assunto gera aviso no topo). A saída dos blocos `python` deve ser a de uma execução real.
-- **Testar sem framework:** abrir pelo Live Server e navegar. Mexeu no motor? Confira início, seção, conteúdo, matéria, assunto com texto, assunto vazio e endereço inexistente; marque "estudado", vire um flashcard, responda uma questão e use a busca.
+- **Testes automáticos (Playwright):** `npm run testar` roda tudo (sobe o servidor sozinho); `npm run relatorio` abre o relatório com prints e trace das falhas. Mudou o visual de propósito? `npm run testar:atualizar-prints` e confira as novas capturas antes de commitar. Achou um bug? Ele vira um teste novo em `testes/` antes da correção. Primeira vez numa máquina: `npm install` e `npx playwright install chromium`. As capturas de referência foram tiradas no Windows: em outro sistema as fontes mudam e é preciso gerar outras.
+- **Teste à mão (complementa):** abrir pelo Live Server e navegar. Mexeu no motor? Confira início, seção, conteúdo, matéria, assunto com texto, assunto vazio e endereço inexistente; marque "estudado", vire um flashcard, responda uma questão e use a busca. A suíte cobre esse roteiro, menos o assunto vazio (hoje todos os 377 têm texto).
 
 ### Limitações conhecidas
 - **Todos os 377 assuntos têm texto** (primeira versão, compacta), com 380 questões **autorais** no banco. Nenhuma questão de banca foi inventada: questões reais de prova só com fonte.
