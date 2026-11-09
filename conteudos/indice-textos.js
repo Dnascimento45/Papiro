@@ -99,6 +99,10 @@ ESTUDO.indiceTextos({
   ],
   "conteudos/textos/aprofundamento/lei-9784.js": [
     "bloco-a/lei-9784"
+  ],
+  "conteudos/textos/aprofundamento/etica-federal-gestao.js": [
+    "bloco-a/conhecimentos-gerais",
+    "bloco-a/etica-federal"
   ]
 }, {
   "bloco-a/arquivologia/arquivamento-e-preservacao/conservacao-e-preservacao-de-documentos": "Agentes de deterioração, condições ambientais e a diferença entre conservar e restaurar.",
