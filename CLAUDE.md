@@ -39,13 +39,13 @@ css/                        Estilos, um arquivo por responsabilidade:
   componentes.css             peças reutilizadas (cabeçalho, chips, barras, avisos)
   paginas.css                 início, seção, conteúdo, matéria e assunto
   blocos.css                  blocos de conteúdo (texto, fórmula, questão…)
-  estudo.css                  banco de questões, listas, simulados e horas
+  estudo.css                  plano de estudos, banco de questões, listas, simulados e horas
   plataforma.css              ranking, perfil, assistente, redação e diálogo de confirmação
   responsivo.css              media queries
 js/                         Motor do caderno, em módulos ES (sem build):
   main.js                     ponto de entrada; expõe window.ESTUDO e carrega conteudos/indice.js
   registro.js                 API ESTUDO.* usada por conteudos/*.js e carregamento dos arquivos
-  modelo.js                   monta a árvore Seção→Conteúdo→Matéria→Assunto; contagens e progresso
+  modelo.js                   monta a árvore Seção→Conteúdo→Matéria→Assunto; contagens, progresso e pré-requisitos
   estado.js                   estado compartilhado (avisos, estudados, sumário aberto, página atual)
   texto.js                    mini-marcação (**negrito**, listas, fórmulas)
   blocos.js                   um desenhista de HTML por tipo de bloco
@@ -53,7 +53,8 @@ js/                         Motor do caderno, em módulos ES (sem build):
   vistas.js                   uma função por tipo de página
   sumario.js                  navegação das ferramentas, árvore de conteúdo e busca
   eventos.js                  cliques, teclado, menu, flashcards e questões
-  rotas.js                    páginas especiais: #questoes, #listas, #simulados, #horas, #rank, #assistente, #redacao, #perfil
+  plano.js                    plano de estudos (#plano): matérias escolhidas, ordem, avisos de pré-requisito
+  rotas.js                    páginas especiais: #plano, #questoes, #listas, #simulados, #horas, #rank, #assistente, #redacao, #perfil
   banco.js                    banco de questões (montado dos blocos questao), respostas, listas, simulados
   vistas-questoes.js          páginas e ações do banco, das listas e dos simulados
   horas.js                    cronômetro do menu e página de horas (por dia e por matéria)
@@ -80,6 +81,7 @@ conteudos/
   secoes.js                 Seções: nucleo, bloco-a, bloco-c.
   estrutura/*.js            Conteúdo → matérias → lista de assuntos.
   textos/*.js               Blocos de todos os 377 assuntos, um arquivo por conteúdo (ou por grupo de matérias).
+  prerequisitos.js          O que estudar antes de cada assunto (ESTUDO.prerequisitos); alimenta o aviso no assunto e o plano.
   _MODELO.js                Guia de todos os tipos de bloco (referência, não é carregado).
 contexto/                   Pesquisas que originaram o material (só neste computador: fora do git, porque o repositório é público).
 ```
@@ -93,7 +95,7 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 ### Convenções de código
 - **JavaScript:** módulos ES (`import`/`export`), `const`/`let`, funções pequenas com um papel só. Nomes em português, como no resto do projeto. Os arquivos de `conteudos/` **não** são módulos: continuam chamando o global `ESTUDO.*`.
 - **CSS:** uma declaração por linha; cada arquivo em `css/` cuida de um assunto. Cores e fontes só pelas variáveis de `css/base.css`. Evitar `style="..."` no HTML gerado, exceto para valores calculados (largura de barra, nível da árvore).
-- **Dependência entre módulos:** `util` ← `estado` ← `registro` ← `modelo` ← (`texto`, `blocos`, `componentes`, `vistas`, `sumario`) ← `eventos`, `app` ← `main`. Não criar ciclos.
+- **Dependência entre módulos:** `util` ← `estado` ← `registro` ← `modelo` ← (`texto`, `blocos`, `componentes`, `plano`, `vistas`, `sumario`) ← `eventos`, `app` ← `main`. O `plano` usa `componentes` e é usado por `vistas`, `rotas` e `eventos`. Não criar ciclos.
 - **No artefato, `confirm()`, `alert()` e `prompt()` não funcionam** (devolvem sempre "não"): use `confirmar()` de `js/dialogo.js`. Recursos do artefato sempre passam por `js/plataforma.js` e precisam se esconder quando forem `null`.
 - **Conteúdo novo:** escreva em `conteudos/textos/`, registre o arquivo em `conteudos/indice.js` e confira que o caderno não mostra aviso (título errado de assunto gera aviso no topo). A saída dos blocos `python` deve ser a de uma execução real.
 - **Testes automáticos (Playwright):** `npm run testar` roda tudo (sobe o servidor sozinho); `npm run relatorio` abre o relatório com prints e trace das falhas. Mudou o visual de propósito? `npm run testar:atualizar-prints` e confira as novas capturas antes de commitar. Achou um bug? Ele vira um teste novo em `testes/` antes da correção. Primeira vez numa máquina: `npm install` e `npx playwright install chromium`. As capturas de referência foram tiradas no Windows: em outro sistema as fontes mudam e é preciso gerar outras.
@@ -108,7 +110,8 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 - As duas pessoas precisam de acesso de **colaborador** ao artefato para gravar no ranking e na cópia da nuvem.
 - Não existe data de nascimento no perfil: o vínculo é a própria conta do Claude, que a plataforma verifica. Uma data digitada seria só autodeclarada.
 - Visual somente escuro, herdado do Dojo.
-- Não há planejador de estudos.
+- O plano de estudos organiza **matérias e ordem**; ainda não tem calendário (dias da semana, metas de horas).
+- Os pré-requisitos de `conteudos/prerequisitos.js` são sugestão pedagógica escrita a partir da lista de assuntos; ajuste conforme o estudo mostrar.
 
 ---
 
@@ -123,11 +126,11 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 6. ~~Correção de redações~~ por texto ou foto da folha (`#redacao`).
 7. ~~Primeira versão dos textos de todos os assuntos~~, com SVG, demonstrações em Python e questões autorais; foto de perfil no ranking.
 
-**Próximos, nesta ordem** (definida em 2026-11-09; o planejamento está só nesta lista, nada além do item 8 foi feito):
+**Próximos, nesta ordem** (definida em 2026-11-09):
 8. ~~**Código Python recolhido**~~: o bloco `python` mostra só o texto; código e saída abrem na aba "Ver código em Python".
-9. **Limpeza e boas práticas** (com tempo limitado): remover o que não se usa, revisar convenções e padronizar. Aproveitar para **definir o formato JSON das provas** (item 13) e os campos novos de assunto (`prerequisitos`, `livros`). Fazer antes do conteúdo crescer, porque 10, 11 e 13 mexem em `modelo.js`, `blocos.js` e `vistas.js`.
-10. **Pré-requisitos:** campo `prerequisitos: [ids]` na estrutura e aviso na página do assunto. Os dados são preenchidos aos poucos. O planejador (11) usa esse campo.
-11. **Bloco de estudos (planejador):** a pessoa escolhe as matérias, define a ordem e marca o que cumpriu; avisa quando a ordem contraria um pré-requisito. Plano-base em `contexto/conversa-material-de-estudo.md`. Resolver antes a decisão sobre onde guardar os dados (seção 5).
+9. ~~**Limpeza e boas práticas**~~: código repetido juntado, exportações sem uso fechadas, CSS redundante removido; campo `livros` ("Para aprofundar") criado. O formato JSON das provas ficou para depois, por decisão do Daniel.
+10. ~~**Pré-requisitos**~~: `conteudos/prerequisitos.js` (304 assuntos, 355 ligações); quadro no assunto e na matéria, lista "Este assunto é base para".
+11. ~~**Bloco de estudos (planejador)**~~ (`#plano`): escolhe matérias, define a ordem (setas ou "Ordenar pelos pré-requisitos"), progresso pelos assuntos estudados, avisos de base fora de ordem e "Próximo do plano" no início. Próximo passo possível: calendário semanal (plano-base em `contexto/conversa-material-de-estudo.md`).
 12. **Conteúdo aprofundado (trilha contínua):** mais exemplos, livros recomendados por tema, e conferência dos itens `conferir` (leis locais, valores anuais, regras de transição). Começar pelos assuntos mais cobrados do edital mais próximo.
 13. **Provas passadas** dos concursos dos Blocos A e C, com banca, ano, cargo e fonte, em **JSON estático carregado sob demanda** (opção A): `provas/indice.json` pequeno e um arquivo por prova em `provas/<banca>/<ano>-<cargo>.json`, lido por `fetch` só quando a prova é aberta. O `banco.js` passa a ler também desses arquivos. **O id de cada questão precisa ser estável**, para não perder o histórico de respostas. Se o volume ficar grande, migrar para o banco (`db`) do artefato. Antes de começar: listar os concursos e bancas do escopo (em `contexto/`) e estimar o número de provas.
 14. **Revisão com flashcards** (blocos `flashcards` já existem no motor).
@@ -170,9 +173,9 @@ Conversa, documentação, commits e interface em **português do Brasil**, com a
 - [ ] **Provas passadas e o repositório público:** o repositório é público e as provas têm direitos autorais das bancas. Opções: colocar `provas/` no `.gitignore` (como `contexto/`; mas então o artefato precisa receber os arquivos pela publicação) ou tornar o repositório privado. O uso é pessoal, sem fins monetários.
 - [ ] **Texto do conteúdo:** quem escreve e como conferimos as fontes?
 - [ ] **Tema claro** para leitura longa (hoje só existe o escuro)?
-- [ ] **Planejador:** os dados dele ficam no `localStorage` ou em arquivo exportável/importável (para o backup)?
+- [x] **Planejador:** decidido (2026-11-09): `localStorage` (`papiro.plano`), incluído na cópia da nuvem do perfil, como o resto do progresso.
 
 ## 6. Próximos passos
 1. Revisar este documento e responder às decisões em aberto.
-2. Desenhar o planejador de estudos (quais telas, quais dados) antes de codar.
+2. Decidir se o plano ganha calendário semanal (dias e horas por matéria).
 3. Conferir os assuntos marcados `conferir`, começando pela legislação do edital mais próximo.
