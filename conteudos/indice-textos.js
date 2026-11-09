@@ -118,6 +118,9 @@ ESTUDO.indiceTextos({
   ],
   "conteudos/textos/aprofundamento/financas-orcamento.js": [
     "bloco-c/gestao-publica"
+  ],
+  "conteudos/textos/aprofundamento/conhecimentos-regionais.js": [
+    "bloco-c/conhecimentos-regionais"
   ]
 }, {
   "bloco-a/arquivologia/arquivamento-e-preservacao/conservacao-e-preservacao-de-documentos": "Agentes de deterioração, condições ambientais e a diferença entre conservar e restaurar.",
