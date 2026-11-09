@@ -103,6 +103,9 @@ ESTUDO.indiceTextos({
   "conteudos/textos/aprofundamento/etica-federal-gestao.js": [
     "bloco-a/conhecimentos-gerais",
     "bloco-a/etica-federal"
+  ],
+  "conteudos/textos/aprofundamento/administracao.js": [
+    "bloco-a/nocoes-de-administracao"
   ]
 }, {
   "bloco-a/arquivologia/arquivamento-e-preservacao/conservacao-e-preservacao-de-documentos": "Agentes de deterioração, condições ambientais e a diferença entre conservar e restaurar.",

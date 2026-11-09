@@ -97,5 +97,6 @@ ESTUDO.textos([
   "conteudos/textos/aprofundamento/lei-8112-1.js",
   "conteudos/textos/aprofundamento/lei-8112-2.js",
   "conteudos/textos/aprofundamento/lei-9784.js",
-  "conteudos/textos/aprofundamento/etica-federal-gestao.js"
+  "conteudos/textos/aprofundamento/etica-federal-gestao.js",
+  "conteudos/textos/aprofundamento/administracao.js"
 ]);
