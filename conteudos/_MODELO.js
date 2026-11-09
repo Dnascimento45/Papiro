@@ -80,6 +80,7 @@ ESTUDO.assunto("nucleo/meu-conteudo/minha-materia/assunto-so-com-titulo", {
     { tipo: "questao", banca: "FAFIPA", ano: 2026, cargo: "Agente Administrativo",
       enunciado: "...", alternativas: ["...", "...", "...", "...", "..."],
       correta: "C",                          // letra, número (0 = A) ou o texto da alternativa
+      id: "fafipa-2026-agente-01",         // opcional: fixa o id no banco de questões (guarda o histórico se reordenar)
       comentario: "Por que a C está certa." },
     { tipo: "questao", banca: "Cebraspe", enunciado: "Item para julgar.", alternativas: ["Certo", "Errado"], correta: "Errado" },
     { tipo: "link", rotulo: "Para consultar", itens: [{ titulo: "Edital", url: "https://...", nota: "opcional" }] }
