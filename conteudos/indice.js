@@ -46,5 +46,8 @@ ESTUDO.carregar([
   "conteudos/textos/matematica-regra-de-tres.js",
   "conteudos/textos/matematica-numeros-aritmetica.js",
   "conteudos/textos/matematica-financeira-algebra.js",
-  "conteudos/textos/matematica-geometria-estatistica.js"
+  "conteudos/textos/matematica-geometria-estatistica.js",
+  "conteudos/textos/raciocinio-logico.js",
+  "conteudos/textos/portugues-texto-ortografia-morfologia.js",
+  "conteudos/textos/portugues-sintaxe-pontuacao-semantica-redacao.js"
 ]);
