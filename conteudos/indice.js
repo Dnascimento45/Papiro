@@ -71,6 +71,9 @@ ESTUDO.carregar([
   "conteudos/textos/aprofundamento/portugues-1.js",
   "conteudos/textos/aprofundamento/portugues-2.js",
   "conteudos/textos/aprofundamento/direito-administrativo.js",
+  "conteudos/textos/aprofundamento/informatica.js",
+  "conteudos/textos/aprofundamento/direito-constitucional.js",
+  "conteudos/textos/aprofundamento/etica.js",
 
   /* O que estudar antes de cada assunto (depois da estrutura) */
   "conteudos/prerequisitos.js"
