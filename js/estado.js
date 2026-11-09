@@ -15,6 +15,20 @@ export function problema(arquivo, msg) {
   if (aoRegistrarProblema) aoRegistrarProblema();
 }
 
+/* ---------- Carga sob demanda ---------- */
+/* Uma vista que precisa de dados ainda não baixados chama aguardar(promessa) e desenha
+   um "Carregando…". Quando a promessa termina, app.js redesenha a página (se ela ainda
+   estiver aberta). Quem carrega guarda o resultado, então o segundo desenho já encontra tudo. */
+const pendentes = [];
+
+export function aguardar(promessa) {
+  pendentes.push(promessa);
+}
+
+export function tirarPendentes() {
+  return pendentes.splice(0);
+}
+
 /* ---------- Progresso e navegação (persistidos no navegador) ---------- */
 /** caminho do assunto -> instante (ms) em que foi marcado como estudado. */
 export const estudados = memoria.ler(CHAVES.estudados, {});

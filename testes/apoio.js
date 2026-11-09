@@ -13,6 +13,7 @@ const base = require('@playwright/test');
 const EMBRULHO_INICIO = '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>\n';
 const EMBRULHO_FIM = '\n</body></html>';
 const INDEX = path.join(__dirname, '..', 'index.html');
+const DADOS = path.join(__dirname, 'dados', 'questoes');
 
 const test = base.test.extend({
   // Serve o index.html embrulhado como no artefato (lido a cada teste: mudou o arquivo, vale na hora).
@@ -22,6 +23,18 @@ const test = base.test.extend({
       contentType: 'text/html; charset=utf-8',
       body: EMBRULHO_INICIO + fs.readFileSync(INDEX, 'utf8') + EMBRULHO_FIM,
     }));
+    await use();
+  }, { auto: true }],
+
+  // A pasta questoes/ (questões de provas) fica fora do git. Os testes usam um conjunto pequeno
+  // e fixo, em testes/dados/questoes/, servido no mesmo endereço que o caderno pede.
+  provas: [async ({ page }, use) => {
+    await page.route(/\/questoes\/[^?#]+\.json(\?|$)/, (rota) => {
+      const relativo = new URL(rota.request().url()).pathname.replace(/^\/questoes\//, '');
+      const arquivo = path.join(DADOS, relativo);
+      if (!arquivo.startsWith(DADOS) || !fs.existsSync(arquivo)) return rota.fulfill({ status: 404, body: '' });
+      return rota.fulfill({ status: 200, contentType: 'application/json', body: fs.readFileSync(arquivo, 'utf8') });
+    });
     await use();
   }, { auto: true }],
 
@@ -66,9 +79,11 @@ async function semAvisos(page) {
 /**
  * Lê a árvore do caderno pelo próprio módulo js/modelo.js. O navegador devolve a mesma
  * instância que a página já usa, então não é preciso expor nada a mais no motor.
+ * Os textos chegam sob demanda: antes de ler, baixa todos (para ver os blocos de cada assunto).
  */
 async function arvore(page) {
   return page.evaluate(async () => {
+    await (await import('/js/carga.js')).carregarTodosTextos();
     const m = await import('/js/modelo.js');
     const resumo = (n) => ({ caminho: n.caminho, titulo: n.titulo, tipo: n.tipo });
     const todos = [...m.nos.values()].filter((n) => !n.ref);

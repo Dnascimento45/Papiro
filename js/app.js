@@ -1,6 +1,6 @@
 /* Aplicação: decide qual página mostrar a partir do endereço (#) e a desenha. */
 import { CHAVES, esc, memoria } from './util.js';
-import { aoProblema, expandidos, pagina, problema, salvarExpandidos } from './estado.js';
+import { aoProblema, expandidos, pagina, problema, salvarExpandidos, tirarPendentes } from './estado.js';
 import { construir, kanjiDe, nos } from './modelo.js';
 import { montarBanco } from './banco.js';
 import { avisosHtml, vAssunto, vConteudo, vInicio, vMateria, vNaoEncontrado, vSecao } from './vistas.js';
@@ -53,6 +53,7 @@ export function render() {
   pagina.rota = rota ? primeiro : null;
   if (no) expandirAte(no);
 
+  tirarPendentes(); // descarta pedidos de um desenho anterior
   let html;
   if (rota) html = comAviso(() => rota.vista(resto));
   else if (caminho && !no) html = vNaoEncontrado(caminho);
@@ -64,10 +65,23 @@ export function render() {
   renderNavegacao();
   renderPerfilMini();
   renderArvore();
-  if (rota && rota.montar) limparPagina = rota.montar(document.getElementById('conteudo'), resto, () => minha === geracao);
+  const esperando = tirarPendentes();
+  if (esperando.length) {
+    // A página pediu dados que ainda estão chegando: redesenha quando chegarem, se ela ainda estiver aberta.
+    Promise.allSettled(esperando).then(() => { if (minha === geracao) redesenharNoLugar(); });
+  } else if (rota && rota.montar) {
+    limparPagina = rota.montar(document.getElementById('conteudo'), resto, () => minha === geracao);
+  }
 
   if (no && no.tipo === 'assunto') memoria.gravar(CHAVES.ultimo, no.caminho);
   salvarExpandidos();
+}
+
+/** Redesenha sem mexer na rolagem nem no foco do campo de busca. */
+function redesenharNoLugar() {
+  const y = window.scrollY;
+  render();
+  window.scrollTo(0, y);
 }
 
 /** Chamado quando todos os arquivos de conteúdo terminaram de carregar. */

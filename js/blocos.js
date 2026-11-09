@@ -63,6 +63,11 @@ function realcarPython(codigo) {
   return html + esc(codigo.slice(ultimo));
 }
 
+/** Aviso "Conferir" de uma questão (ex.: cita lei revogada). Mesmo visual do conferirHtml das páginas. */
+export function conferirDaQuestao(b) {
+  return b.conferir ? `<div class="conferir"><b>Conferir</b><span>${inline(b.conferir)}</span></div>` : '';
+}
+
 export function indiceDaCorreta(b) {
   let correta = b.correta;
   if (typeof correta === 'string') {
@@ -165,7 +170,7 @@ const BLOCOS = {
     const alternativas = b.alternativas
       .map((a, i) => `<li><button type="button" data-alt="${i}"><b>${LETRAS[i]}</b><span>${inline(a)}</span></button></li>`)
       .join('');
-    const corpo = (meta ? `<div class="q-meta">${meta}</div>` : '') +
+    const corpo = (meta ? `<div class="q-meta">${meta}</div>` : '') + conferirDaQuestao(b) +
       prosa(b.enunciado) +
       `<ol class="q-alts" data-correta="${correta}" data-q="${id}" data-qid="${esc(b._id || '')}">${alternativas}</ol>` +
       `<div class="q-retorno" hidden><div class="veredito"></div>${prosa(b.comentario || '')}<button type="button" class="q-refazer">Refazer</button></div>`;

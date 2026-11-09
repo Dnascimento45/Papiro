@@ -1,10 +1,20 @@
 /* =====================================================================
    ÍNDICE DE ARQUIVOS DO CADERNO
    ---------------------------------------------------------------------
-   Lista todos os arquivos de conteúdo, na ordem em que aparecem no sumário.
-   - Criou um arquivo novo? Adicione o caminho dele aqui.
-   - Um arquivo com erro não derruba os outros: o caderno mostra um aviso
-     no topo da página dizendo qual arquivo e qual linha conferir.
+   Duas listas:
+   1. ESTUDO.carregar([...]) → o que abre junto com o caderno: seções,
+      estrutura (conteúdos, matérias, assuntos) e pré-requisitos. É leve.
+   2. ESTUDO.textos([...])   → os textos dos assuntos. NÃO são baixados na
+      abertura: cada um só chega quando um assunto do conteúdo dele é aberto
+      (ou numa busca, no banco de questões e no assistente).
+
+   Criou, renomeou ou mudou o "resumo" de um texto? Atualize a lista 2 e
+   rode "npm run indice" para refazer conteudos/indice-textos.js.
+   A ordem da lista 2 importa: os blocos de um assunto entram na ordem dos
+   arquivos, e o id das questões autorais ("caminho#ordem") depende disso.
+
+   Um arquivo com erro não derruba os outros: o caderno mostra um aviso
+   no topo da página dizendo qual arquivo e qual linha conferir.
 
    Organização das pastas:
      conteudos/secoes.js        → as seções (Núcleo, Bloco A, Bloco C)
@@ -42,6 +52,14 @@ ESTUDO.carregar([
   "conteudos/estrutura/c-conhecimentos-regionais.js",
   "conteudos/estrutura/c-compartilhados.js",
 
+  /* O que estudar antes de cada assunto (depois da estrutura) */
+  "conteudos/prerequisitos.js",
+
+  /* Mapa dos textos (gerado por "npm run indice") */
+  "conteudos/indice-textos.js"
+]);
+
+ESTUDO.textos([
   /* Textos dos assuntos */
   "conteudos/textos/matematica-regra-de-tres.js",
   "conteudos/textos/matematica-numeros-aritmetica.js",
@@ -73,8 +91,5 @@ ESTUDO.carregar([
   "conteudos/textos/aprofundamento/direito-administrativo.js",
   "conteudos/textos/aprofundamento/informatica.js",
   "conteudos/textos/aprofundamento/direito-constitucional.js",
-  "conteudos/textos/aprofundamento/etica.js",
-
-  /* O que estudar antes de cada assunto (depois da estrutura) */
-  "conteudos/prerequisitos.js"
+  "conteudos/textos/aprofundamento/etica.js"
 ]);

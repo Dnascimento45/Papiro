@@ -71,9 +71,12 @@ function ligarReferencias(refs) {
   });
 }
 
-/** Aplica os textos (blocos e metadados) declarados em conteudos/textos/*.js. */
-function aplicarTextos() {
-  reg.assuntos.forEach((r) => {
+let aplicados = 0; // quantos registros de reg.assuntos já foram aplicados à árvore
+
+/** Aplica os textos (blocos e metadados) declarados em conteudos/textos/*.js que chegaram
+    desde a última chamada. Os textos chegam sob demanda (js/carga.js), por isso é incremental. */
+export function aplicarNovosTextos() {
+  reg.assuntos.slice(aplicados).forEach((r) => {
     const no = nos.get(normCaminho(r.caminho));
     if (!no || no.tipo !== 'assunto') {
       return problema(r.arquivo, `o assunto "${r.caminho}" não existe na estrutura. Abra o assunto no caderno e copie o caminho mostrado na página.`);
@@ -84,6 +87,27 @@ function aplicarTextos() {
       if (r.def[k] != null) no.def[k] = r.def[k];
     });
     if (r.def.prerequisitos != null) ligarPrerequisitos(no, r.def.prerequisitos, r.arquivo);
+  });
+  aplicados = reg.assuntos.length;
+}
+
+/** O índice gerado (conteudos/indice-textos.js) diz quais assuntos têm texto e o resumo de cada um,
+    para as listas e contagens funcionarem antes de o texto ser baixado. */
+function aplicarIndiceTextos() {
+  const ARQ = 'conteudos/indice-textos.js';
+  if (!reg.mapaTextos) {
+    reg.mapaTextos = {};
+    if (reg.textos.length) problema(ARQ, 'o índice dos textos não foi carregado. Rode "npm run indice".');
+    return;
+  }
+  const noMapa = Object.keys(reg.mapaTextos);
+  const desatualizado = reg.textos.length !== noMapa.length || reg.textos.some((a) => !noMapa.includes(a));
+  if (desatualizado) problema(ARQ, 'está desatualizado em relação a conteudos/indice.js. Rode "npm run indice".');
+  Object.entries(reg.resumos).forEach(([caminho, resumo]) => {
+    const no = nos.get(caminho);
+    if (!no || no.tipo !== 'assunto') return problema(ARQ, `o assunto "${caminho}" não existe mais na estrutura. Rode "npm run indice".`);
+    no.temTexto = true;
+    if (resumo && !no.def.resumo) no.def.resumo = resumo;
   });
 }
 
@@ -126,7 +150,8 @@ export function construir() {
   raiz.forEach((s) => s.filhos.sort(porOrdem));
 
   ligarReferencias(refs);
-  aplicarTextos();
+  aplicarNovosTextos(); // na abertura, só os pré-requisitos; os textos chegam depois
+  aplicarIndiceTextos();
 }
 
 /* ---------- Consultas ---------- */
@@ -173,8 +198,9 @@ export function href(no) {
   return `#${r.caminho.split('/').join('--')}`;
 }
 
+/** Tem texto: já baixado (blocos) ou, antes de baixar, segundo o índice gerado. */
 export function temConteudo(assunto) {
-  return !!(assunto.blocos && assunto.blocos.length > 0);
+  return !!((assunto.blocos && assunto.blocos.length > 0) || assunto.temTexto);
 }
 
 /* ---------- Progresso ---------- */

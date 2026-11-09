@@ -8,6 +8,8 @@ import { cabecalhoRota } from './componentes.js';
 import { AVISO_SO_NO_ARTEFATO, aoPronta, plat } from './plataforma.js';
 import { copiaErro, lerAnexos, ligarAnexos, temClaude, tiposAceitos } from './claude.js';
 import { cartaoQuestao } from './vistas-questoes.js';
+import { aguardar } from './estado.js';
+import { carregarTodosTextos, garantirQuestoes, questoesProntas, todosTextosProntos } from './carga.js';
 import { reiniciarQuestoes } from './blocos.js';
 
 const MAX_TURNOS = 16;          // quantas mensagens o assistente "lembra" (a página é quem guarda)
@@ -54,7 +56,7 @@ function buscarQuestoes(entrada, achadas) {
     questoes: pontuadas.map(({ q }) => ({
       id: q.id,
       conteudo: q.conteudo.titulo,
-      assunto: q.assunto.titulo,
+      assunto: q.assunto ? q.assunto.titulo : null,
       banca: q.banca || null,
       ano: q.ano || null,
       enunciado: String(q.bloco.enunciado),
@@ -86,6 +88,10 @@ function ferramentas(achadas) {
 /* ---------- Tela ---------- */
 
 export function vAssistente() {
+  // A ferramenta buscar_questoes procura nas questões autorais (todos os textos) e nas de provas
+  // já baixadas; as questões mostradas em conversas anteriores também precisam estar aqui.
+  const ids = turnos.flatMap((t) => t.q || []);
+  if (!todosTextosProntos() || !questoesProntas(ids)) aguardar(Promise.all([carregarTodosTextos(), garantirQuestoes(ids)]));
   return cabecalhoRota({
     sobre: 'Ajuda',
     titulo: 'Assistente de estudos',

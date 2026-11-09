@@ -4,6 +4,7 @@ import { expandidos, pagina, perfil } from './estado.js';
 import { feito, href, kanjiDe, nos, raiz, real, todosAssuntos } from './modelo.js';
 import { ROTAS } from './rotas.js';
 import { plat, temIdentidade } from './plataforma.js';
+import { carregarTodosTextos, todosTextosProntos } from './carga.js';
 
 const SETA = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
 const LIMITE_BUSCA = 80;
@@ -79,11 +80,18 @@ function resultadosBusca(q) {
   nos.forEach((n) => {
     if (n.tipo === 'secao' || n.ref) return;
     if (contem(norm(n.titulo))) noTitulo.push(n);
-    else if (n.tipo === 'assunto' && contem(textoDosBlocos(n))) noTexto.push(n);
+    else if (n.tipo === 'assunto' && n.blocos.length && contem(textoDosBlocos(n))) noTexto.push(n);
   });
 
+  // Busca no texto precisa dos textos: na primeira busca eles são baixados e a lista se refaz.
+  let aviso = '';
+  if (!todosTextosProntos()) {
+    carregarTodosTextos().then(() => { if (norm(document.getElementById('campo-busca').value).trim()) renderArvore(); });
+    aviso = '<p class="res-vazio" role="status">Procurando também dentro dos textos…</p>';
+  }
+
   const lista = noTitulo.concat(noTexto).slice(0, LIMITE_BUSCA);
-  if (!lista.length) return `<p class="res-vazio">Nada encontrado para “${esc(q)}”.</p>`;
+  if (!lista.length) return aviso || `<p class="res-vazio">Nada encontrado para “${esc(q)}”.</p>`;
 
   const itens = lista.map((n) => {
     const trilha = [];
@@ -91,7 +99,7 @@ function resultadosBusca(q) {
     const marca = noTexto.includes(n) ? ' <mark>· no texto</mark>' : '';
     return `<li><a href="${href(n)}">${esc(n.titulo)}${marca}<small>${esc(trilha.join(' · '))}</small></a></li>`;
   });
-  return `<ul class="res-busca">${itens.join('')}</ul>`;
+  return `<ul class="res-busca">${itens.join('')}</ul>${aviso}`;
 }
 
 /* ---------- Navegação das ferramentas ---------- */

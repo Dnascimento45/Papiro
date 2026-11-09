@@ -1,16 +1,17 @@
 /* Vistas: uma função por tipo de página. Cada uma recebe um nó e devolve HTML. */
 import { CHAVES, esc, memoria } from './util.js';
 import { inline } from './texto.js';
-import { problemas } from './estado.js';
+import { aguardar, problemas } from './estado.js';
 import { reiniciarQuestoes, renderBloco } from './blocos.js';
 import {
-  assuntosDe, contagem, feito, href, kanjiDe, nos, prerequisitosDaMateria, raiz, real, secaoDe, temConteudo, todosAssuntos,
+  assuntosDe, contagem, feito, href, kanjiDe, nos, prerequisitosDaMateria, raiz, real, secaoDe, todosAssuntos,
 } from './modelo.js';
 import {
-  barra, cabecalho, chips, conferirHtml, legendaLista, linhaAssunto, navegar, notaHtml, numeros, prerequisitosHtml,
+  barra, cabecalho, carregandoHtml, chips, conferirHtml, legendaLista, linhaAssunto, navegar, notaHtml, numeros, prerequisitosHtml,
 } from './componentes.js';
 import { botaoPlano, proximoDoPlano } from './plano.js';
 import { questoesDoAssunto } from './banco.js';
+import { carregarTextos, textosProntos } from './carga.js';
 
 const ASSUNTO_MODELO = 'nucleo/matematica/aritmetica/regra-de-tres';
 const MAPA = [['Seção', 'Núcleo Comum'], ['Conteúdo', 'Matemática'], ['Matéria', 'Aritmética'], ['Assunto', 'Regra de três']];
@@ -167,7 +168,12 @@ export function vAssunto(assunto) {
     `</div><div class="cab-kanji" aria-hidden="true">${esc(kanjiDe(assunto))}</div></header>` +
     prerequisitosHtml(assunto.prerequisitos);
 
-  if (temConteudo(assunto)) {
+  if (!textosProntos(assunto.caminho)) {
+    // O texto ainda não foi baixado: pede e desenha de novo quando chegar (app.js).
+    aguardar(carregarTextos(assunto.caminho));
+    return html + carregandoHtml('Carregando o texto…');
+  }
+  if (assunto.blocos.length) {
     reiniciarQuestoes();
     html += `<div class="blocos">${assunto.blocos.map(renderBloco).join('')}</div>`;
   } else {

@@ -86,6 +86,12 @@ export function navegar(anterior, proximo, rotuloAnterior, rotuloProximo) {
     '</nav>';
 }
 
+/** Aviso de que um pedaço da página está chegando (texto ou questões baixados sob demanda).
+    Usa a mesma classe do "Carregando o caderno…": os testes esperam ela sumir. */
+export function carregandoHtml(texto) {
+  return `<div class="carregando" role="status"><span class="kj" aria-hidden="true">道</span>${esc(texto)}</div>`;
+}
+
 /** Cabeçalho das páginas especiais (questões, listas, simulados, horas). `sobre` e `lead` aceitam marcação. */
 export function cabecalhoRota({ sobre, titulo, lead = '', kanji, extra = '' }) {
   return `<header class="cab"><div><p class="sobre">${esc(sobre)}</p><h1>${esc(titulo)}</h1>` +

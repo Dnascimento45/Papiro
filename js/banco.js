@@ -8,16 +8,44 @@ import { indiceDaCorreta } from './blocos.js';
 
 /* ---------- Banco (montado a partir do conteúdo) ---------- */
 
-/** Cada item: { id, bloco, assunto, materia, conteudo, secao, banca, ano, cargo, correta, texto }. */
+/** Cada item: { id, bloco, assunto, materia, conteudo, secao, banca, ano, cargo, correta, texto, prova }.
+    Questões autorais vêm dos blocos `questao` dos textos (só dos textos já baixados: js/carga.js).
+    Questões de provas vêm dos JSON de questoes/ (js/provas.js) e não têm assunto nem matéria
+    (assunto e materia = null): o arquivo de origem só diz a matéria do edital. */
 export const banco = [];
 const porId = new Map();
 const porAssunto = new Map(); // caminho do assunto -> [questões]
+const deProvas = [];          // guardadas à parte: montarBanco() refaz só as autorais
 
-/** Varre os assuntos e cadastra cada bloco `questao` válido. Chamar depois de construir a árvore. */
+/** Varre os assuntos e cadastra cada bloco `questao` válido. Chamado de novo a cada lote de textos baixado. */
 export function montarBanco() {
   banco.length = 0;
   porId.clear();
   porAssunto.clear();
+  montarAutorais();
+  deProvas.forEach((q) => { banco.push(q); porId.set(q.id, q); });
+}
+
+/** Cadastra questões de provas que chegaram de um arquivo JSON. */
+export function adicionarDeProvas(lista, { conteudo, banca }) {
+  lista.forEach((item) => {
+    if (!item || porId.has(item.id) || !Array.isArray(item.alternativas)) return;
+    const bloco = {
+      tipo: 'questao', _id: item.id, banca, ano: item.ano || '',
+      enunciado: item.enunciado, alternativas: item.alternativas, correta: item.correta, conferir: item.conferir,
+    };
+    const q = {
+      id: item.id, bloco, assunto: null, materia: null, conteudo, secao: conteudo.pai, prova: true,
+      banca, ano: item.ano || '', cargo: '', correta: item.correta,
+      texto: norm([item.enunciado, ...item.alternativas, conteudo.titulo].join(' ')),
+    };
+    deProvas.push(q);
+    banco.push(q);
+    porId.set(q.id, q);
+  });
+}
+
+function montarAutorais() {
   nos.forEach((assunto) => {
     if (assunto.tipo !== 'assunto') return;
     let n = 0;
@@ -82,8 +110,10 @@ export function statusDe(id) {
   return r.ok ? 'certa' : 'errada';
 }
 
+/** Conta todas as respostas gravadas, inclusive de questões cujo texto ainda não foi baixado
+    (o ranking lê isto logo na abertura, antes de qualquer texto chegar). */
 export function estatisticas() {
-  const ids = Object.keys(respostas).filter((id) => porId.has(id));
+  const ids = Object.keys(respostas);
   const acertos = ids.reduce((s, id) => s + respostas[id].c, 0);
   const erros = ids.reduce((s, id) => s + respostas[id].e, 0);
   return { respondidas: ids.length, tentativas: acertos + erros, acertos };

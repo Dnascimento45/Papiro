@@ -3,8 +3,9 @@
 import { problema } from './estado.js';
 import { slug } from './util.js';
 
-/** Tudo o que foi declarado pelos arquivos de conteúdo, ainda sem virar árvore. */
-export const reg = { secoes: [], conteudos: [], assuntos: [] };
+/** Tudo o que foi declarado pelos arquivos de conteúdo, ainda sem virar árvore.
+    textos: ordem dos arquivos de texto (ESTUDO.textos); mapaTextos e resumos vêm de conteudos/indice-textos.js. */
+export const reg = { secoes: [], conteudos: [], assuntos: [], textos: [], mapaTextos: null, resumos: {} };
 
 let carregou = false;
 let aoCarregar = () => {};
@@ -59,7 +60,7 @@ export const api = {
     });
   },
 
-  /** Carrega os arquivos de conteúdo, em ordem, e avisa quando todos terminarem. */
+  /** Carrega os arquivos que abrem com o caderno, em ordem, e avisa quando todos terminarem. */
   carregar(lista) {
     if (carregou) return;
     carregou = true;
@@ -67,21 +68,19 @@ export const api = {
       problema('conteudos/indice.js', 'ESTUDO.carregar() espera uma lista de arquivos entre colchetes [ ].');
       lista = [];
     }
-    let faltam = lista.length;
-    if (!faltam) return aoCarregar();
+    carregarScripts(lista).then(() => aoCarregar());
+  },
 
-    const terminou = () => { if (--faltam === 0) aoCarregar(); };
-    lista.forEach((src) => {
-      const s = document.createElement('script');
-      s.src = src;
-      s.async = false; // mantém a ordem do índice
-      s.onload = terminou;
-      s.onerror = () => {
-        problema(src, 'arquivo não encontrado. Confira o nome em conteudos/indice.js.');
-        terminou();
-      };
-      document.head.appendChild(s);
-    });
+  /** Ordem dos arquivos de texto, que só são baixados sob demanda (veja js/carga.js). */
+  textos(lista) {
+    if (!Array.isArray(lista)) return problema('conteudos/indice.js', 'ESTUDO.textos() espera uma lista de arquivos entre colchetes [ ].');
+    reg.textos = lista.slice();
+  },
+
+  /** Chamado por conteudos/indice-textos.js (gerado): arquivo -> conteúdos e assunto com texto -> resumo. */
+  indiceTextos(mapa, resumos) {
+    reg.mapaTextos = mapa && typeof mapa === 'object' ? mapa : {};
+    reg.resumos = resumos && typeof resumos === 'object' ? resumos : {};
   },
 
   /** Monta um caminho a partir dos títulos: ESTUDO.caminho("nucleo", "matematica", "Aritmética", "Porcentagem").
@@ -94,6 +93,23 @@ export const api = {
     problema(src, 'arquivo não encontrado.');
   },
 };
+
+/** Insere os scripts na ordem da lista (async=false mantém a ordem de execução) e resolve quando
+    todos terminarem. Arquivo que falha vira aviso, mas não impede os outros. */
+export function carregarScripts(lista) {
+  if (!lista.length) return Promise.resolve();
+  return Promise.all(lista.map((src) => new Promise((pronto) => {
+    const s = document.createElement('script');
+    s.src = src;
+    s.async = false;
+    s.onload = pronto;
+    s.onerror = () => {
+      problema(src, 'arquivo não encontrado. Confira o nome em conteudos/indice.js.');
+      pronto();
+    };
+    document.head.appendChild(s);
+  })));
+}
 
 /** Carrega o índice de arquivos (script clássico, pois os arquivos de conteúdo não são módulos). */
 export function carregarIndice(src) {
