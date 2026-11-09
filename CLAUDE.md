@@ -55,7 +55,9 @@ js/                         Motor do caderno, em módulos ES (sem build):
   eventos.js                  cliques, teclado, menu, flashcards e questões
   plano.js                    plano de estudos (#plano): matérias escolhidas, ordem, avisos de pré-requisito
   rotas.js                    páginas especiais: #plano, #questoes, #listas, #simulados, #horas, #rank, #assistente, #redacao, #perfil
-  banco.js                    banco de questões (montado dos blocos questao, com índice por assunto), respostas, listas, simulados
+  carga.js                    carga sob demanda dos textos (por conteúdo, só quando a tela precisa) e garantirQuestoes(ids)
+  provas.js                   questões de provas em JSON (questoes/), lidas com fetch só quando a tela precisa
+  banco.js                    banco de questões (blocos questao dos textos já baixados + questões de provas), respostas, listas, simulados
   vistas-questoes.js          páginas e ações do banco (filtros por conteúdo, assunto, banca e situação; #questoes--<assunto> já filtra), das listas e dos simulados
   horas.js                    cronômetro do menu e página de horas (por dia e por matéria)
   plataforma.js               acesso ao artefato (conta, banco compartilhado, Claude); tudo null fora dele
@@ -68,7 +70,13 @@ js/                         Motor do caderno, em módulos ES (sem build):
   app.js                      lê o endereço (#) e desenha a página
   util.js                     funções puras e acesso ao localStorage
 .editorconfig               Estilo comum de arquivos (UTF-8, LF, 2 espaços).
-package.json                Só para os testes (o site não usa Node): Playwright Test e http-server.
+package.json                Testes (Playwright Test, http-server) e as ferramentas abaixo. O site não usa Node.
+ferramentas/
+  gerar-indice-textos.js      npm run indice: gera conteudos/indice-textos.js (arquivo -> conteúdos; assunto com texto -> resumo)
+  converter-questoes.js       npm run questoes: CSVs de "Banco de dados de questoes/" -> JSON em questoes/
+questoes/                   Questões de provas em JSON (fora do git: direitos autorais das bancas). indice.json + <conteudo>/<banca>-<balde>.json.
+                            pendentes/ guarda as que não entram no caderno (Português sem o texto-base).
+docs/decisoes/              Registros de decisão (0001: carga sob demanda).
 playwright.config.js        Configuração dos testes: computador (1280px) e celular (360px), servidor na porta 5510.
 testes/
   apoio.js                    serve o index.html com o embrulho do artefato, bloqueia fontes, falha em erro de console
@@ -76,8 +84,11 @@ testes/
   interacoes.spec.js          estudado, flashcard, questão, busca, sumário e menu do celular
   conteudo.spec.js            varre todas as páginas: título, avisos, blocos com erro, texto e largura em 360px
   visual.spec.js              compara capturas das páginas principais com testes/prints/
+  carga.spec.js               carga sob demanda: abertura sem textos, um conteúdo por vez, busca, provas, listas e simulados; índice em dia
+  dados/questoes/             três questões FICTÍCIAS no formato de questoes/, servidas no lugar da pasta real
 conteudos/
-  indice.js                 Arquivos carregados, na ordem do sumário.
+  indice.js                 ESTUDO.carregar([...]): o que abre com o caderno. ESTUDO.textos([...]): textos, baixados sob demanda (a ordem importa).
+  indice-textos.js          GERADO (npm run indice). Não editar à mão; um teste avisa se estiver desatualizado.
   secoes.js                 Seções: nucleo, bloco-a, bloco-c.
   estrutura/*.js            Conteúdo → matérias → lista de assuntos.
   textos/*.js               Blocos de todos os 377 assuntos, um arquivo por conteúdo (ou por grupo de matérias).
@@ -96,13 +107,16 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 ### Convenções de código
 - **JavaScript:** módulos ES (`import`/`export`), `const`/`let`, funções pequenas com um papel só. Nomes em português, como no resto do projeto. Os arquivos de `conteudos/` **não** são módulos: continuam chamando o global `ESTUDO.*`.
 - **CSS:** uma declaração por linha; cada arquivo em `css/` cuida de um assunto. Cores e fontes só pelas variáveis de `css/base.css`. Evitar `style="..."` no HTML gerado, exceto para valores calculados (largura de barra, nível da árvore).
-- **Dependência entre módulos:** `util` ← `estado` ← `registro` ← `modelo` ← (`texto`, `blocos`, `componentes`, `plano`, `vistas`, `sumario`) ← `eventos`, `app` ← `main`. O `plano` usa `componentes` e é usado por `vistas`, `rotas` e `eventos`. O `banco` é usado por `vistas` (botão "Praticar" do assunto), `vistas-questoes` e `eventos`. Não criar ciclos.
+- **Dependência entre módulos:** `util` ← `estado` ← `registro` ← `modelo` ← (`texto`, `blocos`, `componentes`, `plano`, `vistas`, `sumario`) ← `eventos`, `app` ← `main`. O `plano` usa `componentes` e é usado por `vistas`, `rotas` e `eventos`. O `banco` é usado por `vistas` (botão "Praticar" do assunto), `vistas-questoes` e `eventos`. `provas` usa `modelo` e `banco`; `carga` usa `registro`, `modelo`, `banco` e `provas`, e é usada por `vistas`, `sumario`, `vistas-questoes` e `assistente`. Não criar ciclos.
+- **Carga sob demanda:** uma vista que precisa de dados ainda não baixados chama `aguardar(promessa)` (de `estado.js`) e desenha `carregandoHtml(...)`; o `app.js` redesenha quando a promessa termina. Quem carrega guarda o resultado (inclusive falha), para nunca pedir de novo em laço. Detalhes em `docs/decisoes/0001-carga-sob-demanda.md`.
 - **No artefato, `confirm()`, `alert()` e `prompt()` não funcionam** (devolvem sempre "não"): use `confirmar()` de `js/dialogo.js`. Recursos do artefato sempre passam por `js/plataforma.js` e precisam se esconder quando forem `null`.
-- **Conteúdo novo:** escreva em `conteudos/textos/`, registre o arquivo em `conteudos/indice.js` e confira que o caderno não mostra aviso (título errado de assunto gera aviso no topo). A saída dos blocos `python` deve ser a de uma execução real.
+- **Conteúdo novo:** escreva em `conteudos/textos/`, registre o arquivo em `ESTUDO.textos([...])` de `conteudos/indice.js`, rode `npm run indice` e confira que o caderno não mostra aviso (título errado de assunto gera aviso no topo, quando o texto é aberto). Mudou um `resumo`? `npm run indice` também. A saída dos blocos `python` deve ser a de uma execução real.
+- **Questões de provas:** os CSVs ficam em `Banco de dados de questoes/` (fora do git); `npm run questoes` refaz `questoes/`. Matéria fora do escopo é ignorada (mapa `MATERIAS` no conversor). Questão que cita a Lei 8.666 entra com aviso `conferir`. **Nunca** mudar a regra do id (hash do texto) sem migrar as respostas gravadas.
 - **Testes automáticos (Playwright):** `npm run testar` roda tudo (sobe o servidor sozinho); `npm run relatorio` abre o relatório com prints e trace das falhas. Mudou o visual de propósito? `npm run testar:atualizar-prints` e confira as novas capturas antes de commitar. Achou um bug? Ele vira um teste novo em `testes/` antes da correção. Primeira vez numa máquina: `npm install` e `npx playwright install chromium`. As capturas de referência foram tiradas no Windows: em outro sistema as fontes mudam e é preciso gerar outras.
 - **Teste à mão (complementa):** abrir pelo Live Server e navegar. Mexeu no motor? Confira início, seção, conteúdo, matéria, assunto com texto, assunto vazio e endereço inexistente; marque "estudado", vire um flashcard, responda uma questão e use a busca. A suíte cobre esse roteiro, menos o assunto vazio (hoje todos os 377 têm texto).
 
 ### Limitações conhecidas
+- **Questões de provas:** 19.477 (Cebraspe e FCC, até 2018) em Direito Administrativo, Direito Constitucional e Português, vindas de um CSV sem órgão, cargo nem assunto: filtram por conteúdo e banca, não por assunto. Cerca de 700 citam a Lei 8.666 (revogada) e trazem aviso. **Português:** 8.576 questões dependem de um texto-base que não veio no CSV e estão em `questoes/pendentes/`, fora do caderno, até o texto ser pesquisado. Não gerar texto substituto: o gabarito vale só para o texto original.
 - **Todos os 377 assuntos têm texto**, com 992 questões **autorais** no banco. Todo o **Núcleo Comum** já tem a camada de aprofundamento (2026-11-09); os Blocos A e C ainda estão na primeira versão, compacta. Nenhuma questão de banca foi inventada: questões reais de prova só com fonte.
 - Muito do conteúdo foi escrito de memória: leis, datas e valores que mudam estão marcados `conferir`. A **legislação de Curitiba, do Paraná e da RMC** não tem os artigos locais: cada assunto traz o que a CF exige, a comparação com a Lei 8.112 e um roteiro do que ler na lei local.
 - **Python não roda no caderno**: o bloco `python` mostra o código e a saída (conferida rodando o código antes de publicar) numa aba recolhida e manda copiar para o Colab.
@@ -133,7 +147,7 @@ Hierarquia **Seção → Conteúdo → Matéria → Assunto → Blocos**. Ids v�
 10. ~~**Pré-requisitos**~~: `conteudos/prerequisitos.js` (304 assuntos, 355 ligações); quadro no assunto e na matéria, lista "Este assunto é base para".
 11. ~~**Bloco de estudos (planejador)**~~ (`#plano`): escolhe matérias, define a ordem (setas ou "Ordenar pelos pré-requisitos"), progresso pelos assuntos estudados, avisos de base fora de ordem e "Próximo do plano" no início. Próximo passo possível: calendário semanal (plano-base em `contexto/conversa-material-de-estudo.md`).
 12. **Conteúdo aprofundado (trilha contínua)**, feito para todo o Núcleo Comum (612 questões novas). Falta: os Blocos A e C. Regra: questão nova sempre **depois** das existentes (o id é `caminho#ordem`). Itens: mais exemplos, livros recomendados por tema, e conferência dos itens `conferir` (leis locais, valores anuais, regras de transição). Começar pelos assuntos mais cobrados do edital mais próximo.
-13. **Provas passadas** dos concursos dos Blocos A e C, com banca, ano, cargo e fonte, em **JSON estático carregado sob demanda** (opção A): `provas/indice.json` pequeno e um arquivo por prova em `provas/<banca>/<ano>-<cargo>.json`, lido por `fetch` só quando a prova é aberta. O `banco.js` passa a ler também desses arquivos. **O id de cada questão precisa ser estável**, para não perder o histórico de respostas. Se o volume ficar grande, migrar para o banco (`db`) do artefato. Antes de começar: listar os concursos e bancas do escopo (em `contexto/`) e estimar o número de provas.
+13. **Provas passadas**: a base está feita (2026-11-09): carga sob demanda de textos e questões, `questoes/` em JSON com id estável, 19.477 questões Cebraspe/FCC importadas. Falta: (a) pesquisar os textos-base das 8.576 de Português pendentes (começar por uma amostra para medir quantos se acham); (b) ligar questões de provas a assuntos (hoje só ao conteúdo); (c) provas inteiras dos concursos dos Blocos A e C, com banca, ano, cargo e fonte, no mesmo formato.
 14. **Revisão com flashcards** (blocos `flashcards` já existem no motor).
 15. **Anexo de PDF** no assistente e ranking de questões por semana.
 
@@ -171,7 +185,7 @@ Conversa, documentação, commits e interface em **português do Brasil**, com a
 - [ ] **Como a amiga acessa?** Opções: (a) hospedar como site estático, por exemplo no GitHub Pages (grátis, sem servidor, mas o progresso continua local em cada navegador); (b) mandar a pasta e ela roda o servidor (exige Windows/PowerShell); (c) backend para sincronizar progresso (mais trabalho).
 - [x] **Publicar como Artefato do claude.ai?** Decidido: sim (publicado em 2026-11-09). Detalhes abaixo valem como registro. Dá, sem backend próprio: identidade (`user.id()`), banco compartilhado (`db`) para ranking e sincronização, e `sample` para o assistente e a redação (inclui imagens). Custo: o Papiro passa a depender da plataforma de artefatos e das regras dela, e as duas pessoas precisam de acesso à organização/compartilhamento. **Vínculo por data de nascimento:** não dá para verificar; seria só um dado autodeclarado, então a conta Claude (id do usuário) é o vínculo confiável e a data fica fora, salvo necessidade real.
 - [x] **Repositório remoto no GitHub:** decidido: público, em https://github.com/Dnascimento45/Papiro (2026-11-09). A pasta `contexto/` (conversas exportadas) foi tirada do histórico antes do primeiro envio e fica no `.gitignore`.
-- [ ] **Provas passadas e o repositório público:** o repositório é público e as provas têm direitos autorais das bancas. Opções: colocar `provas/` no `.gitignore` (como `contexto/`; mas então o artefato precisa receber os arquivos pela publicação) ou tornar o repositório privado. O uso é pessoal, sem fins monetários.
+- [x] **Provas passadas e o repositório público:** decidido (2026-11-09): `questoes/` e a pasta dos CSVs ficam no `.gitignore`, como `contexto/`; os arquivos vão para o artefato na publicação. Outro computador não recebe as questões pelo git.
 - [ ] **Texto do conteúdo:** quem escreve e como conferimos as fontes?
 - [ ] **Tema claro** para leitura longa (hoje só existe o escuro)?
 - [x] **Planejador:** decidido (2026-11-09): `localStorage` (`papiro.plano`), incluído na cópia da nuvem do perfil, como o resto do progresso.
