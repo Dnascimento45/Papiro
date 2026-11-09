@@ -18,6 +18,7 @@ while ($l.IsListening) {
     if ($f.StartsWith($Raiz) -and (Test-Path $f -PathType Leaf)) {
       $b = [IO.File]::ReadAllBytes($f)
       $ext = [IO.Path]::GetExtension($f).ToLower()
+      $c.Response.Headers.Add('Cache-Control', 'no-store')  # em desenvolvimento, sempre o arquivo mais novo
       $c.Response.ContentType = if ($tipos.ContainsKey($ext)) { $tipos[$ext] } else { 'application/octet-stream' }
       if ($ext -eq '.html' -and $p -eq 'index.html') {
         $txt = '<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>' + [Text.Encoding]::UTF8.GetString($b) + '</body></html>'
