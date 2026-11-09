@@ -1,4 +1,4 @@
-<title>Dojo de Estudos</title>
+<title>Papiro</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -331,7 +331,7 @@ figcaption{font-size:13.5px;color:var(--cinza);margin-top:10px}
     <div class="painel-topo">
       <a class="marca" href="#">
         <span class="selo cheio" aria-hidden="true">道</span>
-        <span><b>Dojo de Estudos</b><small>Blocos A e C · 2027</small></span>
+        <span><b>Papiro</b><small>Blocos A e C · 2027</small></span>
       </a>
       <div class="busca">
         <label for="campo-busca" class="sr" hidden>Buscar assunto</label>
@@ -536,7 +536,7 @@ window.ESTUDO = (function () {
   function href(no) { var r = real(no) || no; return '#' + r.caminho.split('/').join('--'); }
   function temConteudo(a) { return a.blocos && a.blocos.length > 0; }
 
-  var estudados = memoria.ler('dojo.estudados', {});
+  var estudados = memoria.ler('papiro.estudados', {});
   function feito(a) { return !!estudados[a.caminho]; }
   function contagem(no) {
     var lista = assuntosDe(no), f = 0, c = 0;
@@ -687,9 +687,9 @@ window.ESTUDO = (function () {
   function vInicio() {
     var tot = todosAssuntos(), feitos = tot.filter(feito).length, nConteudos = 0;
     nos.forEach(function (n) { if (n.tipo === 'conteudo' && !n.ref) nConteudos++; });
-    var ultimo = nos.get(memoria.ler('dojo.ultimo', ''));
+    var ultimo = nos.get(memoria.ler('papiro.ultimo', ''));
     var html = '<section class="hero"><div><p class="sobre">Concursos de nível médio · Paraná e federal</p>' +
-      '<h1>Dojo de Estudos</h1>' +
+      '<h1>Papiro</h1>' +
       '<p class="lead">O edital-base dos blocos A e C num só lugar. Cada assunto tem o seu endereço: seção, conteúdo, matéria e assunto.</p>' +
       '<div class="numeros"><span><b>' + raiz.length + '</b> seções</span><span><b>' + nConteudos + '</b> conteúdos</span><span><b>' + fmt(tot.length) + '</b> assuntos</span><span><b>' + feitos + '</b> estudados</span></div>' +
       (ultimo && ultimo.tipo === 'assunto' ? '<a class="continuar" href="' + href(ultimo) + '"><span>Continuar</span>' + h(ultimo.titulo) + '</a>' : '') +
@@ -802,7 +802,7 @@ window.ESTUDO = (function () {
   }
 
   /* ---------- Sumário lateral ---------- */
-  var expandidos = new Set(memoria.ler('dojo.abertos', []));
+  var expandidos = new Set(memoria.ler('papiro.abertos', []));
   var atual = null;
   var SETA = '<svg viewBox="0 0 10 10" aria-hidden="true"><path d="M3 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
 
@@ -879,11 +879,11 @@ window.ESTUDO = (function () {
     }
     document.getElementById('conteudo').innerHTML = avisosHtml() + view;
     document.getElementById('marca-dagua').textContent = no ? kanjiDe(no) : '道';
-    document.title = (no ? no.titulo + ' · ' : '') + 'Dojo de Estudos';
+    document.title = (no ? no.titulo + ' · ' : '') + 'Papiro';
     renderMigalhas(no);
     renderArvore();
-    if (no && no.tipo === 'assunto') memoria.gravar('dojo.ultimo', no.caminho);
-    memoria.gravar('dojo.abertos', Array.from(expandidos));
+    if (no && no.tipo === 'assunto') memoria.gravar('papiro.ultimo', no.caminho);
+    memoria.gravar('papiro.abertos', Array.from(expandidos));
   }
 
   /* ---------- Interações ---------- */
@@ -894,7 +894,7 @@ window.ESTUDO = (function () {
       if (t) {
         var c = t.getAttribute('data-alternar');
         if (expandidos.has(c)) expandidos.delete(c); else expandidos.add(c);
-        memoria.gravar('dojo.abertos', Array.from(expandidos));
+        memoria.gravar('papiro.abertos', Array.from(expandidos));
         renderArvore();
         return;
       }
@@ -917,7 +917,7 @@ window.ESTUDO = (function () {
       if ((alvo = e.target.closest('[data-acao="estudado"]'))) {
         if (!atual) return;
         if (estudados[atual.caminho]) delete estudados[atual.caminho]; else estudados[atual.caminho] = Date.now();
-        memoria.gravar('dojo.estudados', estudados);
+        memoria.gravar('papiro.estudados', estudados);
         var y = window.scrollY; render(); window.scrollTo(0, y);
         return;
       }

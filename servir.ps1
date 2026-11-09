@@ -1,8 +1,8 @@
-# Servidor estatico local para o Dojo de Estudos.
-# Uso:  powershell -ExecutionPolicy Bypass -File servir.ps1        (porta 8765)
+# Servidor estatico local para o Papiro.
+# Uso:  powershell -ExecutionPolicy Bypass -File servir.ps1        (porta 8766)
 # O index.html e um fragmento (sem <!doctype>), entao o servidor o embrulha numa pagina completa,
 # como faz a plataforma de artefatos.
-param([string]$Raiz = $PSScriptRoot, [int]$Porta = 8765)
+param([string]$Raiz = $PSScriptRoot, [int]$Porta = 8766)
 $Raiz = (Resolve-Path $Raiz).Path
 $l = New-Object System.Net.HttpListener
 $l.Prefixes.Add("http://localhost:$Porta/")
