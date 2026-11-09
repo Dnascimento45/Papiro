@@ -15,11 +15,11 @@ export function reiniciarQuestoes() {
 
 /* ---------- Peças reutilizadas ---------- */
 
-function moldura(kanji, rotulo, classe, corpo) {
+export function moldura(kanji, rotulo, classe, corpo) {
   return `<section class="bloco ${classe}"><header class="bloco-cab"><span class="kj" aria-hidden="true">${kanji}</span><span>${esc(rotulo)}</span></header><div class="bloco-corpo">${corpo}</div></section>`;
 }
 
-function prosa(texto) {
+export function prosa(texto) {
   return `<div class="prosa">${md(texto)}</div>`;
 }
 
@@ -38,7 +38,7 @@ function tabelaHtml(cabecalho, linhas) {
   return `<div class="tabela-wrap"><table>${thead}<tbody>${tbody}</tbody></table></div>`;
 }
 
-function indiceDaCorreta(b) {
+export function indiceDaCorreta(b) {
   let correta = b.correta;
   if (typeof correta === 'string') {
     const ix = b.alternativas.map(norm).indexOf(norm(correta));
@@ -127,7 +127,7 @@ const BLOCOS = {
       .join('');
     const corpo = (meta ? `<div class="q-meta">${meta}</div>` : '') +
       prosa(b.enunciado) +
-      `<ol class="q-alts" data-correta="${correta}" data-q="${id}">${alternativas}</ol>` +
+      `<ol class="q-alts" data-correta="${correta}" data-q="${id}" data-qid="${esc(b._id || '')}">${alternativas}</ol>` +
       `<div class="q-retorno" hidden><div class="veredito"></div>${prosa(b.comentario || '')}<button type="button" class="q-refazer">Refazer</button></div>`;
     return moldura('問', b.titulo || 'Questão', 'b-questao', corpo);
   },

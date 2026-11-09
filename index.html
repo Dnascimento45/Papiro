@@ -9,10 +9,11 @@
 <link rel="stylesheet" href="css/componentes.css">
 <link rel="stylesheet" href="css/paginas.css">
 <link rel="stylesheet" href="css/blocos.css">
+<link rel="stylesheet" href="css/estudo.css">
 <link rel="stylesheet" href="css/responsivo.css">
 
 <div class="app">
-  <aside class="painel" id="painel" aria-label="Sumário">
+  <aside class="painel" id="painel" aria-label="Menu principal">
     <div class="painel-topo">
       <a class="marca" href="#">
         <span class="selo cheio" aria-hidden="true">道</span>
@@ -24,22 +25,21 @@
         <kbd>/</kbd>
       </div>
     </div>
+    <nav class="painel-nav" id="navegacao" aria-label="Ferramentas de estudo"></nav>
     <nav class="painel-arvore" id="arvore" aria-label="Seções, conteúdos e assuntos"></nav>
-    <div class="painel-pe"><span id="progresso-geral">—</span><span class="kj" aria-hidden="true">一意専心</span></div>
+    <div class="painel-pe">
+      <button type="button" class="relogio" id="relogio" aria-pressed="false"></button>
+      <span id="progresso-geral">—</span>
+    </div>
   </aside>
   <div class="veu" id="veu"></div>
-  <div class="principal">
-    <header class="topo">
-      <button class="btn-menu" id="btn-menu" aria-controls="painel" aria-expanded="false">
-        <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 3h12M1 7h12M1 11h12" stroke="currentColor" stroke-width="1.5"/></svg>Sumário
-      </button>
-      <nav class="migalhas" id="migalhas" aria-label="Você está em"></nav>
-    </header>
-    <main class="folha" id="conteudo">
-      <div class="carregando"><span class="kj">道</span>Carregando o caderno…</div>
-    </main>
-  </div>
+  <main class="folha" id="conteudo">
+    <div class="carregando"><span class="kj">道</span>Carregando o caderno…</div>
+  </main>
 </div>
+<button class="btn-menu" id="btn-menu" type="button" aria-controls="painel" aria-expanded="false">
+  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 3h12M1 7h12M1 11h12" stroke="currentColor" stroke-width="1.5"/></svg>Menu
+</button>
 <div class="marca-dagua" id="marca-dagua" aria-hidden="true">道</div>
 <div class="lema" aria-hidden="true">七転八起<small>CAIR SETE · LEVANTAR OITO</small></div>
 

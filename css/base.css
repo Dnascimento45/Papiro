@@ -29,7 +29,6 @@
 
   /* Medidas */
   --lado: 308px;            /* largura do sumário */
-  --topo: 56px;             /* altura da barra superior */
 }
 
 *,*::before,*::after {

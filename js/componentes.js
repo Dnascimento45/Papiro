@@ -22,9 +22,9 @@ export function numeros(itens) {
 }
 
 /** Barra de progresso a partir de uma contagem ({ total, feitos }). */
-export function barra(ct) {
+export function barra(ct, rotulo = 'estudado') {
   const p = ct.total ? Math.round((ct.feitos / ct.total) * 100) : 0;
-  return `<div class="barra" role="img" aria-label="${p}% estudado"><i style="width:${p}%"></i></div>`;
+  return `<div class="barra" role="img" aria-label="${p}% ${rotulo}"><i style="width:${p}%"></i></div>`;
 }
 
 /** Cabeçalho de seção, conteúdo e matéria. `sobre` já deve vir escapado. */
@@ -60,4 +60,11 @@ export function navegar(anterior, proximo, rotuloAnterior, rotuloProximo) {
     (anterior ? `<a href="${href(anterior)}"><small>← ${rotuloAnterior}</small><span>${esc(anterior.titulo)}</span></a>` : '') +
     (proximo ? `<a class="prox" href="${href(proximo)}"><small>${rotuloProximo} →</small><span>${esc(proximo.titulo)}</span></a>` : '') +
     '</nav>';
+}
+
+/** Cabeçalho das páginas especiais (questões, listas, simulados, horas). `sobre` e `lead` aceitam marcação. */
+export function cabecalhoRota({ sobre, titulo, lead = '', kanji, extra = '' }) {
+  return `<header class="cab"><div><p class="sobre">${esc(sobre)}</p><h1>${esc(titulo)}</h1>` +
+    (lead ? `<p class="lead">${inline(lead)}</p>` : '') + extra +
+    `</div><div class="cab-kanji" aria-hidden="true">${esc(kanji)}</div></header>`;
 }

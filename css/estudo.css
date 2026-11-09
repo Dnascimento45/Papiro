@@ -1,0 +1,335 @@
+/* Ferramentas de estudo: banco de questões, listas, simulados e horas. */
+
+/* ---------- Filtros e formulários ---------- */
+.filtros,
+.form-simulado {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px 14px;
+  margin: 26px 0 8px;
+  padding: 16px;
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  background: var(--sumi-2);
+}
+
+.filtros label,
+.form-simulado label,
+.form-linha label {
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--cinza-2);
+}
+
+.filtro-busca {
+  grid-column: 1 / -1;
+}
+
+.filtros select,
+.filtros input,
+.form-simulado select,
+.form-simulado input[type="number"],
+.form-linha input,
+.q-rodape select {
+  width: 100%;
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--linha-forte);
+  border-radius: 3px;
+  background: var(--sumi);
+  color: var(--washi);
+  font: inherit;
+  font-size: 14px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.filtros select:focus,
+.filtros input:focus,
+.form-simulado select:focus,
+.form-simulado input:focus,
+.form-linha input:focus {
+  outline: none;
+  border-color: var(--shu-borda);
+}
+
+.form-simulado .marcar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 14px;
+  color: var(--cinza);
+}
+
+.form-simulado .btn,
+.form-simulado .form-msg {
+  grid-column: 1 / -1;
+}
+
+.form-simulado .btn {
+  justify-self: start;
+}
+
+.form-msg {
+  margin: 0;
+  min-height: 1.4em;
+  font-size: 13.5px;
+  color: var(--shu-vivo);
+}
+
+.form-linha {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  margin: 26px 0 18px;
+}
+
+.form-linha label {
+  flex: 1;
+}
+
+.btn-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--cinza);
+  font-size: 13px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  color: var(--washi);
+}
+
+/* ---------- Cartões de questão ---------- */
+#lista-questoes {
+  display: grid;
+  gap: 22px;
+  margin-top: 18px;
+}
+
+.q-card {
+  display: grid;
+  gap: 8px;
+}
+
+.q-trilha,
+.q-rodape {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 14px;
+  font-size: 13px;
+  color: var(--cinza);
+}
+
+.q-trilha a {
+  color: var(--cinza);
+  text-decoration: none;
+}
+
+.q-trilha a:hover {
+  color: var(--washi);
+}
+
+.q-rodape {
+  justify-content: flex-start;
+}
+
+.q-rodape select {
+  width: auto;
+  min-height: 34px;
+  font-size: 13px;
+}
+
+.q-aviso {
+  color: var(--shu-vivo);
+}
+
+/* ---------- Listas ---------- */
+.lista-itens {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lista-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 16px 0 0;
+  border: 1px solid var(--linha);
+  border-radius: 4px;
+  background: var(--sumi-2);
+}
+
+.lista-item:hover {
+  border-color: var(--shu-borda);
+}
+
+.lista-item a {
+  display: grid;
+  flex: 1;
+  gap: 2px;
+  padding: 14px 16px;
+  color: var(--washi);
+  text-decoration: none;
+}
+
+.lista-item small {
+  color: var(--cinza-2);
+  font-size: 12.5px;
+}
+
+/* ---------- Simulado ---------- */
+.aviso-andamento {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  margin-top: 22px;
+  padding: 12px 16px;
+  border: 1px solid var(--shu-borda);
+  border-radius: 4px;
+  background: var(--shu-veu);
+}
+
+.aviso-andamento span {
+  flex: 1 1 220px;
+}
+
+.sim-barra {
+  position: sticky;
+  top: 8px;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 8px 14px;
+  border: 1px solid var(--linha-forte);
+  border-radius: 3px;
+  background: rgba(10, 9, 9, .92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sim-fim {
+  margin-top: 34px;
+}
+
+.q-alts .marcada {
+  border-color: var(--shu);
+  background: var(--shu-veu);
+}
+
+.q-alts .marcada b {
+  color: var(--shu-vivo);
+}
+
+.q-alts button:not(:disabled) {
+  min-height: 44px;
+}
+
+/* ---------- Horas ---------- */
+.barras {
+  display: grid;
+  grid-template-columns: repeat(14, minmax(0, 1fr));
+  gap: 6px;
+  align-items: end;
+  height: 150px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.barras li {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  height: 100%;
+}
+
+.barras i {
+  display: block;
+  width: 100%;
+  max-width: 28px;
+  border-radius: 2px 2px 0 0;
+  background: var(--shu);
+}
+
+.barras small {
+  font-size: 11px;
+  color: var(--cinza-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.hora-grupo {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.hora-linha {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hora-linha h3 {
+  font-size: 17px;
+}
+
+.hora-linha h3 small {
+  margin-left: 8px;
+  font-family: var(--f-texto);
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--cinza-2);
+}
+
+.hora-materias {
+  display: grid;
+  gap: 2px;
+  margin: 2px 0 0;
+  padding: 0 0 0 14px;
+  list-style: none;
+  border-left: 1px solid var(--linha);
+  font-size: 13.5px;
+  color: var(--cinza);
+}
+
+.hora-materias li {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 600px) {
+  .form-linha {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 920px) {
+  .sim-barra {
+    top: 56px;
+  }
+}
