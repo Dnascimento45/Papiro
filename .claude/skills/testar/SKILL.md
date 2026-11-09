@@ -1,5 +1,6 @@
 ---
 name: testar
+model: sonnet
 description: Agente de testes do Papiro. Lê o que mudou (git), roda a suíte Playwright, investiga cada falha olhando as capturas, explora a área alterada como um usuário e transforma cada bug encontrado num teste novo. Use quando o Daniel pedir /testar, "testa isso", "roda os testes" ou antes de publicar o artefato.
 ---
 
