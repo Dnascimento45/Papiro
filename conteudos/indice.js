@@ -50,5 +50,8 @@ ESTUDO.carregar([
   "conteudos/textos/raciocinio-logico.js",
   "conteudos/textos/portugues-texto-ortografia-morfologia.js",
   "conteudos/textos/portugues-sintaxe-pontuacao-semantica-redacao.js",
-  "conteudos/textos/informatica.js"
+  "conteudos/textos/informatica.js",
+  "conteudos/textos/direito-constitucional.js",
+  "conteudos/textos/direito-administrativo.js",
+  "conteudos/textos/etica.js"
 ]);
