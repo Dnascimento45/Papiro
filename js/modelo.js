@@ -115,7 +115,7 @@ export function real(no) {
   return no && no.ref ? no.alvo : no;
 }
 
-export function filhosDe(no) {
+function filhosDe(no) {
   const r = real(no);
   return r ? r.filhos : [];
 }

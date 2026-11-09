@@ -15,6 +15,16 @@ import { confirmar } from './dialogo.js';
 const LIMITE_CARTOES = 40;
 const ROTULO_STATUS = { nova: 'Nova', certa: 'Acertou', errada: 'Errou' };
 
+/** Conteúdos que têm questões no banco: [[caminho, título], ...], na ordem do caderno. */
+function conteudosDoBanco() {
+  const conteudos = new Map();
+  banco.forEach((q) => conteudos.set(q.conteudo.caminho, q.conteudo.titulo));
+  return [...conteudos];
+}
+
+/** "Banca · ano · cargo" (só o que existir), já escapado. */
+const metaDaQuestao = (q) => [q.banca, q.ano, q.cargo].filter(Boolean).map(esc).join(' · ');
+
 const naoEncontrado = (titulo, texto) => cabecalhoRota({ sobre: 'Não encontrado', titulo, lead: texto, kanji: '空' }) +
   '<div class="ferramentas"><a class="btn" href="#questoes"><span class="kj">問</span>Ir ao banco de questões</a></div>';
 
@@ -63,11 +73,9 @@ function opcao(valor, rotulo, atual) {
 }
 
 function filtrosHtml() {
-  const conteudos = new Map();
-  banco.forEach((q) => conteudos.set(q.conteudo.caminho, q.conteudo.titulo));
   const bancas = [...new Set(banco.map((q) => q.banca).filter(Boolean))].sort();
   return '<div class="filtros">' +
-    `<label><span>Conteúdo</span><select data-filtro="conteudo">${opcao('', 'Todos', filtro.conteudo)}${[...conteudos].map(([c, t]) => opcao(c, t, filtro.conteudo)).join('')}</select></label>` +
+    `<label><span>Conteúdo</span><select data-filtro="conteudo">${opcao('', 'Todos', filtro.conteudo)}${conteudosDoBanco().map(([c, t]) => opcao(c, t, filtro.conteudo)).join('')}</select></label>` +
     `<label><span>Banca</span><select data-filtro="banca">${opcao('', 'Todas', filtro.banca)}${bancas.map((b) => opcao(b, b, filtro.banca)).join('')}</select></label>` +
     `<label><span>Situação</span><select data-filtro="status">${opcao('', 'Todas', filtro.status)}${opcao('nova', 'Ainda não respondidas', filtro.status)}${opcao('errada', 'Que errei', filtro.status)}${opcao('certa', 'Que acertei', filtro.status)}</select></label>` +
     `<label class="filtro-busca"><span>Buscar no enunciado</span><input type="search" data-filtro="busca" value="${esc(filtro.busca)}" placeholder="palavra ou trecho" autocomplete="off"></label>` +
@@ -133,10 +141,8 @@ export function vSimulados(partes) {
 
 function vSimuladosInicio() {
   const atual = simuladoAtual();
-  const conteudos = new Map();
-  banco.forEach((q) => conteudos.set(q.conteudo.caminho, q.conteudo.titulo));
   const escopos = '<option value="todas">Todo o banco</option>' +
-    [...conteudos].map(([c, t]) => `<option value="c:${esc(c)}">${esc(t)}</option>`).join('') +
+    conteudosDoBanco().map(([c, t]) => `<option value="c:${esc(c)}">${esc(t)}</option>`).join('') +
     todasListas().map((l) => `<option value="l:${esc(l.id)}">Lista: ${esc(l.nome)}</option>`).join('');
 
   const andamento = atual
@@ -182,7 +188,7 @@ function questaoDoSimulado(qid, n, s) {
   const q = questaoPorId(qid);
   if (!q) return '';
   const b = q.bloco;
-  const meta = [q.banca, q.ano, q.cargo].filter(Boolean).map(esc).join(' · ');
+  const meta = metaDaQuestao(q);
   const alternativas = b.alternativas.map((a, i) => `<li><button type="button" data-sim-alt="${i}" data-qid="${esc(qid)}" aria-pressed="${s.respostas[qid] === i}" class="${s.respostas[qid] === i ? 'marcada' : ''}"><b>${LETRAS[i]}</b><span>${inline(a)}</span></button></li>`).join('');
   return moldura('問', `Questão ${n}`, 'b-questao', (meta ? `<div class="q-meta">${meta}</div>` : '') + prosa(b.enunciado) + `<ol class="q-alts">${alternativas}</ol>`);
 }
@@ -245,7 +251,7 @@ function questaoCorrigida(qid, n, s) {
     const classe = i === q.correta ? 'certa' : (i === marcada ? 'errada' : '');
     return `<li><button type="button" disabled class="${classe}"><b>${LETRAS[i]}</b><span>${inline(a)}</span></button></li>`;
   }).join('');
-  const meta = [q.banca, q.ano, q.cargo].filter(Boolean).map(esc).join(' · ');
+  const meta = metaDaQuestao(q);
   return moldura('問', `Questão ${n} · ${q.assunto.titulo}`, 'b-questao',
     (meta ? `<div class="q-meta">${meta}</div>` : '') + prosa(b.enunciado) + `<ol class="q-alts">${alternativas}</ol>` +
     `<div class="q-retorno"><p>${veredito}</p>${prosa(b.comentario || '')}<a href="${href(q.assunto)}">Estudar o assunto</a></div>`);

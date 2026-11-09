@@ -80,39 +80,26 @@ function aoMarcarEstudado(_el, { redesenhar }) {
   redesenhar();
 }
 
-function aoCopiarCaminho(botao) {
-  const codigo = document.getElementById('caminho-assunto');
+/** Copia o texto de `alvo`. Sem acesso à área de transferência (comum no artefato),
+    seleciona o texto para a pessoa copiar com Ctrl+C. */
+function copiar(botao, alvo) {
   const selecionar = () => {
     const faixa = document.createRange();
-    faixa.selectNodeContents(codigo);
-    const selecao = getSelection();
-    selecao.removeAllRanges();
-    selecao.addRange(faixa);
-    botao.textContent = 'Selecionado';
-  };
-  try {
-    navigator.clipboard.writeText(codigo.textContent).then(() => { botao.textContent = 'Copiado'; }, selecionar);
-  } catch (e) {
-    selecionar();
-  }
-}
-
-function aoCopiarCodigo(botao) {
-  const codigo = botao.closest('.codigo').querySelector('code');
-  const selecionar = () => {
-    const faixa = document.createRange();
-    faixa.selectNodeContents(codigo);
+    faixa.selectNodeContents(alvo);
     const selecao = getSelection();
     selecao.removeAllRanges();
     selecao.addRange(faixa);
     botao.textContent = 'Selecionado: use Ctrl+C';
   };
   try {
-    navigator.clipboard.writeText(codigo.textContent).then(() => { botao.textContent = 'Copiado'; }, selecionar);
+    navigator.clipboard.writeText(alvo.textContent).then(() => { botao.textContent = 'Copiado'; }, selecionar);
   } catch (e) {
     selecionar();
   }
 }
+
+const aoCopiarCaminho = (botao) => copiar(botao, document.getElementById('caminho-assunto'));
+const aoCopiarCodigo = (botao) => copiar(botao, botao.closest('.codigo').querySelector('code'));
 
 function aoVirarCarta(carta) {
   const virada = carta.classList.toggle('virada');

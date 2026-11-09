@@ -55,7 +55,7 @@ export async function sincronizarRank({ forcar = false } = {}) {
 }
 
 /** Tira meu documento do ranking (ao deixar de participar). */
-export async function sairDoRank() {
+async function sairDoRank() {
   perfil.participa = false;
   salvarPerfil();
   memoria.gravar(CHAVES.rankUltimo, '');

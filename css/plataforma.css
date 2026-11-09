@@ -151,7 +151,7 @@
 
 .perfil-conta {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 14px;
 }
 
@@ -169,7 +169,7 @@
 .conversa {
   display: grid;
   gap: 14px;
-  margin: 24px 0 18px;
+  margin: 0 0 18px;
 }
 
 .bolha {
@@ -373,18 +373,10 @@
   margin-top: 24px;
 }
 
-.conversa {
-  margin-top: 0;
-}
-
 .perfil-foto-acoes {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px 14px;
   margin-top: 10px;
-}
-
-.perfil-conta {
-  align-items: flex-start;
 }

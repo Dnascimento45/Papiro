@@ -330,6 +330,7 @@ figcaption {
   width: 100%;
   height: auto;
   min-width: 460px;
+  font-family: var(--f-texto);
 }
 
 .cartas {
@@ -608,10 +609,6 @@ figcaption {
    tx: texto  · tx-m: texto miúdo/secundário · tx-d: texto em destaque · tx-t: fonte de título
    ln: linha neutra · ln-d: linha em destaque · ln-f: linha fraca
    fd: área neutra · fd-d: área em destaque · pt: ponto/marcador */
-.svg-wrap svg {
-  font-family: var(--f-texto);
-}
-
 .svg-wrap .tx {
   fill: var(--washi);
   font-size: 14px;

@@ -107,7 +107,7 @@ function desenharBotao() {
     `<span class="tempo" title="Total de hoje">${relogio(hoje())}</span>`;
 }
 
-export function iniciarCronometro() {
+function iniciarCronometro() {
   if (rodando) return;
   rodando = true;
   aviso = '';
@@ -116,7 +116,7 @@ export function iniciarCronometro() {
   desenharBotao();
 }
 
-export function pausarCronometro(motivo = '') {
+function pausarCronometro(motivo = '') {
   if (!rodando) return;
   rodando = false;
   aviso = motivo;
@@ -125,7 +125,7 @@ export function pausarCronometro(motivo = '') {
   desenharBotao();
 }
 
-export function alternarCronometro() {
+function alternarCronometro() {
   if (rodando) pausarCronometro();
   else iniciarCronometro();
 }

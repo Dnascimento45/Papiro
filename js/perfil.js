@@ -34,7 +34,7 @@ function montarPacote() {
   return pacote;
 }
 
-export async function salvarNaNuvem() {
+async function salvarNaNuvem() {
   const pacote = montarPacote();
   const tamanho = new Blob([JSON.stringify(pacote)]).size;
   if (tamanho > LIMITE_BYTES) return { erro: 'Seus dados passaram do limite de uma cópia. Apague simulados antigos ou listas que não usa mais.' };
@@ -48,7 +48,7 @@ export async function salvarNaNuvem() {
   }
 }
 
-export async function lerDaNuvem() {
+async function lerDaNuvem() {
   try {
     const snap = await plat.db.doc(caminhoBackup()).get();
     return snap.exists ? snap.data() : null;
@@ -94,7 +94,7 @@ export function vPerfil() {
 }
 
 /** Foto exibida: a escolhida no Papiro ou, se não houver, a da conta. */
-export function fotoDoPerfil() {
+function fotoDoPerfil() {
   return fotoSegura(perfil.foto) || (plat.eu ? plat.eu.avatarUrl : '');
 }
 
