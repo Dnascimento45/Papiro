@@ -115,6 +115,9 @@ ESTUDO.indiceTextos({
   ],
   "conteudos/textos/aprofundamento/seguridade-social-2.js": [
     "bloco-a/seguridade-social"
+  ],
+  "conteudos/textos/aprofundamento/financas-orcamento.js": [
+    "bloco-c/gestao-publica"
   ]
 }, {
   "bloco-a/arquivologia/arquivamento-e-preservacao/conservacao-e-preservacao-de-documentos": "Agentes de deterioração, condições ambientais e a diferença entre conservar e restaurar.",

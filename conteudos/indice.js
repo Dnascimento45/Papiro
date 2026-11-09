@@ -101,5 +101,6 @@ ESTUDO.textos([
   "conteudos/textos/aprofundamento/administracao.js",
   "conteudos/textos/aprofundamento/arquivologia.js",
   "conteudos/textos/aprofundamento/seguridade-social-1.js",
-  "conteudos/textos/aprofundamento/seguridade-social-2.js"
+  "conteudos/textos/aprofundamento/seguridade-social-2.js",
+  "conteudos/textos/aprofundamento/financas-orcamento.js"
 ]);
