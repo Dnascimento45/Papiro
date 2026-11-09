@@ -43,5 +43,8 @@ ESTUDO.carregar([
   "conteudos/estrutura/c-compartilhados.js",
 
   /* Textos dos assuntos */
-  "conteudos/textos/matematica-regra-de-tres.js"
+  "conteudos/textos/matematica-regra-de-tres.js",
+  "conteudos/textos/matematica-numeros-aritmetica.js",
+  "conteudos/textos/matematica-financeira-algebra.js",
+  "conteudos/textos/matematica-geometria-estatistica.js"
 ]);
